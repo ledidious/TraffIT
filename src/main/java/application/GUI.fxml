@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane prefHeight="579.0" prefWidth="832.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GUIController">
+   <children>
+      <Button layoutX="544.0" layoutY="495.0" mnemonicParsing="false" text="Load Simulation" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="64.0" layoutX="24.0" layoutY="75.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="790.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="64.0" layoutX="24.0" layoutY="148.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="790.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="24.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="78.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="132.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="186.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="240.0" layoutY="137.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="294.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="348.0" layoutY="137.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="402.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="456.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="510.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="564.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="618.0" layoutY="137.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="672.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="726.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+      <Rectangle arcHeight="5.0" fill="#9ea6ae" height="11.0" layoutX="780.0" layoutY="138.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="34.0" />
+   </children>
+</AnchorPane>
