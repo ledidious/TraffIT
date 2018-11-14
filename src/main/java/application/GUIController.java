@@ -3,6 +3,7 @@ package application;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -11,13 +12,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 public class GUIController implements Initializable {
 	@FXML
-	private Button button01;
-
-	@FXML
-	private TextField textfield01;
+	private HBox Lane1;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -25,20 +26,17 @@ public class GUIController implements Initializable {
 		// TODO (don't really need to do anything here).
 	}
 
-	// When user click on myButton
-	// this method will be called.
-	public void showDateTime(ActionEvent event) {
-		System.out.println("Button Clicked!");
+	@FXML
+	protected void fillWithLane() {
 
-		Date now = new Date();
+		ArrayList<Cell> CellsLane1 = new ArrayList<>();
 
-		DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
+		for (int i = 0; i < 1900; i++) {
 
-		// Model Data
-		String dateTimeString = df.format(now);
-
-		// Show in VIEW
-		textfield01.setText(dateTimeString);
-
+			Cell cell = (new Cell(i + 10, 20, 1, 40, Color.BLACK));
+			CellsLane1.add(cell);
+		}
+		
+		fillWithLane();
 	}
 }
