@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.superdudes.traffit.application.GUIController">
+   <children>
+       <!--set SplitPane values "0.0" to fit/stretch the child elements inside the anchorpane-->
+      <SplitPane id="splitPane" orientation="VERTICAL" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <GridPane maxHeight="Infinity" maxWidth="Infinity" prefHeight="395.0" prefWidth="1278.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                    </rowConstraints>
+                     <children>
+                        <Circle fill="DODGERBLUE" radius="59.0" stroke="BLACK" strokeType="INSIDE" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+                        <Circle fill="DODGERBLUE" layoutX="52.0" layoutY="58.0" radius="59.0" stroke="BLACK" strokeType="INSIDE" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+               <ImageView fx:id="ivCar" fitHeight="55.0" fitWidth="78.0" layoutX="59.0" layoutY="235.0" />
+                  <Button fx:id="button02" layoutX="1111.0" layoutY="319.0" mnemonicParsing="false" onAction="#changeTextFromLabel" text="Save Simulation" />
+                  <Label fx:id="label01" layoutX="63.0" layoutY="205.0" text="Fahrzeuge" />
+                  <Button fx:id="button01" layoutX="948.0" layoutY="319.0" mnemonicParsing="false" text="Load Simulation" />
+                  <Label layoutX="43.0" layoutY="27.0" text="Verkehrsschilder" />
+                  <ImageView fx:id="ivMotorcycle" fitHeight="55.0" fitWidth="78.0" layoutX="144.0" layoutY="235.0" />
+                  <ImageView fx:id="ivTruck" fitHeight="55.0" fitWidth="78.0" layoutX="229.0" layoutY="235.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

@@ -1,4 +1,4 @@
-package application;
+package de.superdudes.traffit.application;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
