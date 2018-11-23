@@ -7,17 +7,17 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = { "id" })
-@ToString(of = { "id" })
+@EqualsAndHashCode( of = { "id" } )
+@ToString( of = { "id" } )
 public abstract class DatabaseObject {
 
-	protected Integer id;
+    protected Integer id;
 
-	public DatabaseObject() {
-		this(null);
-	}
+    public DatabaseObject() {
+        this( null );
+    }
 
-	public DatabaseObject(Integer id) {
-		this.id = id;
-	}
+    public DatabaseObject( Integer id ) {
+        this.id = id;
+    }
 }
