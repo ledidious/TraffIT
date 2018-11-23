@@ -1,13 +1,24 @@
 package de.superdudes.traffit.dto;
 
-public class StreetSign extends DatabaseObject {
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
-	private Integer speedLimit;
-	private Integer default_Speed;
+@Getter
+@Setter
+@ToString(of = {"nr", "speedLimit"})
+public class StreetSign extends SimulationObject {
+
+	public static final int DEFAULT_SPEED = 100;
 	
-	public void addStreetSign(Integer speedLimit)
-	{
+	@NonNull
+	private Integer speedLimit;
+	
+	public StreetSign(@NonNull Integer speedLimit) {
+		super();
 		
+		this.speedLimit = speedLimit;
 	}
 }
 
