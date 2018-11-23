@@ -39,37 +39,6 @@ public class GUIController {
 	@FXML
 	private Button button02;
 	
-	@FXML 
-	private Pane pane01;
-	
-	@FXML 
-	private void resizeButton() {
-		
-		//System.out.println(button01.getLayoutX());
-		//System.out.println(pane01.getParent().getLayoutX());
-		
-		
-		pane01.widthProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldWidthValue, Number newWidthValue) {
-				//button01.setLayoutX((double)newWidthValue - button01.getWidth());
-				System.out.println(pane01.getBoundsInParent().getWidth());
-			}
-		});
-		
-		
-		pane01.heightProperty().addListener(new ChangeListener<Number>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldHeightValue, Number newHeightValue) {
-				//button01.setLayoutX((double)newHeightValue - button01.getHeight());	
-				System.out.println(pane01.getBoundsInParent().getHeight());
-			}
-		});
-		
-		
-	}
 
 	@FXML
 	private Label label01;
@@ -83,7 +52,7 @@ public class GUIController {
 		ivCar.setImage(iconCar);
 		ivMotorcycle.setImage(iconMotorcycle);
 		ivTruck.setImage(iconTruck);
-		resizeButton();
+
 	}
 	
 	String path = new File("src/main/resources/car.png").getAbsolutePath();
