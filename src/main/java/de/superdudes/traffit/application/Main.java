@@ -18,6 +18,14 @@ public class Main extends Application {
 			AnchorPane root = (AnchorPane)FXMLLoader.load(getClass().getResource("GUI.fxml"));
 			Scene scene = new Scene(root);
 			
+			//fixed window minimum size
+			root.setPrefSize(1280, 800);
+			primaryStage.setMinHeight(839);
+			primaryStage.setMinWidth(1296);
+			
+			
+			
+			
 			primaryStage.setFullScreen(true);
 			
 			//Listener to resize the window
