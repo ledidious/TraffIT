@@ -10,47 +10,67 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    @Override
-    public void start( Stage primaryStage ) {
-        try {
-            AnchorPane root = ( AnchorPane ) FXMLLoader.load( getClass().getResource( "GUI.fxml" ) );
-            Scene scene = new Scene( root );
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("GUI.fxml"));
 
-            //fixed window minimum size
-            root.setPrefSize( 1280, 800 );
-            primaryStage.setMinHeight( 839 );
-            primaryStage.setMinWidth( 1296 );
+			AnchorPane root = (AnchorPane) loader.load();
 
-            primaryStage.setFullScreen( true );
+			GUIController controller = loader.getController();
+			controller.sayHi();
+			//root.getChildren().add(controller.button01);
+			//System.out.println(controller.button01.getHeight());
 
-            //Listener to resize the window
-            scene.widthProperty().addListener( new ChangeListener<Number>() {
+			Scene scene = new Scene(root);
 
-                @Override
-                public void changed( ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth ) {
-                    System.out.println( "Width: " + newSceneWidth );
-                    root.setPrefWidth( ( double ) newSceneWidth );
-                }
-            } );
+			System.out.println(root.getChildren().toString());
 
-            scene.heightProperty().addListener( new ChangeListener<Number>() {
-                @Override
-                public void changed( ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight ) {
-                    System.out.println( "Height: " + newSceneHeight );
-                    root.setPrefHeight( ( double ) newSceneHeight );
-                }
-            } );
+			// fixed window minimum size
+			root.setPrefSize(1280, 800);
+			primaryStage.setMinHeight(839);
+			primaryStage.setMinWidth(1296);
 
-            scene.getStylesheets().add( getClass().getResource( "application.css" ).toExternalForm() );
-            primaryStage.setScene( scene );
-            primaryStage.show();
-        }
-        catch( Exception e ) {
-            e.printStackTrace();
-        }
-    }
+			primaryStage.setFullScreen(true);
 
-    public static void main( String[] args ) {
-        launch( args );
-    }
+			// Listener to resize the window
+			scene.widthProperty().addListener(new ChangeListener<Number>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth,
+						Number newSceneWidth) {
+					System.out.println("Width: " + newSceneWidth);
+					//controller.setCurrentWidth(newSceneWidth);
+					root.setPrefWidth((double) newSceneWidth);
+					//controller.setCurrentWidth(newSceneWidth);
+				}
+			});
+
+			scene.heightProperty().addListener(new ChangeListener<Number>() {
+				@Override
+				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight,
+						Number newSceneHeight) {
+					System.out.println("Height: " + newSceneHeight);
+					root.setPrefHeight((double) newSceneHeight);
+					
+					controller.createLane((int) newSceneHeight);
+				}
+			});
+			
+			//System.out.println("Test: " + controller.getCurrentWidth());
+			
+			
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.setScene(scene);
+
+			primaryStage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
 }
