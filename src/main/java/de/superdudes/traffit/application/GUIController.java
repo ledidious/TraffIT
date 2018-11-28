@@ -5,6 +5,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 
@@ -67,20 +69,43 @@ public class GUIController {
     @FXML
     private Label label01;
 
-    public GUIController() {
-        System.out.println( "Copyright: Superdudes 2018" );
-    }
+	@FXML
+	private Pane lane1;
+
+	@FXML
+	private Cell[] createLane() {
+
+		Cell[] ca = new Cell[1000];
+
+		for (int i = 0; i < 1000; i++) {
+
+			ca[i] = new Cell(20 + i, 20, 1, 20, Color.RED);
+
+		}
+
+		return ca;
+
+	}
+
+	public GUIController() {
+		System.out.println("Copyright: Superdudes 2018");
+	}
 
     @FXML
     public void initialize() {
         ivCar.setImage(iconCar);
         ivMotorcycle.setImage(iconMotorcycle);
         ivTruck.setImage(iconTruck);
-        
+	ivCar.setImage(iconCar);
+	ivMotorcycle.setImage(iconMotorcycle);
+	ivTruck.setImage(iconTruck);
+	
+	lane1.getChildren().addAll(createLane());
+	
         ivSpeedLimit50.setImage(iconSpeedLimit50);
         
         ivConstruction.setImage(iconConstruction);
-    }
+	}
 
     //String path = new File( "src/main/resources/car.png" ).getAbsolutePath();
 
