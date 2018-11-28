@@ -73,12 +73,16 @@ public class GUIController {
 
     @FXML
     public void initialize() {
-        ivCar.setImage( iconCar );
-        ivMotorcycle.setImage( iconMotorcycle );
-        ivTruck.setImage( iconTruck );
+        ivCar.setImage(iconCar);
+        ivMotorcycle.setImage(iconMotorcycle);
+        ivTruck.setImage(iconTruck);
+        
+        ivSpeedLimit50.setImage(iconSpeedLimit50);
+        
+        ivConstruction.setImage(iconConstruction);
     }
 
-    String path = new File( "src/main/resources/car.png" ).getAbsolutePath();
+    //String path = new File( "src/main/resources/car.png" ).getAbsolutePath();
 
     @FXML
     private void handleDeletePerson() {
