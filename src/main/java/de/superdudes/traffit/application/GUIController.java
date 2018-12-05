@@ -1,5 +1,7 @@
 package de.superdudes.traffit.application;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,15 +15,9 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class GUIController {
-	public Number currentWidth;
 
-	public Number getCurrentWidth() {
-		return currentWidth;
-	}
-
-	public void setCurrentWidth(Number currentWidth) {
-		this.currentWidth = currentWidth;
-	}
+	public DoubleProperty currentWidth = new SimpleDoubleProperty();
+	public DoubleProperty currentHeight = new SimpleDoubleProperty();
 
 	// Set the path to the icons of the vehicles
 	private String pathToCar = new File("src/main/resources/car.png").getAbsolutePath();
@@ -52,7 +48,7 @@ public class GUIController {
 	private ImageView ivCar;
 
 	@FXML
-	private ImageView ivMotorcycle;
+	public ImageView ivMotorcycle;
 
 	@FXML
 	private ImageView ivTruck;
@@ -69,6 +65,8 @@ public class GUIController {
 	@FXML
 	private ImageView ivConstruction;
 
+	@FXML
+	public ImageView ivTarget;
 	// Buttons
 	@FXML
 	public Button button01;
@@ -76,20 +74,46 @@ public class GUIController {
 	@FXML
 	private Button button02;
 	
+	// Panes
 	@FXML
-	public Cell[] createLane(Number currentWidth) {
+	public Pane targetPane;
+	
+	@FXML
+	public Pane lane1; 
+	
+	@FXML
+	public Pane lane2; 
+	
+	@FXML
+	public Pane signlane; 
+	
+	public Cell[] buildLane(int widgth, int height) {
+		
+	Cell[] ca = new Cell[widgth];
+	
+	for (int i = 0; i < widgth; i++) {
 
-		Cell[] ca = new Cell[(int) currentWidth];
+		ca[i] = new Cell(60 + i , 20, 1, (height * 0.15), Color.GRAY);
 
-		for (int i = 0; i < (int) currentWidth; i++) {
+	}
 
-			ca[i] = new Cell(20 + i, 20, 1, 20, Color.RED);
+	return ca;
+	
+	}
+	
+	public Cell[] buildSignLane(int widgth, int height) {
+		
+		Cell[] ca = new Cell[widgth];
+		
+		for (int i = 0; i < widgth; i++) {
+
+			ca[i] = new Cell(60 + i , 20, 1, (height * 0.15), Color.TRANSPARENT);
 
 		}
 
 		return ca;
-
-	}
+		
+		}
 
 	public GUIController() {
 		System.out.println("Copyright: Superdudes 2018");
@@ -112,7 +136,6 @@ public class GUIController {
 		ivMotorcycle.setImage(iconMotorcycle);
 		ivTruck.setImage(iconTruck);
 
-		System.out.println("HHUHUUHDUASHDUHSUDHSAUD" + getCurrentWidth());
 		//lane1.getChildren().addAll(createLane());
 		
 		//System.out.println(dc.getCurrentWidth());
@@ -127,12 +150,12 @@ public class GUIController {
 
 	@FXML
 	private void handleDeletePerson() {
-		
+		System.out.println("Drop detected!");
 	}
 
 	@FXML
 	private void changeTextFromLabel() {
-		
+		System.out.println("Drag detected!");
 	}
 	
 	public void sayHi() {
