@@ -21,7 +21,7 @@ public class SimulationObject extends DatabaseObject {
         this( null );
     }
 
-    public SimulationObject( @NonNull Integer id ) {
+    public SimulationObject( Integer id ) {
         super( id );
 
         this.nr = nrCounter;

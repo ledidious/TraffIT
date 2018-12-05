@@ -7,29 +7,29 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString( of = { "nr" } )
+@ToString(of = { "nr" })
 public class Cell extends SimulationObject {
 
-    @NonNull
-    private Integer nr;
+	@NonNull
+	private Integer index;
 
-    @NonNull
-    private Lane lane;
+	@NonNull
+	private Lane lane;
 
-    private Vehicle          blockingVehicle;
-    private ConstructionSite blockingConstructionSite;
+	private Vehicle blockingVehicle;
+	private ConstructionSite blockingConstructionSite;
 
-    private Cell ancestor;
-    private Cell successor;
+	private Cell ancestor;
+	private Cell successor;
 
-    public Cell( @NonNull Integer nr, @NonNull Lane lane ) {
-        super();
+	public Cell( @NonNull Integer index, @NonNull Lane lane ) {
+	    super();
+	
+	    this.index = index;
+	    this.lane = lane;
+	}
 
-        this.nr = nr;
-        this.lane = lane;
-    }
-
-    public boolean isBlocked() {
-        return blockingVehicle != null || blockingConstructionSite != null;
-    }
+	public boolean isBlocked() {
+		return blockingVehicle != null || blockingConstructionSite != null;
+	}
 }

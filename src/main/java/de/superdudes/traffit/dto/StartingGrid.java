@@ -26,5 +26,14 @@ public class StartingGrid extends SimulationObject {
         super();
 
         this.name = name;
+        this.street = street;
     }
+    
+	public boolean addVehicle(@NonNull Vehicle vehicle) {
+		return vehicles.add(vehicle);
+	}
+	
+	public boolean removeVehicle(@NonNull Vehicle vehicle) {
+		return vehicles.remove(vehicle);
+	}
 }

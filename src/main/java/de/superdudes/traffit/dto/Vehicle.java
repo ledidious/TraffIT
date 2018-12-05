@@ -1,5 +1,8 @@
 package de.superdudes.traffit.dto;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -7,52 +10,51 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString( of = { "nr" } )
+@ToString(of = { "nr" })
 public class Vehicle extends SimulationObject {
 
-    public enum Type {
+	public enum Type {
 
-        CAR( 20 ),
-        TRUCK( 40 ),
-        MOTORCYCLE( 5 );
+		CAR(20), TRUCK(40), MOTORCYCLE(5);
 
-        @Getter
-        private int length;
+		@Getter
+		private int length;
 
-        private Type( int length ) {
-            this.length = length;
-        }
-    }
+		private Type(int length) {
+			this.length = length;
+		}
+	}
 
-    @NonNull
-    private Integer maxSpeed;
+	@NonNull
+	private Integer maxSpeed;
 
-    private Integer speedLimit;
+	private Integer speedLimit;
+	
+	@NonNull
+	private Integer currentSpeed;
 
-    @NonNull
-    private Integer nr;
+	@NonNull
+	private Type type;
 
-    @NonNull
-    private Type type;
+	@NonNull
+	private Deque<Cell> blockedCells;
 
-    @NonNull
-    private Cell[] blockedCells;
+	public Vehicle(@NonNull Type type) {
+		this.type = type;
 
-    public Vehicle( @NonNull Integer nr, @NonNull Type type ) {
-        this.nr = nr;
-        this.type = type;
+		this.blockedCells = new LinkedList<>();
+	}
 
-        this.blockedCells = new Cell[ getLength() ];
-    }
+	public int getLength() {
+		return type.getLength();
+	}
 
-    public int getLength() {
-        return type.getLength();
-    }
+	public Cell getLatestCell() {
+		return blockedCells.getFirst();
+	}
 
-    // todo implement method which speed to hold dependent of
-    // - max speed
-    // - speed limit
-    // - speed from ancestor
+	public Cell getEarliestCell() {
+		return blockedCells.getLast();
+	}
 
-    // public Vehicle findAncestor()
 }
