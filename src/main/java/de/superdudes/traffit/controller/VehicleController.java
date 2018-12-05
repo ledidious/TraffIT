@@ -9,4 +9,8 @@ public class VehicleController {
 
 		private static final VehicleController INSTANCE = new VehicleController();
 	}
+
+	public static VehicleController instance() {
+		return Singletons.INSTANCE;
+	}
 }
