@@ -75,17 +75,7 @@ public class GUIController {
 
 	@FXML
 	private Button button02;
-
-	// Labels
-	@FXML
-	private Label label01;
-
-	@FXML
-	public Pane lane1;
 	
-	@FXML
-	private GridPane linuxMint;
-
 	@FXML
 	public Cell[] createLane(Number currentWidth) {
 
@@ -134,19 +124,15 @@ public class GUIController {
 		ivConstruction.setImage(iconConstruction);
 	}
 
-	// String path = new File( "src/main/resources/car.png" ).getAbsolutePath();
 
 	@FXML
 	private void handleDeletePerson() {
-		System.out.println("Hier k�nnte Ihre Werbung stehen!");
+		
 	}
 
 	@FXML
 	private void changeTextFromLabel() {
-		label01.setText("Ich habe Lust auf Bier und Titten! ;)");
 		
-		Stage stage = (Stage) anchPane01.getScene().getWindow();
-		System.out.println(stage.getWidth());
 	}
 	
 	public void sayHi() {
