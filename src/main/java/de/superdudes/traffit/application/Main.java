@@ -30,7 +30,7 @@ public class Main extends Application {
 			controller.currentWidth.setValue(1280);
 			primaryStage.setMinHeight(839);
 			primaryStage.setMinWidth(1296);
-			primaryStage.setFullScreen(true);
+			// primaryStage.setFullScreen(true);
 
 			controller.lane1.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.lane2.getChildren().addAll(controller.buildLane(1280, 800));
@@ -130,6 +130,24 @@ public class Main extends Application {
 			 * public void handle(MouseEvent event) {
 			 * System.out.println("Event on Target: mouse drag exited"); } });
 			 */
+
+			// Event Handler for locking the window size and starting the Simulation. 
+			// Necessary because you can't manipulate the Stage from within the Controller
+			controller.button01.setOnAction(e -> {
+				primaryStage.setResizable(false);
+				controller.startSimulation();
+			});
+			
+			// vice versa
+			controller.button02.setOnAction(e -> {
+				primaryStage.setResizable(true);
+				controller.stopSimulation();
+			});
+			
+			// Event Handle for Fullscreen
+			controller.button05.setOnAction(e -> {primaryStage.setFullScreen(true);});
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

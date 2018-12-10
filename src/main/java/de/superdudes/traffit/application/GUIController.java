@@ -3,6 +3,7 @@ package de.superdudes.traffit.application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -46,74 +47,63 @@ public class GUIController {
 	// ImageViews
 	@FXML
 	private ImageView ivCar;
-
 	@FXML
 	public ImageView ivMotorcycle;
-
 	@FXML
 	private ImageView ivTruck;
-
 	@FXML
 	private ImageView ivSpeedLimit50;
-
 	@FXML
 	private ImageView ivSpeedLimit70;
-
 	@FXML
 	private ImageView ivSpeedLimit100;
-
 	@FXML
 	private ImageView ivConstruction;
-
 	@FXML
 	public ImageView ivTarget;
+
 	// Buttons
 	@FXML
 	public Button button01;
-
 	@FXML
-	private Button button02;
-	
+	public Button button02;
+	@FXML
+	private Button button03;
+	@FXML
+	private Button button04;
+	@FXML
+	public Button button05;
+
 	// Panes
 	@FXML
 	public Pane targetPane;
-	
 	@FXML
-	public Pane lane1; 
-	
+	public Pane lane1;
 	@FXML
-	public Pane lane2; 
-	
+	public Pane lane2;
 	@FXML
-	public Pane signlane; 
-	
-	public Cell[] buildLane(int widgth, int height) {
-		
-	Cell[] ca = new Cell[widgth];
-	
-	for (int i = 0; i < widgth; i++) {
+	public Pane signlane;
 
-		ca[i] = new Cell(60 + i , 20, 1, (height * 0.15), Color.GRAY);
+	// Logic
+	public Cell[] buildLane(int width, int height) {
+		Cell[] ca = new Cell[width];
 
-	}
-
-	return ca;
-	
-	}
-	
-	public Cell[] buildSignLane(int widgth, int height) {
-		
-		Cell[] ca = new Cell[widgth];
-		
-		for (int i = 0; i < widgth; i++) {
-
-			ca[i] = new Cell(60 + i , 20, 1, (height * 0.15), Color.TRANSPARENT);
-
+		for (int i = 0; i < width; i++) {
+			ca[i] = new Cell(60 + i, 20, 1, (height * 0.15), Color.GRAY);
 		}
 
 		return ca;
-		
+	}
+
+	public Cell[] buildSignLane(int width, int height) {
+		Cell[] ca = new Cell[width];
+
+		for (int i = 0; i < width; i++) {
+			ca[i] = new Cell(60 + i, 20, 1, (height * 0.15), Color.TRANSPARENT);
 		}
+
+		return ca;
+	}
 
 	public GUIController() {
 		System.out.println("Copyright: Superdudes 2018");
@@ -121,14 +111,14 @@ public class GUIController {
 
 	@FXML
 	public Pane pane01;
-	
+
 	@FXML
 	private AnchorPane anchPane01;
-	
+
 	@FXML
 	public void initialize() {
 		System.out.println("Init GUI");
-		
+
 		ivCar.setImage(iconCar);
 		ivMotorcycle.setImage(iconMotorcycle);
 		ivTruck.setImage(iconTruck);
@@ -136,10 +126,10 @@ public class GUIController {
 		ivMotorcycle.setImage(iconMotorcycle);
 		ivTruck.setImage(iconTruck);
 
-		//lane1.getChildren().addAll(createLane());
-		
-		//System.out.println(dc.getCurrentWidth());
-		
+		// lane1.getChildren().addAll(createLane());
+
+		// System.out.println(dc.getCurrentWidth());
+
 		ivSpeedLimit50.setImage(iconSpeedLimit50);
 		ivSpeedLimit70.setImage(iconSpeedLimit70);
 		ivSpeedLimit100.setImage(iconSpeedLimit100);
@@ -147,22 +137,31 @@ public class GUIController {
 		ivConstruction.setImage(iconConstruction);
 	}
 
-
 	@FXML
-	private void handleDeletePerson() {
-		System.out.println("Drop detected!");
+	public void startSimulation() {
+		System.out.println("Simulation has been started...");
 	}
 
 	@FXML
-	private void changeTextFromLabel() {
-		System.out.println("Drag detected!");
+	public void stopSimulation() {
+		System.out.println("Simulation has been stopped!");
+	}
+
+	@FXML
+	private void loadSimulation() {
+		System.out.println("Please implement logic!");
+	}
+	
+	@FXML
+	private void saveSimulation() {
+		System.out.println("Please implement logic!");
 	}
 	
 	public void sayHi() {
 		System.out.println("Moinsen!");
 	}
-	
+
 	public void drawStreet() {
-		
+
 	}
 }
