@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -30,7 +31,8 @@ public class Main extends Application {
 			controller.currentWidth.setValue(1280);
 			primaryStage.setMinHeight(839);
 			primaryStage.setMinWidth(1296);
-			// primaryStage.setFullScreen(true);
+			primaryStage.setFullScreen(true);
+			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
 			controller.lane1.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.lane2.getChildren().addAll(controller.buildLane(1280, 800));
