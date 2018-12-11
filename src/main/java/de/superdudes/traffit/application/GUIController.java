@@ -135,15 +135,23 @@ public class GUIController {
 		ivSpeedLimit100.setImage(iconSpeedLimit100);
 
 		ivConstruction.setImage(iconConstruction);
+		
+		button02.setDisable(true);
 	}
 
 	@FXML
 	public void startSimulation() {
+		button05.setDisable(true);
+		button01.setDisable(true);
+		button02.setDisable(false);
 		System.out.println("Simulation has been started...");
 	}
 
 	@FXML
 	public void stopSimulation() {
+		button05.setDisable(false);
+		button01.setDisable(false);
+		button02.setDisable(true);
 		System.out.println("Simulation has been stopped!");
 	}
 

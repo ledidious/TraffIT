@@ -145,7 +145,12 @@ public class Main extends Application {
 			});
 			
 			// Event Handle for Fullscreen
-			controller.button05.setOnAction(e -> {primaryStage.setFullScreen(true);});
+			controller.button05.setOnAction(e -> {
+				if(primaryStage.isFullScreen())
+					primaryStage.setFullScreen(false);
+				else
+					primaryStage.setFullScreen(true);
+				});
 			
 			
 

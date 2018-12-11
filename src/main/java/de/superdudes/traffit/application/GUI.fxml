@@ -125,9 +125,9 @@
 								<ImageView fx:id="ivTarget" fitHeight="56.0" fitWidth="142.0" layoutX="239.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
 							</children>
 						</Pane>
-                  <Pane layoutX="1119.0" layoutY="15.0" prefHeight="31.0" prefWidth="146.0" AnchorPane.bottomAnchor="349.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="15.0">
+                  <Pane layoutX="1140.0" layoutY="15.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="349.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="15.0">
                      <children>
-                        <Button fx:id="button05" mnemonicParsing="false" text="Vollbild einschalten" />
+                        <Button fx:id="button05" mnemonicParsing="false" text="Vollbild ein/aus" />
                      </children>
                   </Pane>
 					</children>
