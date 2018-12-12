@@ -95,6 +95,24 @@ public class Main extends Application {
 				}
 			});
 
+			controller.ivCar.setOnMousePressed(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event) {
+					// controller.ivMotorcycle.setMouseTransparent(true);
+					System.out.println("Event on Source: mouse pressed");
+					event.setDragDetect(true);
+
+				}
+			});
+			
+			controller.ivTruck.setOnMousePressed(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event) {
+					// controller.ivMotorcycle.setMouseTransparent(true);
+					System.out.println("Event on Source: mouse pressed");
+					event.setDragDetect(true);
+
+				}
+			});
+
 			/*
 			 * controller.ivMotorcycle.setOnMouseReleased(new EventHandler<MouseEvent>() {
 			 * public void handle(MouseEvent event) {
@@ -108,6 +126,21 @@ public class Main extends Application {
 					System.out.println("Event on Source: drag detected");
 				}
 			});
+			
+			controller.ivCar.setOnDragDetected(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event) {
+					controller.ivCar.startFullDrag();
+					System.out.println("Event on Source: drag detected");
+				}
+			});
+
+			controller.ivTruck.setOnDragDetected(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent event) {
+					controller.ivTruck.startFullDrag();
+					System.out.println("Event on Source: drag detected");
+				}
+			});
+
 
 			/*
 			 * // Add mouse event handlers for the target
@@ -126,6 +159,8 @@ public class Main extends Application {
 					System.out.println("Event on Target: mouse drag released");
 				}
 			});
+			
+			
 
 			/*
 			 * controller.ivTarget.setOnMouseDragExited(new EventHandler<MouseEvent>() {

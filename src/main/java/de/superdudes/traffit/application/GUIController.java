@@ -46,11 +46,11 @@ public class GUIController {
 
 	// ImageViews
 	@FXML
-	private ImageView ivCar;
+	public ImageView ivCar;
 	@FXML
 	public ImageView ivMotorcycle;
 	@FXML
-	private ImageView ivTruck;
+	public ImageView ivTruck;
 	@FXML
 	private ImageView ivSpeedLimit50;
 	@FXML
