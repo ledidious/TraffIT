@@ -46,10 +46,12 @@ public class Main extends Application {
 						Number newSceneWidth) {
 					root.setPrefWidth((double) newSceneWidth);
 					controller.currentWidth.setValue((double) newSceneWidth - 40);
+					Cell.number = 0;
 					controller.lane1.getChildren().clear();
 					controller.lane1.getChildren().addAll(controller.buildLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 
+					Cell.number = 0;
 					controller.lane2.getChildren().clear();
 					controller.lane2.getChildren().addAll(controller.buildLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
@@ -66,10 +68,12 @@ public class Main extends Application {
 						Number newSceneHeight) {
 					root.setPrefHeight((double) newSceneHeight);
 					controller.currentHeight.setValue((double) newSceneHeight - 40);
+					Cell.number = 0;
 					controller.lane1.getChildren().clear();
 					controller.lane1.getChildren().addAll(controller.buildLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 
+					Cell.number = 0;
 					controller.lane2.getChildren().clear();
 					controller.lane2.getChildren().addAll(controller.buildLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
