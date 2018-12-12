@@ -8,10 +8,12 @@ import lombok.ToString;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.superdudes.traffit.controller.AbstractController;
+
 @Getter
 @Setter
 @ToString(of = { "nr" })
-public class Lane extends SimulationObject {
+public class Lane extends SimulationObject  {
 
 	@NonNull
 	private Street street;
