@@ -63,7 +63,7 @@
 								<Label fx:id="label01" text="Fahrzeuge" />
 							</children>
 						</Pane>
-						<Pane layoutX="14.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0">
+						<Pane layoutX="14.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0" style="-fx-background-color: Blue;">
 							<children>
 								<ImageView fx:id="ivCar" fitHeight="55.0" fitWidth="93.0" preserveRatio="true">
 									<image>
@@ -72,7 +72,7 @@
 								</ImageView>
 							</children>
 						</Pane>
-						<Pane layoutX="127.0" layoutY="234.0" prefHeight="49.0" prefWidth="146.0">
+						<Pane layoutX="127.0" layoutY="234.0" prefHeight="49.0" prefWidth="146.0" style="-fx-background-color: red;">
 							<children>
 								<ImageView fx:id="ivTruck" fitHeight="92.0" fitWidth="142.0" preserveRatio="true">
 									<image>
@@ -81,7 +81,7 @@
 								</ImageView>
 							</children>
 						</Pane>
-						<Pane layoutX="283.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0">
+						<Pane layoutX="283.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0" style="-fx-background-color: green;">
 							<children>
 								<ImageView fx:id="ivMotorcycle" fitHeight="49.0" fitWidth="109.0" layoutY="1.0" preserveRatio="true">
 									<image>
@@ -125,11 +125,8 @@
 								<ImageView fx:id="ivTarget" fitHeight="56.0" fitWidth="142.0" layoutX="239.0" layoutY="148.0" pickOnBounds="true" preserveRatio="true" />
 							</children>
 						</Pane>
-                  <Pane layoutX="1140.0" layoutY="15.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="349.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="15.0">
-                     <children>
-                        <Button fx:id="button05" mnemonicParsing="false" text="Vollbild ein/aus" />
-                     </children>
-                  </Pane>
+                  <Pane layoutX="1139.0" layoutY="15.0" prefHeight="32.0" prefWidth="66.0" AnchorPane.bottomAnchor="349.0" AnchorPane.rightAnchor="73.0" AnchorPane.topAnchor="15.0" />
+                  <Button fx:id="button05" layoutX="1172.0" layoutY="18.0" mnemonicParsing="false" text="Fullscreen" AnchorPane.rightAnchor="39.0" AnchorPane.topAnchor="18.0" />
 					</children>
 				</AnchorPane>
 			</items>
