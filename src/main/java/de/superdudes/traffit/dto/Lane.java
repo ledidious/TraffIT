@@ -16,6 +16,9 @@ import de.superdudes.traffit.controller.AbstractController;
 public class Lane extends SimulationObject  {
 
 	@NonNull
+	private Integer index;
+	
+	@NonNull
 	private Street street;
 
 	@NonNull
@@ -24,9 +27,10 @@ public class Lane extends SimulationObject  {
 	@NonNull
 	private Set<ConstructionSite> constructionSites = new HashSet<>();
 
-	public Lane(@NonNull Street street) {
+	public Lane(@NonNull Street street, @NonNull Integer index) {
 		super();
 
+		this.index = index;
 		this.street = street;
 		this.cells = new Cell[street.getLength()];
 
@@ -42,6 +46,14 @@ public class Lane extends SimulationObject  {
 			currentCell.setAncestor(previousCell);
 			currentCell.setSuccessor(nextCell);
 		}
+	}
+	
+	public boolean isTopLeftLane() {
+		return index <= 0;
+	}
+	
+	public boolean isTopRightLane() {
+		return index == street.getLength() - 1;
 	}
 
 	public boolean addConstuctionSite(@NonNull ConstructionSite constructionSite) {

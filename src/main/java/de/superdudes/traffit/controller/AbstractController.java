@@ -1,6 +1,6 @@
 package de.superdudes.traffit.controller;
 
-import de.superdudes.traffit.dto.SimulationObject;;
+import de.superdudes.traffit.dto.SimulationObject;
 
 public abstract class AbstractController<T extends SimulationObject> {
 
@@ -9,4 +9,6 @@ public abstract class AbstractController<T extends SimulationObject> {
 	public abstract void save(T object);
 
 	public abstract void load(T object);
+
+	public abstract void render(T object);
 }

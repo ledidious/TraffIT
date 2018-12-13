@@ -32,4 +32,24 @@ public class Cell extends SimulationObject {
 	public boolean isBlocked() {
 		return blockingVehicle != null || blockingConstructionSite != null;
 	}
+	
+	public Cell getLeftNeighbour() {
+		
+		if (index <= 0) {
+			return null;
+		}
+		
+		final Lane leftLane = lane.getStreet().getLanes().get(lane.getIndex() - 1);
+		return leftLane.getCells()[index];
+	}
+	
+	public Cell getRightNeighbour() {
+		
+		if (index >= lane.getStreet().getLaneCount()) {
+			return null;
+		}
+		
+		final Lane rightLane = lane.getStreet().getLanes().get(lane.getIndex() + 1);
+		return rightLane.getCells()[index];
+	}
 }

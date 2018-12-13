@@ -13,6 +13,9 @@ import lombok.ToString;
 @ToString(of = { "nr" })
 public class Vehicle extends SimulationObject {
 
+	public static final int ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
+	public static final int ANCESTOR_DISTANCE_MIN = Type.CAR.getLength();
+	
 	public enum Type {
 
 		CAR(20), TRUCK(40), MOTORCYCLE(5);
@@ -55,6 +58,10 @@ public class Vehicle extends SimulationObject {
 
 	public Cell getEarliestCell() {
 		return blockedCells.getLast();
+	}
+	
+	public Lane getLane() {
+		return getLatestCell().getLane();
 	}
 
 }
