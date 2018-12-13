@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -63,31 +64,19 @@
 								<Label fx:id="label01" text="Fahrzeuge" />
 							</children>
 						</Pane>
-						<Pane layoutX="14.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0" style="-fx-background-color: Blue;">
+						<Pane layoutX="14.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0">
 							<children>
-								<ImageView fx:id="ivCar" fitHeight="55.0" fitWidth="93.0" preserveRatio="true">
-									<image>
-										<Image url="@../../../../../../../../../../../Pictures/TraffIT/car.png" />
-									</image>
-								</ImageView>
+								<ImageView fx:id="ivCar" fitHeight="55.0" fitWidth="93.0" preserveRatio="true" />
 							</children>
 						</Pane>
-						<Pane layoutX="127.0" layoutY="234.0" prefHeight="49.0" prefWidth="146.0" style="-fx-background-color: red;">
+						<Pane layoutX="120.0" layoutY="234.0" prefHeight="49.0" prefWidth="146.0">
 							<children>
-								<ImageView fx:id="ivTruck" fitHeight="92.0" fitWidth="142.0" preserveRatio="true">
-									<image>
-										<Image url="@../../../../../../../../../../../Pictures/TraffIT/truck.png" />
-									</image>
-								</ImageView>
+								<ImageView fx:id="ivTruck" fitHeight="92.0" fitWidth="142.0" preserveRatio="true" />
 							</children>
 						</Pane>
-						<Pane layoutX="283.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0" style="-fx-background-color: green;">
+						<Pane layoutX="280.0" layoutY="234.0" prefHeight="49.0" prefWidth="93.0">
 							<children>
-								<ImageView fx:id="ivMotorcycle" fitHeight="49.0" fitWidth="109.0" layoutY="1.0" preserveRatio="true">
-									<image>
-										<Image url="@../../../../../resources/motorcycle.png" />
-									</image>
-								</ImageView>
+								<ImageView fx:id="ivMotorcycle" fitHeight="49.0" fitWidth="109.0" layoutY="1.0" preserveRatio="true" />
 							</children>
 						</Pane>
 						<Pane fx:id="iconPane01" layoutX="14.0" layoutY="51.0" prefHeight="79.0" prefWidth="82.0">
@@ -122,6 +111,9 @@
 						</Pane>
                   <Pane layoutX="1139.0" layoutY="15.0" prefHeight="32.0" prefWidth="66.0" AnchorPane.bottomAnchor="349.0" AnchorPane.rightAnchor="73.0" AnchorPane.topAnchor="15.0" />
                   <Button fx:id="button05" layoutX="1172.0" layoutY="18.0" mnemonicParsing="false" text="Fullscreen" AnchorPane.rightAnchor="39.0" AnchorPane.topAnchor="18.0" />
+                  <Rectangle arcHeight="5.0" fill="#ff1f1f" height="8.0" layoutX="120.0" layoutY="289.0" stroke="BLACK" strokeType="INSIDE" width="146.0" />
+                  <Rectangle arcHeight="5.0" fill="#11ab0e" height="8.0" layoutX="280.0" layoutY="289.0" stroke="BLACK" strokeType="INSIDE" width="93.0" />
+                  <Rectangle arcHeight="5.0" fill="#1f3cff" height="8.0" layoutX="14.0" layoutY="289.0" stroke="BLACK" strokeType="INSIDE" width="93.0" />
 					</children>
 				</AnchorPane>
 			</items>
