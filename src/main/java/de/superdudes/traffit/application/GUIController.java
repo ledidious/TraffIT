@@ -59,8 +59,6 @@ public class GUIController {
 	private ImageView ivSpeedLimit100;
 	@FXML
 	private ImageView ivConstruction;
-	@FXML
-	public ImageView ivTarget;
 
 	// Buttons
 	@FXML
@@ -75,8 +73,6 @@ public class GUIController {
 	public Button button05;
 
 	// Panes
-	@FXML
-	public Pane targetPane;
 	@FXML
 	public Pane lane1;
 	@FXML

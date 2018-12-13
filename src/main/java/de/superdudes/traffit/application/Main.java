@@ -89,7 +89,7 @@ public class Main extends Application {
 
 			primaryStage.show();
 
-			// Drag&Drop Test
+			// Drag&Drop Function
 			controller.ivMotorcycle.setOnMousePressed(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent event) {
 					// controller.ivMotorcycle.setMouseTransparent(true);
@@ -107,7 +107,7 @@ public class Main extends Application {
 
 				}
 			});
-			
+
 			controller.ivTruck.setOnMousePressed(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent event) {
 					// controller.ivMotorcycle.setMouseTransparent(true);
@@ -117,20 +117,13 @@ public class Main extends Application {
 				}
 			});
 
-			/*
-			 * controller.ivMotorcycle.setOnMouseReleased(new EventHandler<MouseEvent>() {
-			 * public void handle(MouseEvent event) {
-			 * controller.ivMotorcycle.setMouseTransparent(false);
-			 * System.out.println("Event on Source: mouse released"); } });
-			 */
-
 			controller.ivMotorcycle.setOnDragDetected(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent event) {
 					controller.ivMotorcycle.startFullDrag();
 					System.out.println("Event on Source: drag detected");
 				}
 			});
-			
+
 			controller.ivCar.setOnDragDetected(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent event) {
 					controller.ivCar.startFullDrag();
@@ -145,110 +138,30 @@ public class Main extends Application {
 				}
 			});
 
-
-			/*
-			 * // Add mouse event handlers for the target
-			 * controller.ivTarget.setOnMouseDragEntered(new EventHandler<MouseEvent>() {
-			 * public void handle(MouseEvent event) {
-			 * System.out.println("Event on Target: mouse dragged"); } });
-			 * 
-			 * controller.ivTarget.setOnMouseDragOver(new EventHandler<MouseEvent>() {
-			 * public void handle(MouseEvent event) {
-			 * System.out.println("Event on Target: mouse drag over"); } });
-			 */
-
-			controller.ivTarget.setOnMouseDragReleased(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					controller.ivTarget.setImage(controller.ivMotorcycle.getImage());
-					System.out.println("Event on Target: mouse drag released");
-				}
-			});
-			
-			
-
-			/*
-			 * controller.ivTarget.setOnMouseDragExited(new EventHandler<MouseEvent>() {
-			 * public void handle(MouseEvent event) {
-			 * System.out.println("Event on Target: mouse drag exited"); } });
-			 */
-
-			// Event Handler for locking the window size and starting the Simulation. 
+			// Event Handler for locking the window size and starting the Simulation.
 			// Necessary because you can't manipulate the Stage from within the Controller
 			controller.button01.setOnAction(e -> {
 				primaryStage.setResizable(false);
 				controller.startSimulation();
 			});
-			
+
 			// vice versa
 			controller.button02.setOnAction(e -> {
 				primaryStage.setResizable(true);
 				controller.stopSimulation();
 			});
-			
+
 			// Event Handle for Fullscreen
 			controller.button05.setOnAction(e -> {
-				if(primaryStage.isFullScreen())
+				if (primaryStage.isFullScreen())
 					primaryStage.setFullScreen(false);
 				else
 					primaryStage.setFullScreen(true);
-				});
-			
-			
+			});
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void dragAndDrop(GUIController controller) {
-		// Drag&Drop Test
-		controller.ivMotorcycle.setOnMousePressed(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				controller.ivMotorcycle.setMouseTransparent(true);
-				System.out.println("Event on Source: mouse pressed");
-				event.setDragDetect(true);
-			}
-		});
-
-		controller.ivMotorcycle.setOnMouseReleased(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				controller.ivMotorcycle.setMouseTransparent(false);
-				System.out.println("Event on Source: mouse released");
-			}
-		});
-
-		controller.ivMotorcycle.setOnDragDetected(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				controller.ivMotorcycle.startFullDrag();
-				System.out.println("Event on Source: drag detected");
-			}
-		});
-
-		// Add mouse event handlers for the target
-		controller.ivTarget.setOnMouseDragEntered(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				System.out.println("Event on Target: mouse dragged");
-			}
-		});
-
-		controller.ivTarget.setOnMouseDragOver(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				System.out.println("Event on Target: mouse drag over");
-			}
-		});
-
-		controller.ivTarget.setOnMouseDragReleased(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				controller.ivTarget.setImage(controller.ivMotorcycle.getImage());
-				System.out.println("Event on Target: mouse drag released");
-			}
-		});
-
-		controller.ivTarget.setOnMouseDragExited(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent event) {
-				System.out.println("Event on Target: mouse drag exited");
-			}
-		});
 	}
 
 	public static void main(String[] args) {
