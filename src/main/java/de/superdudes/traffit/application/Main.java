@@ -77,8 +77,8 @@ public class Main extends Application {
 					controller.lane2.getChildren().clear();
 					controller.lane2.getChildren().addAll(controller.buildLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
-					
-					Cell.number = 0; 
+
+					Cell.number = 0;
 					controller.signlane.getChildren().clear();
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
@@ -91,56 +91,82 @@ public class Main extends Application {
 			primaryStage.show();
 
 			// Drag&Drop Function
-			controller.ivMotorcycle.setOnMousePressed(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					// controller.ivMotorcycle.setMouseTransparent(true);
-					System.out.println("Event on Source: mouse pressed");
-					event.setDragDetect(true);
-
-				}
+			// **** Vehicle ****
+			controller.ivMotorcycle.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
 			});
 
-			controller.ivCar.setOnMousePressed(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					// controller.ivMotorcycle.setMouseTransparent(true);
-					System.out.println("Event on Source: mouse pressed");
-					event.setDragDetect(true);
-
-				}
+			controller.ivCar.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
 			});
 
-			controller.ivTruck.setOnMousePressed(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					// controller.ivMotorcycle.setMouseTransparent(true);
-					System.out.println("Event on Source: mouse pressed");
-					event.setDragDetect(true);
-
-				}
+			controller.ivTruck.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
 			});
 
-			controller.ivMotorcycle.setOnDragDetected(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					controller.ivMotorcycle.startFullDrag();
-					System.out.println("Event on Source: drag detected");
-				}
+			controller.ivCar.setOnDragDetected(e -> {
+				controller.ivCar.startFullDrag();
+				System.out.println("Event on Source: drag detected");
 			});
 
-			controller.ivCar.setOnDragDetected(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					controller.ivCar.startFullDrag();
-					System.out.println("Event on Source: drag detected");
-				}
+			controller.ivMotorcycle.setOnDragDetected(e -> {
+				controller.ivMotorcycle.startFullDrag();
+				System.out.println("Event on Source: drag detected");
 			});
 
-			controller.ivTruck.setOnDragDetected(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent event) {
-					controller.ivTruck.startFullDrag();
-					System.out.println("Event on Source: drag detected");
-				}
+			controller.ivTruck.setOnDragDetected(e -> {
+				controller.ivTruck.startFullDrag();
+				System.out.println("Event on Source: drag detected");
 			});
 
-			// Event Handler for locking the window size and starting the Simulation.
-			// Necessary because you can't manipulate the Stage from within the Controller
+			// **** Signs ****
+			controller.ivConstruction.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
+			});
+			
+			controller.ivSpeedLimit50.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
+			});
+			
+			controller.ivSpeedLimit70.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
+			});
+			
+			controller.ivSpeedLimit100.setOnMousePressed(e -> {
+				System.out.println("Event on Source: mouse pressed.");
+				e.setDragDetect(true);
+			});
+
+			controller.ivConstruction.setOnDragDetected(e -> {
+				controller.ivConstruction.startFullDrag();
+				System.out.println("Event on Source: drag detected");
+			});
+
+			controller.ivSpeedLimit50.setOnDragDetected(e -> {
+				controller.ivSpeedLimit50.startFullDrag();
+				System.out.println("Event on Source: drag detected");
+			});
+
+			controller.ivSpeedLimit70.setOnDragDetected(e -> {
+				controller.ivSpeedLimit70.startFullDrag();
+				System.out.println("Event on Source: drag detected");
+			});
+			
+			controller.ivSpeedLimit100.setOnDragDetected(e -> {
+				controller.ivSpeedLimit100.startFullDrag();
+				System.out.println("Event on Source: drag detected");
+			});
+			
+			/*
+			 * Event Handler for locking the window size and starting the Simulation.
+			 * Necessary because you can't manipulate the Stage from within the Controller
+			 */
 			controller.button01.setOnAction(e -> {
 				primaryStage.setResizable(false);
 				controller.startSimulation();

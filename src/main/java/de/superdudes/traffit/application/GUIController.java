@@ -52,13 +52,13 @@ public class GUIController {
 	@FXML
 	public ImageView ivTruck;
 	@FXML
-	private ImageView ivSpeedLimit50;
+	public ImageView ivSpeedLimit50;
 	@FXML
-	private ImageView ivSpeedLimit70;
+	public ImageView ivSpeedLimit70;
 	@FXML
-	private ImageView ivSpeedLimit100;
+	public ImageView ivSpeedLimit100;
 	@FXML
-	private ImageView ivConstruction;
+	public ImageView ivConstruction;
 
 	// Buttons
 	@FXML
