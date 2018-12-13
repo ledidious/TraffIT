@@ -11,6 +11,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public class Cell extends Rectangle {
 
@@ -44,6 +48,10 @@ public class Cell extends Rectangle {
 			String id = source.getId();
 
 			Pane myParent = (Pane) this.getParent();
+			
+			Text text = new Text(); 
+			text.setStyle("-fx-font-weight: bold");
+			text.setStyle("-fx-font: 24 arial;");
 
 			switch (id) {
 			case "ivCar":
@@ -79,14 +87,14 @@ public class Cell extends Rectangle {
 
 				break;
 			case "ivTruck":
-				Cell[] myNeighboursMotorTruck = new Cell[40];
+				Cell[] myNeighboursTruck = new Cell[40];
 
-				for (int i = 0; i < myNeighboursMotorTruck.length; i++) {
-					myNeighboursMotorTruck[i] = (Cell) myParent.getChildren()
+				for (int i = 0; i < myNeighboursTruck.length; i++) {
+					myNeighboursTruck[i] = (Cell) myParent.getChildren()
 							.get(Integer.parseInt(this.getId()) + (i + 1));
 				}
 
-				for (Cell c : myNeighboursMotorTruck) {
+				for (Cell c : myNeighboursTruck) {
 					c.setFill(javafx.scene.paint.Color.RED);
 					c.stopPainting = true;
 				}
@@ -95,6 +103,145 @@ public class Cell extends Rectangle {
 				this.stopPainting = true;
 
 				break;
+				
+			case "ivSpeedLimit50":
+				Cell[] myNeighbours50 = new Cell[500];
+				
+				text.setText("50");
+				
+				
+				
+
+				for (int i = 0; i < myNeighbours50.length; i++) {
+					myNeighbours50[i] = (Cell) myParent.getChildren()
+							.get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+				
+		
+				
+
+				for (Cell c : myNeighbours50) {
+					c.setFill(javafx.scene.paint.Color.SALMON);
+					c.stopPainting = true;
+				}
+				
+
+				
+				double xValue50 =  myNeighbours50[(myNeighbours50.length/2)].getX();
+				double yValue50 =  myNeighbours50[(myNeighbours50.length/2)].getY();
+				
+				
+				myParent.getChildren().add(text);
+				
+			
+				text.setLayoutX(xValue50-12);
+				text.setLayoutY(yValue50+(height/2));
+
+				this.setFill(javafx.scene.paint.Color.SALMON);
+				this.stopPainting = true;
+
+				break;
+				
+			case "ivSpeedLimit100":
+				Cell[] myNeighbours100 = new Cell[500];
+				
+				text.setText("100");
+				text.setStyle("-fx-font: 20 arial;");
+
+
+				for (int i = 0; i < myNeighbours100.length; i++) {
+					myNeighbours100[i] = (Cell) myParent.getChildren()
+							.get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+
+				for (Cell c : myNeighbours100) {
+					c.setFill(javafx.scene.paint.Color.SALMON);
+					c.stopPainting = true;
+				}
+				
+				double xValue100 =  myNeighbours100[(myNeighbours100.length/2)].getX();
+				double yValue100 =  myNeighbours100[(myNeighbours100.length/2)].getY();
+				
+				
+				myParent.getChildren().add(text);
+				
+			
+				text.setLayoutX(xValue100-17);
+				text.setLayoutY(yValue100+(height/2));
+
+				this.setFill(javafx.scene.paint.Color.SALMON);
+				this.stopPainting = true;
+
+				break;
+				
+			case "ivSpeedLimit70":
+				Cell[] myNeighbours70 = new Cell[50];
+				
+				text.setText("70");
+
+				for (int i = 0; i < myNeighbours70.length; i++) {
+					myNeighbours70[i] = (Cell) myParent.getChildren()
+							.get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+
+				for (Cell c : myNeighbours70) {
+					c.setFill(javafx.scene.paint.Color.SALMON);
+					c.stopPainting = true;
+				}
+				
+				double xValue70 =  myNeighbours70[(myNeighbours70.length/2)].getX();
+				double yValue70 =  myNeighbours70[(myNeighbours70.length/2)].getY();
+				
+				
+				myParent.getChildren().add(text);
+				
+			
+				text.setLayoutX(xValue70-12);
+				text.setLayoutY(yValue70+(height/2));
+
+				this.setFill(javafx.scene.paint.Color.SALMON);
+				this.stopPainting = true;
+
+				break;
+				
+			case "ivConstruction":
+				Cell[] myNeighboursContruction = new Cell[40];
+
+				for (int i = 0; i < myNeighboursContruction.length; i++) {
+					myNeighboursContruction[i] = (Cell) myParent.getChildren()
+							.get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+
+				for (Cell c : myNeighboursContruction) {
+					
+					
+					//funktioniert nicht
+					for(int i = 0 ; i <= 3; i++) {
+						c.setFill(javafx.scene.paint.Color.YELLOW);
+						if(i >= 3) {
+							for(int j = 0; j <= 3; j++) {
+								c.setFill(javafx.scene.paint.Color.BLACK);
+								if(j >= 3) {
+									i = 0; 
+								}
+							}
+						}
+					}
+					
+				
+					
+					
+					//c.setFill(javafx.scene.paint.Color.YELLOW);
+					c.stopPainting = true;
+				}
+				
+				
+
+				this.setFill(javafx.scene.paint.Color.YELLOW);
+				this.stopPainting = true;
+
+				break;
+				
 			}
 			;
 			
