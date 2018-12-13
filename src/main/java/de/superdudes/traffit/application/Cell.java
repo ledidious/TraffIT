@@ -39,36 +39,61 @@ public class Cell extends Rectangle {
 			ImageView source = (ImageView) e.getGestureSource();
 			String id = source.getId();
 
+			Pane myParent = (Pane) this.getParent();
+
 			switch (id) {
 			case "ivCar":
+				Cell[] myNeighboursCar = new Cell[20];
+
+				for (int i = 0; i < myNeighboursCar.length; i++) {
+					myNeighboursCar[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+
+				for (Cell c : myNeighboursCar) {
+					c.setFill(javafx.scene.paint.Color.BLUE);
+				}
+				
 				this.setFill(javafx.scene.paint.Color.BLUE);
+
 				break;
 			case "ivMotorcycle":
+				Cell[] myNeighboursMotor = new Cell[5];
+
+				for (int i = 0; i < myNeighboursMotor.length; i++) {
+					myNeighboursMotor[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+
+				for (Cell c : myNeighboursMotor) {
+					c.setFill(javafx.scene.paint.Color.GREEN);
+				}
+				
 				this.setFill(javafx.scene.paint.Color.GREEN);
+				
 				break;
 			case "ivTruck":
+				Cell[] myNeighboursMotorTruck = new Cell[40];
+
+				for (int i = 0; i < myNeighboursMotorTruck.length; i++) {
+					myNeighboursMotorTruck[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+				}
+
+				for (Cell c : myNeighboursMotorTruck) {
+					c.setFill(javafx.scene.paint.Color.RED);
+				}
+				
 				this.setFill(javafx.scene.paint.Color.RED);
+				
 				break;
 			}
 			;
 
-			Pane myParent = (Pane) this.getParent();
-			Cell[] myNeighbours = new Cell[50];
 			
-			for (int i = 0; i < myNeighbours.length; i++) {
-				myNeighbours[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
-			}
-			
-			for (Cell c : myNeighbours) {
-				c.setFill(javafx.scene.paint.Color.BLUE);
-			}
 			/*
-			for (Cell c : myNeighbours) {
-				c = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + 1);
-			}
-			*/
-					
-			//myNeighbour.setFill(javafx.scene.paint.Color.AQUA);
+			 * for (Cell c : myNeighbours) { c = (Cell)
+			 * myParent.getChildren().get(Integer.parseInt(this.getId()) + 1); }
+			 */
+
+			// myNeighbour.setFill(javafx.scene.paint.Color.AQUA);
 			System.out.println(this.getId());
 			System.out.println("Das Parent Node lautet: ");
 			System.out.println(this.getParent());
