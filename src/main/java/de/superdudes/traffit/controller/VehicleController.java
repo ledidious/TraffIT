@@ -177,8 +177,4 @@ public class VehicleController extends AbstractController<Vehicle> {
 
 		vehicle.setBlockedCells(newCells);
 	}
-
-	private void render() {
-		// TODO Auto-generated method stub
-	}
 }
