@@ -29,7 +29,11 @@ public class Cell extends Rectangle {
 
 		super(x, y, width, height);
 		setFill(fill);
-		setOnMouseDragOver(e -> this.setFill(javafx.scene.paint.Color.YELLOW));
+		setOnMouseDragOver(e -> {
+			if (!stopPainting)
+				this.setFill(javafx.scene.paint.Color.YELLOW);
+		});
+		
 		setOnMouseDragExited(e -> {
 			if (!stopPainting)
 				this.setFill(fill);
@@ -51,9 +55,11 @@ public class Cell extends Rectangle {
 
 				for (Cell c : myNeighboursCar) {
 					c.setFill(javafx.scene.paint.Color.BLUE);
+					c.stopPainting = true;
 				}
-				
+
 				this.setFill(javafx.scene.paint.Color.BLUE);
+				this.stopPainting = true;
 
 				break;
 			case "ivMotorcycle":
@@ -65,49 +71,44 @@ public class Cell extends Rectangle {
 
 				for (Cell c : myNeighboursMotor) {
 					c.setFill(javafx.scene.paint.Color.GREEN);
+					c.stopPainting = true;
 				}
-				
+
 				this.setFill(javafx.scene.paint.Color.GREEN);
-				
+				this.stopPainting = true;
+
 				break;
 			case "ivTruck":
 				Cell[] myNeighboursMotorTruck = new Cell[40];
 
 				for (int i = 0; i < myNeighboursMotorTruck.length; i++) {
-					myNeighboursMotorTruck[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+					myNeighboursMotorTruck[i] = (Cell) myParent.getChildren()
+							.get(Integer.parseInt(this.getId()) + (i + 1));
 				}
 
 				for (Cell c : myNeighboursMotorTruck) {
 					c.setFill(javafx.scene.paint.Color.RED);
+					c.stopPainting = true;
 				}
-				
+
 				this.setFill(javafx.scene.paint.Color.RED);
-				
+				this.stopPainting = true;
+
 				break;
 			}
 			;
-
 			
-			/*
-			 * for (Cell c : myNeighbours) { c = (Cell)
-			 * myParent.getChildren().get(Integer.parseInt(this.getId()) + 1); }
-			 */
-
-			// myNeighbour.setFill(javafx.scene.paint.Color.AQUA);
 			System.out.println(this.getId());
-			System.out.println("Das Parent Node lautet: ");
-			System.out.println(this.getParent());
 
-			System.out.println("Hi Mario! Ich sende Text!");
+//			System.out.println(this.getId());
+//			System.out.println("Das Parent Node lautet: ");
+//			System.out.println(this.getParent());
+//
+//			System.out.println("Hi Mario! Ich sende Text!");
 			this.stopPainting = true;
 		});
 
 		count();
-	}
-
-	public Cell(double x, double y, double width, double height) {
-		super(x, y, width, height);
-
 	}
 
 }
