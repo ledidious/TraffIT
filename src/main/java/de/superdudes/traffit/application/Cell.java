@@ -55,158 +55,220 @@ public class Cell extends Rectangle {
 
 			switch (id) {
 			case "ivCar":
-				Cell[] myNeighboursCar = new Cell[20];
 
-				for (int i = 0; i < myNeighboursCar.length; i++) {
-					myNeighboursCar[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+
+					Cell[] myNeighboursCar = new Cell[20];
+
+					for (int i = 0; i < myNeighboursCar.length; i++) {
+						myNeighboursCar[i] = (Cell) myParent.getChildren()
+								.get(Integer.parseInt(this.getId()) + (i + 1));
+					}
+
+					for (Cell c : myNeighboursCar) {
+						c.setFill(javafx.scene.paint.Color.BLUE);
+						c.stopPainting = true;
+					}
+
+					this.setFill(javafx.scene.paint.Color.BLUE);
+					this.stopPainting = true;
+
 				}
 
-				for (Cell c : myNeighboursCar) {
-					c.setFill(javafx.scene.paint.Color.BLUE);
-					c.stopPainting = true;
+				else {
+					System.out.println("no lane");
+					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 				}
-
-				this.setFill(javafx.scene.paint.Color.BLUE);
-				this.stopPainting = true;
 
 				break;
 			case "ivMotorcycle":
-				Cell[] myNeighboursMotor = new Cell[5];
 
-				for (int i = 0; i < myNeighboursMotor.length; i++) {
-					myNeighboursMotor[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+
+					Cell[] myNeighboursMotor = new Cell[5];
+
+					for (int i = 0; i < myNeighboursMotor.length; i++) {
+						myNeighboursMotor[i] = (Cell) myParent.getChildren()
+								.get(Integer.parseInt(this.getId()) + (i + 1));
+					}
+
+					for (Cell c : myNeighboursMotor) {
+						c.setFill(javafx.scene.paint.Color.GREEN);
+						c.stopPainting = true;
+					}
+
+					this.setFill(javafx.scene.paint.Color.GREEN);
+					this.stopPainting = true;
 				}
 
-				for (Cell c : myNeighboursMotor) {
-					c.setFill(javafx.scene.paint.Color.GREEN);
-					c.stopPainting = true;
+				else {
+					System.out.println("no lane");
+					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 				}
-
-				this.setFill(javafx.scene.paint.Color.GREEN);
-				this.stopPainting = true;
 
 				break;
 			case "ivTruck":
-				Cell[] myNeighboursTruck = new Cell[40];
 
-				for (int i = 0; i < myNeighboursTruck.length; i++) {
-					myNeighboursTruck[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+
+					Cell[] myNeighboursTruck = new Cell[40];
+
+					for (int i = 0; i < myNeighboursTruck.length; i++) {
+						myNeighboursTruck[i] = (Cell) myParent.getChildren()
+								.get(Integer.parseInt(this.getId()) + (i + 1));
+					}
+
+					for (Cell c : myNeighboursTruck) {
+						c.setFill(javafx.scene.paint.Color.RED);
+						c.stopPainting = true;
+					}
+
+					this.setFill(javafx.scene.paint.Color.RED);
+					this.stopPainting = true;
 				}
 
-				for (Cell c : myNeighboursTruck) {
-					c.setFill(javafx.scene.paint.Color.RED);
-					c.stopPainting = true;
+				else {
+					System.out.println("no lane");
+					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 				}
-
-				this.setFill(javafx.scene.paint.Color.RED);
-				this.stopPainting = true;
 
 				break;
 
 			case "ivSpeedLimit50":
-				Cell[] myNeighbours50 = new Cell[500];
 
-				text.setText("50");
+				if (myParent.getId().equals("signlane")) {
 
-				for (int i = 0; i < myNeighbours50.length; i++) {
-					myNeighbours50[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+					Cell[] myNeighbours50 = new Cell[500];
+
+					text.setText("50");
+
+					for (int i = 0; i < myNeighbours50.length; i++) {
+						myNeighbours50[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+					}
+
+					for (Cell c : myNeighbours50) {
+						c.setFill(javafx.scene.paint.Color.SALMON);
+						c.stopPainting = true;
+					}
+
+					double xValue50 = myNeighbours50[(myNeighbours50.length / 2)].getX();
+					double yValue50 = myNeighbours50[(myNeighbours50.length / 2)].getY();
+
+					myParent.getChildren().add(text);
+
+					text.setLayoutX(xValue50 - 12);
+					text.setLayoutY(yValue50 + (height / 2));
+
+					this.setFill(javafx.scene.paint.Color.SALMON);
+					this.stopPainting = true;
+
+				} else {
+					this.setFill(javafx.scene.paint.Color.GREY);
 				}
-
-				for (Cell c : myNeighbours50) {
-					c.setFill(javafx.scene.paint.Color.SALMON);
-					c.stopPainting = true;
-				}
-
-				double xValue50 = myNeighbours50[(myNeighbours50.length / 2)].getX();
-				double yValue50 = myNeighbours50[(myNeighbours50.length / 2)].getY();
-
-				myParent.getChildren().add(text);
-
-				text.setLayoutX(xValue50 - 12);
-				text.setLayoutY(yValue50 + (height / 2));
-
-				this.setFill(javafx.scene.paint.Color.SALMON);
-				this.stopPainting = true;
-
 				break;
 
 			case "ivSpeedLimit100":
-				Cell[] myNeighbours100 = new Cell[500];
 
-				text.setText("100");
-				text.setStyle("-fx-font: 20 arial;");
+				if (myParent.getId().equals("signlane")) {
 
-				for (int i = 0; i < myNeighbours100.length; i++) {
-					myNeighbours100[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+					Cell[] myNeighbours100 = new Cell[500];
+
+					text.setText("100");
+					text.setStyle("-fx-font: 20 arial;");
+
+					for (int i = 0; i < myNeighbours100.length; i++) {
+						myNeighbours100[i] = (Cell) myParent.getChildren()
+								.get(Integer.parseInt(this.getId()) + (i + 1));
+					}
+
+					for (Cell c : myNeighbours100) {
+						c.setFill(javafx.scene.paint.Color.SALMON);
+						c.stopPainting = true;
+					}
+
+					double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
+					double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
+
+					myParent.getChildren().add(text);
+
+					text.setLayoutX(xValue100 - 17);
+					text.setLayoutY(yValue100 + (height / 2));
+
+					this.setFill(javafx.scene.paint.Color.SALMON);
+					this.stopPainting = true;
 				}
 
-				for (Cell c : myNeighbours100) {
-					c.setFill(javafx.scene.paint.Color.SALMON);
-					c.stopPainting = true;
+				else {
+					this.setFill(javafx.scene.paint.Color.GREY);
 				}
-
-				double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
-				double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
-
-				myParent.getChildren().add(text);
-
-				text.setLayoutX(xValue100 - 17);
-				text.setLayoutY(yValue100 + (height / 2));
-
-				this.setFill(javafx.scene.paint.Color.SALMON);
-				this.stopPainting = true;
 
 				break;
 
 			case "ivSpeedLimit70":
-				Cell[] myNeighbours70 = new Cell[50];
 
-				text.setText("70");
+				if (myParent.getId().equals("signlane")) {
 
-				for (int i = 0; i < myNeighbours70.length; i++) {
-					myNeighbours70[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+					Cell[] myNeighbours70 = new Cell[50];
+
+					text.setText("70");
+
+					for (int i = 0; i < myNeighbours70.length; i++) {
+						myNeighbours70[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+					}
+
+					for (Cell c : myNeighbours70) {
+						c.setFill(javafx.scene.paint.Color.SALMON);
+						c.stopPainting = true;
+					}
+
+					double xValue70 = myNeighbours70[(myNeighbours70.length / 2)].getX();
+					double yValue70 = myNeighbours70[(myNeighbours70.length / 2)].getY();
+
+					myParent.getChildren().add(text);
+
+					text.setLayoutX(xValue70 - 12);
+					text.setLayoutY(yValue70 + (height / 2));
+
+					this.setFill(javafx.scene.paint.Color.SALMON);
+					this.stopPainting = true;
+
 				}
 
-				for (Cell c : myNeighbours70) {
-					c.setFill(javafx.scene.paint.Color.SALMON);
-					c.stopPainting = true;
+				else {
+					this.setFill(javafx.scene.paint.Color.GREY);
 				}
-
-				double xValue70 = myNeighbours70[(myNeighbours70.length / 2)].getX();
-				double yValue70 = myNeighbours70[(myNeighbours70.length / 2)].getY();
-
-				myParent.getChildren().add(text);
-
-				text.setLayoutX(xValue70 - 12);
-				text.setLayoutY(yValue70 + (height / 2));
-
-				this.setFill(javafx.scene.paint.Color.SALMON);
-				this.stopPainting = true;
-
 				break;
 
 			case "ivConstruction":
-				int constructionWidth = 300;
-				int counter = 0;
 
-				Cell[] allConstructionCells = new Cell[constructionWidth];
+				if (myParent.getId().equals("signlane")) {
+					int constructionWidth = 300;
+					int counter = 0;
 
-				for (int i = 0; i < allConstructionCells.length; i++) {
-					allConstructionCells[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i));
+					Cell[] allConstructionCells = new Cell[constructionWidth];
+
+					for (int i = 0; i < allConstructionCells.length; i++) {
+						allConstructionCells[i] = (Cell) myParent.getChildren()
+								.get(Integer.parseInt(this.getId()) + (i));
+					}
+
+					for (int i = 0; i < allConstructionCells.length; i++) {
+						if (counter <= 5) {
+							allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
+							allConstructionCells[i].stopPainting = true;
+						} else {
+							allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
+							allConstructionCells[i].stopPainting = true;
+						}
+						counter++;
+						if (counter == 10) {
+							counter = 0;
+						}
+					}
 				}
 
-				for (int i = 0; i < allConstructionCells.length; i++) {
-					if (counter <= 5) {
-						allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
-						allConstructionCells[i].stopPainting = true; 
-					} else {
-						allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
-						allConstructionCells[i].stopPainting = true; 
-					}
-					counter++;
-					if(counter == 10) {
-						counter = 0; 
-					}
+				else {
+					this.setFill(javafx.scene.paint.Color.GREY);
 				}
 
 				break;
