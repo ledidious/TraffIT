@@ -37,7 +37,7 @@ public class Cell extends Rectangle {
 			if (!stopPainting)
 				this.setFill(javafx.scene.paint.Color.YELLOW);
 		});
-		
+
 		setOnMouseDragExited(e -> {
 			if (!stopPainting)
 				this.setFill(fill);
@@ -48,8 +48,8 @@ public class Cell extends Rectangle {
 			String id = source.getId();
 
 			Pane myParent = (Pane) this.getParent();
-			
-			Text text = new Text(); 
+
+			Text text = new Text();
 			text.setStyle("-fx-font-weight: bold");
 			text.setStyle("-fx-font: 24 arial;");
 
@@ -90,8 +90,7 @@ public class Cell extends Rectangle {
 				Cell[] myNeighboursTruck = new Cell[40];
 
 				for (int i = 0; i < myNeighboursTruck.length; i++) {
-					myNeighboursTruck[i] = (Cell) myParent.getChildren()
-							.get(Integer.parseInt(this.getId()) + (i + 1));
+					myNeighboursTruck[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
 				}
 
 				for (Cell c : myNeighboursTruck) {
@@ -103,148 +102,118 @@ public class Cell extends Rectangle {
 				this.stopPainting = true;
 
 				break;
-				
+
 			case "ivSpeedLimit50":
 				Cell[] myNeighbours50 = new Cell[500];
-				
+
 				text.setText("50");
-				
-				
-				
 
 				for (int i = 0; i < myNeighbours50.length; i++) {
-					myNeighbours50[i] = (Cell) myParent.getChildren()
-							.get(Integer.parseInt(this.getId()) + (i + 1));
+					myNeighbours50[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
 				}
-				
-		
-				
 
 				for (Cell c : myNeighbours50) {
 					c.setFill(javafx.scene.paint.Color.SALMON);
 					c.stopPainting = true;
 				}
-				
 
-				
-				double xValue50 =  myNeighbours50[(myNeighbours50.length/2)].getX();
-				double yValue50 =  myNeighbours50[(myNeighbours50.length/2)].getY();
-				
-				
+				double xValue50 = myNeighbours50[(myNeighbours50.length / 2)].getX();
+				double yValue50 = myNeighbours50[(myNeighbours50.length / 2)].getY();
+
 				myParent.getChildren().add(text);
-				
-			
-				text.setLayoutX(xValue50-12);
-				text.setLayoutY(yValue50+(height/2));
+
+				text.setLayoutX(xValue50 - 12);
+				text.setLayoutY(yValue50 + (height / 2));
 
 				this.setFill(javafx.scene.paint.Color.SALMON);
 				this.stopPainting = true;
 
 				break;
-				
+
 			case "ivSpeedLimit100":
 				Cell[] myNeighbours100 = new Cell[500];
-				
+
 				text.setText("100");
 				text.setStyle("-fx-font: 20 arial;");
 
-
 				for (int i = 0; i < myNeighbours100.length; i++) {
-					myNeighbours100[i] = (Cell) myParent.getChildren()
-							.get(Integer.parseInt(this.getId()) + (i + 1));
+					myNeighbours100[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
 				}
 
 				for (Cell c : myNeighbours100) {
 					c.setFill(javafx.scene.paint.Color.SALMON);
 					c.stopPainting = true;
 				}
-				
-				double xValue100 =  myNeighbours100[(myNeighbours100.length/2)].getX();
-				double yValue100 =  myNeighbours100[(myNeighbours100.length/2)].getY();
-				
-				
+
+				double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
+				double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
+
 				myParent.getChildren().add(text);
-				
-			
-				text.setLayoutX(xValue100-17);
-				text.setLayoutY(yValue100+(height/2));
+
+				text.setLayoutX(xValue100 - 17);
+				text.setLayoutY(yValue100 + (height / 2));
 
 				this.setFill(javafx.scene.paint.Color.SALMON);
 				this.stopPainting = true;
 
 				break;
-				
+
 			case "ivSpeedLimit70":
 				Cell[] myNeighbours70 = new Cell[50];
-				
+
 				text.setText("70");
 
 				for (int i = 0; i < myNeighbours70.length; i++) {
-					myNeighbours70[i] = (Cell) myParent.getChildren()
-							.get(Integer.parseInt(this.getId()) + (i + 1));
+					myNeighbours70[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
 				}
 
 				for (Cell c : myNeighbours70) {
 					c.setFill(javafx.scene.paint.Color.SALMON);
 					c.stopPainting = true;
 				}
-				
-				double xValue70 =  myNeighbours70[(myNeighbours70.length/2)].getX();
-				double yValue70 =  myNeighbours70[(myNeighbours70.length/2)].getY();
-				
-				
+
+				double xValue70 = myNeighbours70[(myNeighbours70.length / 2)].getX();
+				double yValue70 = myNeighbours70[(myNeighbours70.length / 2)].getY();
+
 				myParent.getChildren().add(text);
-				
-			
-				text.setLayoutX(xValue70-12);
-				text.setLayoutY(yValue70+(height/2));
+
+				text.setLayoutX(xValue70 - 12);
+				text.setLayoutY(yValue70 + (height / 2));
 
 				this.setFill(javafx.scene.paint.Color.SALMON);
 				this.stopPainting = true;
 
 				break;
-				
+
 			case "ivConstruction":
-				Cell[] myNeighboursContruction = new Cell[40];
+				int constructionWidth = 300;
+				int counter = 0;
 
-				for (int i = 0; i < myNeighboursContruction.length; i++) {
-					myNeighboursContruction[i] = (Cell) myParent.getChildren()
-							.get(Integer.parseInt(this.getId()) + (i + 1));
+				Cell[] allConstructionCells = new Cell[constructionWidth];
+
+				for (int i = 0; i < allConstructionCells.length; i++) {
+					allConstructionCells[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i));
 				}
 
-				for (Cell c : myNeighboursContruction) {
-					
-					
-					//funktioniert nicht
-					for(int i = 0 ; i <= 3; i++) {
-						c.setFill(javafx.scene.paint.Color.YELLOW);
-						if(i >= 3) {
-							for(int j = 0; j <= 3; j++) {
-								c.setFill(javafx.scene.paint.Color.BLACK);
-								if(j >= 3) {
-									i = 0; 
-								}
-							}
-						}
+				for (int i = 0; i < allConstructionCells.length; i++) {
+					if (counter <= 5) {
+						allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
+						allConstructionCells[i].stopPainting = true; 
+					} else {
+						allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
+						allConstructionCells[i].stopPainting = true; 
 					}
-					
-				
-					
-					
-					//c.setFill(javafx.scene.paint.Color.YELLOW);
-					c.stopPainting = true;
+					counter++;
+					if(counter == 10) {
+						counter = 0; 
+					}
 				}
-				
-				
-
-				this.setFill(javafx.scene.paint.Color.YELLOW);
-				this.stopPainting = true;
 
 				break;
-				
+
 			}
 			;
-			
+
 			System.out.println(this.getId());
 
 //			System.out.println(this.getId());
