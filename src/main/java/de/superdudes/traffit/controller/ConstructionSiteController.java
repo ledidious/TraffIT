@@ -87,9 +87,4 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 		}
 
 	}
-
-	@Override
-	public void render(ConstructionSite object) {
-		// TODO Auto-generated method stub
-	}
 }

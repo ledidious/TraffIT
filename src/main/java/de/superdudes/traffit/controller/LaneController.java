@@ -86,10 +86,4 @@ public class LaneController extends AbstractController<Lane> {
 		}
 
 	}
-
-	@Override
-	public void render(Lane object) {
-		// TODO Auto-generated method stub
-
-	}
 }

@@ -84,9 +84,4 @@ public class StartingGridController extends AbstractController<StartingGrid> {
 		}
 
 	}
-
-	@Override
-	public void render(StartingGrid object) {
-		// TODO Auto-generated method stub
-	}
 }

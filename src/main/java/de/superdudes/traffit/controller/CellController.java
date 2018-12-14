@@ -87,9 +87,4 @@ public class CellController extends AbstractController<Cell> {
 			}
 		}
 	}
-	
-	@Override
-	public void render(Cell object) {
-		// TODO Auto-generated method stub	
-	}
 }

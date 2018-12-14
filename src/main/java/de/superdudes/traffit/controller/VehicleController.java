@@ -4,15 +4,18 @@ import java.sql.*;
 import de.superdudes.traffit.dto.Cell;
 
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import de.superdudes.traffit.dto.Vehicle;
+import lombok.Getter;
 import de.superdudes.traffit.dto.Cell;
 import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.Street;
+import de.superdudes.traffit.dto.StreetSign;
 
 public class VehicleController extends AbstractController<Vehicle> {
 
@@ -38,7 +41,6 @@ public class VehicleController extends AbstractController<Vehicle> {
 					+ object.getMaxSpeed() + "')" + " speedLimit = ('" + object.getSpeedLimit() + "')";
 
 			myStmt.executeUpdate(sql);
-
 		}
 
 		catch (SQLException ex) {
@@ -95,75 +97,126 @@ public class VehicleController extends AbstractController<Vehicle> {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public void render(Vehicle object) {
 
 		final Vehicle vehicle = object; // To rename fitting
-		final Map.Entry<Integer, Vehicle> distance2Vehicle = findAncestor(vehicle);
 
-		final int distanceToAncestor = distance2Vehicle.getKey();
-		final Vehicle ancestor = distance2Vehicle.getValue();
+		boolean vehicleForeseeableAhead = render_byOtherVehicles(vehicle);
+		
+		if (!vehicleForeseeableAhead) {
+			render_bySpeedLimits(vehicle);
+		}
+	}
 
-		if (distanceToAncestor < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED) {
+	/**
+	 * 
+	 * @param vehicle
+	 * @return whether a car is ahead on the same line in a forseeable distance
+	 */
+	private boolean render_byOtherVehicles(Vehicle vehicle) {
 
-			// If faster
-			if (vehicle.getCurrentSpeed() > ancestor.getCurrentSpeed()) {
-				final Map.Entry<Integer, Vehicle> distance2Overtaker = findOvertakingVehicle(vehicle);
-				final Integer distanceToOvertaker = distance2Overtaker.getKey();
-				final Vehicle overtaker = distance2Overtaker.getValue();
+		// Distance -> Vehicle
+		DistanceToAnotherVehicle ancestor = null;
+		DistanceToAnotherVehicle successor = null;
+		DistanceToAnotherVehicle overtakenVehicle = null;
+		DistanceToAnotherVehicle overtakingVehicle = null;
 
-				// Overtake?
-				if (distance2Overtaker.getKey() > Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED) {
-					overtake(vehicle);
-				}
+		// When ancestor in short distance
+		if ((ancestor = findAncestor(vehicle)) != null
+				&& ancestor.getDistance() < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED
+				&& vehicle.getCurrentSpeed() > ancestor.getVehicle().getCurrentSpeed()) {
+
+			overtakingVehicle = findOvertaker(vehicle);
+			if (overtakingVehicle.getDistance() > Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED) {
+				turnLeft(vehicle);
+			}
+			else {
+				// Cannot overtake
+				vehicle.brake();
+				return true;
 			}
 		}
-
-		// todo adjust speed
-		// can turn to right lane? Then do!
+		// Turn back to right lane
+		else if ((overtakenVehicle = findOvertaken(vehicle)) != null
+				&& ancestor.getDistance() > Vehicle.ANCESTOR_DISTANCE_MIN) {
+			turnRight(vehicle);
+		}
+		
+		return ancestor != null && ancestor.getDistance() < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED;
 	}
 
-	public Map.Entry<Integer, Vehicle> findAncestor(Vehicle vehicle) {
+	// Preamble: No car forseeable ahead, see in render()
+	private void render_bySpeedLimits(Vehicle vehicle) {
+		
+		final Cell currentCell = vehicle.getFrontCell();
 
-		Cell currentCell = vehicle.getLatestCell();
-		Vehicle ancestor = null;
-
-		int distance = 0;
-		do {
-			distance++;
-		} while ((currentCell = currentCell.getSuccessor()) != null
-				&& (ancestor = currentCell.getBlockingVehicle()) == null);
-
-		return ancestor != null ? new AbstractMap.SimpleEntry<>(distance, ancestor) : null;
+		int speedLimit = Integer.MAX_VALUE;
+		if (currentCell.getStreetSign() != null) {
+			speedLimit = currentCell.getStreetSign().getSpeedLimit();
+		}
+		
+		// Brake if too fast
+		if (speedLimit < vehicle.getCurrentSpeed()) {
+			vehicle.brake();
+		} // or accelerate if possible 
+		else if (vehicle.getCurrentSpeed() < vehicle.getMaxSpeed()) {
+			vehicle.accelerate();
+		}
 	}
 
-	public Map.Entry<Integer, Vehicle> findOvertakingVehicle(Vehicle vehicle) {
+	private DistanceToAnotherVehicle findAncestor(Vehicle vehicle) {
+		return findVehicle(vehicle.getFrontCell(), false);
+	}
 
-		final Lane vehicleLane = vehicle.getLatestCell().getLane();
-		final Street street = vehicleLane.getStreet();
+	private DistanceToAnotherVehicle findSuccessor(Vehicle vehicle) {
+		return findVehicle(vehicle.getFrontCell(), true);
+	}
 
-		if (vehicleLane.isTopLeftLane()) {
+	private DistanceToAnotherVehicle findOvertaker(Vehicle overtaken) {
+
+		if (overtaken.getBackCell().getLane().isTopLeftLane()) {
 			return null;
 		}
 
-		final Cell vehicleCell = vehicle.getEarliestCell();
-		final Cell leftNeighbourCell = vehicleCell.getLeftNeighbour();
+		final Cell rightNeighbourCell = overtaken.getBackCell().getRightNeighbour();
+		return findVehicle(rightNeighbourCell, true);
+	}
 
-		Cell currentCell = leftNeighbourCell;
-		Vehicle overtaker = null;
+	private DistanceToAnotherVehicle findOvertaken(Vehicle overtaker) {
+
+		if (overtaker.getBackCell().getLane().isTopLeftLane()) {
+			return null;
+		}
+
+		final Cell rightNeighbourCell = overtaker.getBackCell().getRightNeighbour();
+		return findVehicle(rightNeighbourCell, true);
+	}
+
+	/**
+	 * The central algorithm to find vehicles by searching cell for cell.
+	 * 
+	 * @param fromCell
+	 * @param backwards
+	 * @return entry consisting of distance and vehicle or {@code null} if no
+	 *         vehicle can be found until end of street
+	 */
+	private DistanceToAnotherVehicle findVehicle(Cell fromCell, boolean backwards) {
+
+		Cell currentCell = fromCell;
+		Vehicle ancestorOrSuccessor = null;
 
 		int distance = 0;
 		do {
 			distance++;
-		} while ((currentCell = currentCell.getAncestor()) != null
-				&& (overtaker = currentCell.getBlockingVehicle()) == null);
+		} while ((currentCell = (backwards ? currentCell.getAncestor() : currentCell.getSuccessor())) != null
+				&& (ancestorOrSuccessor = currentCell.getBlockingVehicle()) == null);
 
-		return overtaker != null ? new AbstractMap.SimpleEntry(distance, overtaker) : null;
+		return ancestorOrSuccessor != null ? new DistanceToAnotherVehicle(distance, ancestorOrSuccessor) : null;
 	}
 
-	public void overtake(Vehicle vehicle) {
+	private void turnLeft(Vehicle vehicle) {
 
 		if (vehicle.getLane().isTopLeftLane()) {
 			throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
@@ -176,5 +229,32 @@ public class VehicleController extends AbstractController<Vehicle> {
 		}
 
 		vehicle.setBlockedCells(newCells);
+	}
+
+	private void turnRight(Vehicle vehicle) {
+
+		if (vehicle.getLane().isTopRightLane()) {
+			throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
+		}
+		final Deque<Cell> vehicleCells = vehicle.getBlockedCells();
+
+		final Deque<Cell> newCells = new LinkedList<>();
+		for (Cell cell : vehicleCells) {
+			newCells.addFirst(cell.getRightNeighbour());
+		}
+
+		vehicle.setBlockedCells(newCells);
+	}
+
+	@Getter
+	private class DistanceToAnotherVehicle {
+		private final int distance;
+		private final Vehicle vehicle;
+
+		public DistanceToAnotherVehicle(int distance, Vehicle vehicle) {
+			super();
+			this.distance = distance;
+			this.vehicle = vehicle;
+		}
 	}
 }

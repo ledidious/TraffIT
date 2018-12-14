@@ -87,9 +87,4 @@ public class StreetSignController extends AbstractController<StreetSign> {
 		}
 
 	}
-
-	@Override
-	public void render(StreetSign object) {
-		// TODO Auto-generated method stub
-	}
 }

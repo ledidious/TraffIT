@@ -89,9 +89,4 @@ public class StreetController extends AbstractController<Street> {
 		}
 
 	}
-
-	@Override
-	public void render(Street object) {
-		// TODO Auto-generated method stub
-	}
 }

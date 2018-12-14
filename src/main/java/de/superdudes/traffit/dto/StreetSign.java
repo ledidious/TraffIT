@@ -14,11 +14,18 @@ public class StreetSign extends SimulationObject {
 
     @NonNull
     private Integer speedLimit;
+    
+    @NonNull
+    private Cell cell;
 
-    public StreetSign( @NonNull Integer speedLimit ) {
+    public StreetSign( @NonNull Integer speedLimit, @NonNull Cell cell ) {
         super();
 
         this.speedLimit = speedLimit;
+        this.cell = cell;
+        
+        // Link on other side
+        cell.setStreetSign(this);
     }
 }
 
