@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.superdudes.traffit.dto.Cell;
+import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.SimulationObject;
+import de.superdudes.traffit.dto.StartingGrid;
+import de.superdudes.traffit.dto.Street;
 
 public class CellController extends AbstractController<Cell> {
 
@@ -21,75 +24,73 @@ public class CellController extends AbstractController<Cell> {
 	}
 
 	@Override
-	public void save(Cell object) {
-		Connection myConn = null;
-		try {
-			myConn = DriverManager.getConnection(url);
+	public void save(Cell object) 
+	{
+		
+		if (object.getId() != null)
+		{
+			try {
+				Statement myStmt = myConn.createStatement();
 
+				String sql = "UPDATE CELL SET" + " c_id = ('" + object.getId() + "')" + " nr =  ('"
+						+ object.getNr() + "')" + " index = ('" + object.getIndex() + "') "  + " WHERE sg_id = 1";
+
+				myStmt.executeUpdate(sql);
+
+			}
+
+			catch (SQLException ex) {
+				ex.printStackTrace();
+				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+			}
+		}
+		else {
 			Statement myStmt = myConn.createStatement();
 
-			String sql = "UPDATE CELL SET" + " c_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr() + "')"
-					+ " index = ('" + object.getIndex() + "')";
+			String sql = " INSERT INTO Cell (c_id, nr, index) " + " VALUES ('" + object.getId()
+					+ object.getNr() + object.getIndex() + "')";
 
 			myStmt.executeUpdate(sql);
 
 		}
 
-		catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		}
-
-		finally {
-			try {
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
-		}
 	}
 
 	@Override
-	public void load(Cell object) {
+	public Cell load(Integer Id)
+	{
 
-		Connection myConn = null;
 		try {
+			Statement myStmt = conn.createStatement();
 
-			myConn = DriverManager.getConnection(url);
-
-			Statement myStmt = myConn.createStatement();
-
-			String sql = "SELECT * FROM CELL";
+		
+			String sql = "SELECT c_id, nr, index FROM CELL WHERE c_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next()) {
+			while (result.next())
+			{
 				Integer c_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				Integer index = result.getInt(3);
 
-				object.setId(c_id);
-				object.setNr(nr);
-				object.setIndex(index);
+	      Cell object = new Cell(index, new LaneController().load(Id));
 
-			}
-
-		} catch (SQLException ex) {
+			object.setId(c_id);
+			object.setNr(nr);
+			object.setIndex(index);
+			
+			return object;
+		      
+		   }
+		
+		} 
+		catch (SQLException ex)
+		{
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht mï¿½glich!!!");
-		} finally {
-			try {
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
+			System.out.print("Laden der Daten nicht möglich!!!");
 		}
+
 	}
-	
-	@Override
-	public void render(Cell object) {
-		// TODO Auto-generated method stub	
-	}
+
 }

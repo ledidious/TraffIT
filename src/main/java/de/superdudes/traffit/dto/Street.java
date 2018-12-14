@@ -18,7 +18,13 @@ public class Street extends SimulationObject {
 
     @NonNull
     private List<Lane> lanes = new ArrayList<>();
+    
+    public Street()
+    {
+    	
+    }
 
+    
     public Street( @NonNull Integer length, int laneCount ) {
         super();
 

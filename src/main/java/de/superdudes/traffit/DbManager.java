@@ -1,5 +1,7 @@
 package de.superdudes.traffit;
 
+import java.sql.*;
+
 
 public class DbManager{
 
@@ -12,23 +14,25 @@ public class DbManager{
 		return Singletons.INSTANCE;
 	}
 	
-	String driver = "org.mariadb.jdbc";
-	
-	
-	public void connection()
+	public static Connection myConn = null;
+		
+	public static Connection getConnection()
 	{
-	   try
-	   {
-		Class.forName(driver);
-	   } 
-	   catch (ClassNotFoundException ex)
-	   {
-	     ex.printStackTrace();
-	   }	
+		String url = "jdbc:mariadb://localhost/TraffIT";
+		
+	try
+	{
+          myConn = DriverManager.getConnection(url);
+          return myConn;
+	}
+	catch (SQLException ex)
+	{
+		ex.printStackTrace();
+		System.out.println("Verbindung konnte nicht aufgebaut werden!!!");
+	}
 	
-	 }
-
-
-
+	return myConn;
+	
+	}
 	
 }           

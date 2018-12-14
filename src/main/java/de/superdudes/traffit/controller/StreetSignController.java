@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.superdudes.traffit.dto.ConstructionSite;
 import de.superdudes.traffit.dto.SimulationObject;
 import de.superdudes.traffit.dto.StreetSign;
 
@@ -21,75 +22,71 @@ public class StreetSignController extends AbstractController<StreetSign> {
 	}
 
 	@Override
-	public void save(StreetSign object) {
-		Connection myConn = null;
-		try {
-			myConn = DriverManager.getConnection(url);
+	public void save(StreetSign object) 
+	{
+		
+		if (object.getId() != null)
+		{
+			try {
+				Statement myStmt = myConn.createStatement();
 
+				String sql = "UPDATE STREET_SIGN SET" + " ss_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr() + "')"  +  " speedLimit = ('" + object.getSpeedLimit() + " WHERE sg_id = 1";
+
+				myStmt.executeUpdate(sql);
+
+			}
+
+			catch (SQLException ex) {
+				ex.printStackTrace();
+				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+			}
+		}
+		else {
 			Statement myStmt = myConn.createStatement();
 
-			String sql = "UPDATE STREET_SIGN SET" + " ss_id = ('" + object.getId() + "')" + " nr = ('" + object.getNr()
-					+ "')" + " speedLimit = ('" + object.getSpeedLimit() + "')";
+			String sql = " INSERT INTO STREET_SIGN (ss_id, nr, speedLimit) " + " VALUES ('" + object.getId()
+					+ object.getNr() + object.getSpeedLimit() + "')";
 
 			myStmt.executeUpdate(sql);
 
 		}
 
-		catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		}
-
-		finally {
-			try {
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
-		}
 	}
 
 	@Override
-	public void load(StreetSign object) {
+	public StreetSign load(Integer Id)
+	{
 
-		Connection myConn = null;
 		try {
-
-			myConn = DriverManager.getConnection(url);
-
 			Statement myStmt = myConn.createStatement();
 
-			String sql = "SELECT * FROM STREET_SIGN";
+		
+			String sql = "SELECT ss_id , nr , speedLimit STREEET_SIGN WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next()) {
-				Integer ss_id = result.getInt(1);
+			while (result.next())
+			{
+				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				Integer speedLimit = result.getInt(3);
 
-				object.setId(ss_id);
-				object.setNr(nr);
-				object.setSpeedLimit(speedLimit);
-			}
-
-		} catch (SQLException ex) {
+				StreetSign object = new StreetSign(speedLimit);
+						
+			    object.setId(sg_id);
+			    object.setNr(nr);
+			    object.setSpeedLimit(speedLimit);
+			
+	           return object;
+		      
+		   }
+		
+		} 
+		catch (SQLException ex)
+		{
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht mï¿½glich!!!");
-		} finally {
-			try {
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
+			System.out.print("Laden der Daten nicht möglich!!!");
 		}
 
-	}
-
-	@Override
-	public void render(StreetSign object) {
-		// TODO Auto-generated method stub
 	}
 }

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.superdudes.traffit.dto.SimulationObject;
+import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
 
 public class StreetController extends AbstractController<Street> {
@@ -22,10 +23,28 @@ public class StreetController extends AbstractController<Street> {
 
 	@Override
 	public void save(Street object) {
-		Connection myConn = null;
-		try {
-			myConn = DriverManager.getConnection(url);
+	    
+		if (object.getId() != null)
+		{
+			try {
+				Statement myStmt = myConn.createStatement();
 
+				String sql = "UPDATE STREET SET" + " s_id = ('" + object.getId() + "')" + " nr =  ('"
+						+ object.getNr() + "')" + " s_length = ('" + object.getLength() + "') " + " WHERE sg_id = 1";
+
+				myStmt.executeUpdate(sql);
+
+			}
+
+			catch (SQLException ex) {
+				ex.printStackTrace();
+				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+			}
+		}
+		else
+		{
+		try 
+		{
 			Statement myStmt = myConn.createStatement();
 
 			String sql = " INSERT INTO STREET(s_id, nr, s_length) " + " VALUES ('" + object.getId() + object.getNr()
@@ -35,63 +54,50 @@ public class StreetController extends AbstractController<Street> {
 
 		}
 
-		catch (SQLException ex) {
+		catch (SQLException ex)
+		 {
 			ex.printStackTrace();
 			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		}
-
-		finally {
-			try {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
-		}
+		 }
+	   }
 	}
 
 	@Override
-	public void load(Street object) {
+	public Street load(Integer Id)
+	{
 
-		Connection myConn = null;
 		try {
-
-			myConn = DriverManager.getConnection(url);
-
 			Statement myStmt = myConn.createStatement();
 
-			String sql = "SELECT * FROM STREET";
+		    String sql = "SELECT s_id , nr , s_length FROM STREET WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next()) {
-				Integer s_id = result.getInt(1);
+			while (result.next())
+			{
+				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
-				Integer s_length = result.getInt(3);
+				Integer sLength = result.getInt(3);
 
-				object.setId(s_id);
-				object.setNr(nr);
-				object.setLength(s_length);
-			}
-
-		} catch (SQLException ex) {
+	      Street object = new Street(sLength, new Street().getLaneCount());
+	      
+	     
+	        object.setId(sg_id);
+			object.setNr(nr);
+			object.setLength(sLength);
+		
+			
+			 return object;
+		      
+		   }
+		
+		} 
+		catch (SQLException ex)
+		{
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht mï¿½glich!!!");
-		} finally {
-			try {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
+			System.out.print("Laden der Daten nicht möglich!!!");
 		}
 
 	}
 
-	@Override
-	public void render(Street object) {
-		// TODO Auto-generated method stub
-	}
 }

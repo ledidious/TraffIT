@@ -2,6 +2,7 @@ package de.superdudes.traffit.controller;
 
 import java.sql.*;
 import de.superdudes.traffit.dto.StartingGrid;
+import de.superdudes.traffit.dto.Street;
 
 public class StartingGridController extends AbstractController<StartingGrid> {
 
@@ -15,78 +16,73 @@ public class StartingGridController extends AbstractController<StartingGrid> {
 	}
 
 	@Override
-	public void save(StartingGrid object) {
-		Connection myConn = null;
+	public void save(StartingGrid object) 
+	{
+		
+		if (object.getId() != null)
+		{
+			try {
+				Statement myStmt = myConn.createStatement();
 
-		try {
-			myConn = DriverManager.getConnection(url);
+				String sql = "UPDATE STRARTING_GRID SET" + " sg_id = ('" + object.getId() + "')" + " nr =  ('"
+						+ object.getNr() + "')" + " name = ('" + object.getName() + "') " + " WHERE sg_id = 1";
 
+				myStmt.executeUpdate(sql);
+
+			}
+
+			catch (SQLException ex) {
+				ex.printStackTrace();
+				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+			}
+		}
+		else {
 			Statement myStmt = myConn.createStatement();
 
-			String sql = "UPDATE STRARTING_GRID SET" + " sg_id = ('" + object.getId() + "')" + " nr =  ('"
-					+ object.getNr() + "')" + " name = ('" + object.getName() + "') ";
+			String sql = " INSERT INTO STARTING_GRID (sg_id, nr, name) " + " VALUES ('" + object.getId()
+					+ object.getNr() + object.getName() + "')";
 
 			myStmt.executeUpdate(sql);
 
 		}
 
-		catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		}
-
-		finally {
-			try {
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
-
-		}
 	}
 
 	@Override
-	public void load(StartingGrid object) {
+	public StartingGrid load(Integer Id)
+	{
 
-		Connection myConn = null;
 		try {
-
-			myConn = DriverManager.getConnection(url);
-
 			Statement myStmt = myConn.createStatement();
 
-			String sql = "SELECT sg_id , nr , name FROM STARTING_GRID";
+		
+			String sql = "SELECT sg_id , nr , name FROM STARTING_GRID WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next()) {
+			while (result.next())
+			{
 				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				String name = result.getString(3);
 
-				object.setId(sg_id);
-				object.setNr(nr);
-				object.setName(name);
+	      StartingGrid object = new StartingGrid(name, new StreetController().load(Id) );
 
-			}
-
-		} catch (SQLException ex) {
+			object.setId(sg_id);
+			object.setNr(nr);
+			object.setName(name);
+			
+			 return object;
+		      
+		   }
+		
+		} 
+		catch (SQLException ex)
+		{
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht mï¿½glich!!!");
-		} finally {
-			try {
-				myConn.close();
-			} catch (SQLException e) {
-				System.out.println("Verbindung konnte nicht beeendet werden !!!!!");
-				e.printStackTrace();
-			}
+			System.out.print("Laden der Daten nicht möglich!!!");
 		}
 
 	}
 
-	@Override
-	public void render(StartingGrid object) {
-		// TODO Auto-generated method stub
-	}
 }

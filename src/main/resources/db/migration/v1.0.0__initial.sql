@@ -50,9 +50,7 @@ CREATE TABLE CELL
 (
   c_id                      INTEGER(10),
   nr                        INTEGER(10),
-  streetSign                INTEGER(10),
-  blockingConstructionSite  BOOLEAN,
-  blockingVehicle           BOOLEAN,
+  c_index                   INTEGER(10)
 
   PRIMARY KEY (c_id),
   FOREIGN KEY (c_id) REFERENCES LANE (l_id)
@@ -66,7 +64,7 @@ CREATE TABLE STREET_SIGN (
 
   ss_id        INTEGER(10),
   nr           INTEGER(10),
-  speedlimit   INTEGER(10),
+  speedLimit   INTEGER(10),
 
   PRIMARY KEY (ss_id),
   FOREIGN KEY (ss_id) REFERENCES CELL (c_id)

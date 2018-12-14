@@ -26,6 +26,11 @@ public class Lane extends SimulationObject  {
 
 	@NonNull
 	private Set<ConstructionSite> constructionSites = new HashSet<>();
+	
+	public Lane()
+	{
+		
+	}
 
 	public Lane(@NonNull Street street, @NonNull Integer index) {
 		super();

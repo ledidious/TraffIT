@@ -29,6 +29,8 @@ public class Main {
 		startingGrid.addVehicle(vehicle2);
 		startingGrid.addVehicle(vehicle3);
 		
+
+		
 		return startingGrid;
 		
 	}
