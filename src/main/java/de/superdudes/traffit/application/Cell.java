@@ -241,7 +241,7 @@ public class Cell extends Rectangle {
 
 			case "ivConstruction":
 
-				if (myParent.getId().equals("signlane")) {
+				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
 					int constructionWidth = 300;
 					int counter = 0;
 
@@ -268,7 +268,7 @@ public class Cell extends Rectangle {
 				}
 
 				else {
-					this.setFill(javafx.scene.paint.Color.GREY);
+					this.setFill(javafx.scene.paint.Color.DARKSEAGREEN);
 				}
 
 				break;
