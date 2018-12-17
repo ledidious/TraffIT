@@ -1,20 +1,20 @@
 package de.superdudes.traffit.application;
 
-import java.io.File;
-
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.image.Image;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Cell extends Rectangle {
 
@@ -186,33 +186,39 @@ public class Cell extends Rectangle {
 				break;
 
 			case "ivConstruction":
+				int area = showModalDialog();
+				System.out.println(area);
+
 				int constructionWidth = 300;
 				int counter = 0;
 
-				Cell[] allConstructionCells = new Cell[constructionWidth];
+				if (area > 0) {
+					Cell[] allConstructionCells = new Cell[constructionWidth];
 
-				for (int i = 0; i < allConstructionCells.length; i++) {
-					allConstructionCells[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i));
-				}
-
-				for (int i = 0; i < allConstructionCells.length; i++) {
-					if (counter <= 5) {
-						allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
-						allConstructionCells[i].stopPainting = true; 
-					} else {
-						allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
-						allConstructionCells[i].stopPainting = true; 
+					for (int i = 0; i < allConstructionCells.length; i++) {
+						allConstructionCells[i] = (Cell) myParent.getChildren()
+								.get(Integer.parseInt(this.getId()) + (i));
 					}
-					counter++;
-					if(counter == 10) {
-						counter = 0; 
+
+					for (int i = 0; i < allConstructionCells.length; i++) {
+						if (counter <= 5) {
+							allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
+							allConstructionCells[i].stopPainting = true;
+						} else {
+							allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
+							allConstructionCells[i].stopPainting = true;
+						}
+						counter++;
+						if (counter == 10) {
+							counter = 0;
+						}
 					}
 				}
 
 				break;
-
+			default:
+				System.err.println("Object not recognized.");
 			}
-			;
 
 			System.out.println(this.getId());
 
@@ -227,4 +233,85 @@ public class Cell extends Rectangle {
 		count();
 	}
 
+	private int showModalDialog() {
+		Stage dialog = new Stage();
+		Stage myStage = (Stage) this.getScene().getWindow();
+
+		dialog.initOwner(myStage);
+		dialog.initModality(Modality.APPLICATION_MODAL);
+		dialog.initStyle(StageStyle.UTILITY);
+
+		dialog.setAlwaysOnTop(true);
+
+		dialog.setHeight(250);
+		dialog.setWidth(400);
+
+		AnchorPane dialogPane = new AnchorPane();
+
+		Label label01 = new Label();
+		label01.setText("Please set the Width(Cells) of the Construction:");
+		label01.setLayoutX(10);
+		label01.setLayoutY(1);
+
+		Spinner<Integer> spinner01 = initSpinner();
+		spinner01.setLayoutX(100);
+		spinner01.setLayoutY(50);
+
+		Button button01 = new Button();
+		button01.setText("OK");
+		button01.setLayoutX(170);
+		button01.setLayoutY(100);
+
+		Button button02 = new Button();
+		button02.setText("Cancel");
+		button02.setLayoutX(220);
+		button02.setLayoutY(100);
+
+		dialogPane.getChildren().add(label01);
+		dialogPane.getChildren().add(spinner01);
+		dialogPane.getChildren().add(button01);
+		dialogPane.getChildren().add(button02);
+
+		Scene dialogScene = new Scene(dialogPane);
+
+		button01.setOnAction(e -> {
+			if (Integer.parseInt(this.getId()) + spinner01.getValue() > number) {
+				label01.setText("Construction site doesn't fit on Street.");
+				label01.setTextFill(javafx.scene.paint.Color.RED);
+
+				// spinner01.getValueFactory().setValue(spinner01.getValue() - (number -
+				// Integer.parseInt(this.getId())));
+			} else {
+				dialog.close();
+			}
+		});
+
+		button02.setOnAction(e -> {
+			spinner01.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1));
+			spinner01.getValueFactory().setValue(0);
+			dialog.close();
+		});
+
+		dialog.setScene(dialogScene);
+		dialog.showAndWait();
+
+		return spinner01.getValue();
+	}
+
+	private Spinner<Integer> initSpinner() {
+		Spinner<Integer> theSpinner = new Spinner<Integer>();
+
+		theSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, Cell.number));
+		theSpinner.setEditable(true);
+
+		// Now losing focus will update vale of spinner
+		TextFormatter<Integer> formatter = new TextFormatter<Integer>(theSpinner.getValueFactory().getConverter(),
+				theSpinner.getValueFactory().getValue());
+		theSpinner.getEditor().setTextFormatter(formatter);
+		theSpinner.getValueFactory().valueProperty().bindBidirectional(formatter.valueProperty());
+
+		IntegerStringConverter.createFor(theSpinner);
+
+		return theSpinner;
+	}
 }

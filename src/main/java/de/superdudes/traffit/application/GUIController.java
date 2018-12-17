@@ -2,10 +2,14 @@ package de.superdudes.traffit.application;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -44,6 +48,13 @@ public class GUIController {
 	// Signs
 	private Image iconConstruction = new Image("file:" + pathToContstruction);
 
+	// Text fields and Spinners
+	/* @FXML
+	Spinner<Integer> spinner01 = new Spinner<Integer>(); */
+	
+	@FXML
+	TextField streetSize;
+
 	// ImageViews
 	@FXML
 	public ImageView ivCar;
@@ -81,6 +92,17 @@ public class GUIController {
 	public Pane signlane;
 
 	// Logic
+
+	/* private void initSpinner() {
+		spinner01.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 100));
+		spinner01.setEditable(true);
+		IntegerStringConverter.createFor(spinner01);
+	}*/
+	
+   /* public void updateSpinnerValue(Integer newValue) {
+        spinner01.getValueFactory().setValue(newValue);
+    }*/
+	
 	public Cell[] buildLane(int width, int height) {
 		Cell[] ca = new Cell[width];
 
@@ -131,8 +153,10 @@ public class GUIController {
 		ivSpeedLimit100.setImage(iconSpeedLimit100);
 
 		ivConstruction.setImage(iconConstruction);
-		
+
 		button02.setDisable(true);
+		
+		//initSpinner();
 	}
 
 	@FXML
@@ -140,6 +164,7 @@ public class GUIController {
 		button05.setDisable(true);
 		button01.setDisable(true);
 		button02.setDisable(false);
+		button03.setDisable(true);
 		System.out.println("Simulation has been started...");
 	}
 
@@ -148,6 +173,7 @@ public class GUIController {
 		button05.setDisable(false);
 		button01.setDisable(false);
 		button02.setDisable(true);
+		button03.setDisable(false);
 		System.out.println("Simulation has been stopped!");
 	}
 
@@ -155,12 +181,17 @@ public class GUIController {
 	private void loadSimulation() {
 		System.out.println("Please implement logic!");
 	}
-	
+
 	@FXML
 	private void saveSimulation() {
 		System.out.println("Please implement logic!");
 	}
-	
+
+	@FXML
+	public void onEnter(ActionEvent ae) {
+		System.out.println("test");
+	}
+
 	public void sayHi() {
 		System.out.println("Moinsen!");
 	}
