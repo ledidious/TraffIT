@@ -1,19 +1,17 @@
 package de.superdudes.traffit.dto;
 
 import java.util.Deque;
-import java.util.LinkedList;
 
-import de.superdudes.traffit.controller.VehicleController;
+import javax.swing.text.AbstractDocument.LeafElement;
+
+import de.superdudes.traffit.exception.ObjectMisplacedException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
-import sun.reflect.*;
-
 @Getter
 @Setter
-@ToString(of = { "nr" })
 public class Vehicle extends SimulationObject {
 
 	public static final int MAX_SPEED = 200;
@@ -49,10 +47,25 @@ public class Vehicle extends SimulationObject {
 
 	private int gensSinceLastDrive = -1; // Never set
 
-	public Vehicle(@NonNull Type type) {
+	public Vehicle(@NonNull Type type, @NonNull Cell tailCell) {
 		this.type = type;
 
-		this.blockedCells = new LinkedList<>();
+		if (tailCell.isBlocked()) {
+			throw new ObjectMisplacedException(this, "Blocked by " + tailCell.getBlockingObject());
+		}
+		blockedCells.addFirst(tailCell);
+
+		for (int i = 1 /* First cell already set */; i < type.getLength(); i++) {
+			final Cell nextCell = tailCell.getSuccessor();
+
+			if (nextCell == null) {
+				throw new ObjectMisplacedException(this, "Reaches the end of street");
+			}
+			if (nextCell.isBlocked()) {
+				throw new ObjectMisplacedException(this, "Blocked by " + nextCell.getBlockingObject());
+			}
+			blockedCells.addFirst(nextCell);
+		}
 	}
 
 	public int getLength() {
@@ -120,5 +133,10 @@ public class Vehicle extends SimulationObject {
 
 	public void setMaxSpeed(@NonNull Integer maxSpeed) {
 		this.maxSpeed = Math.max(MAX_SPEED - 1, maxSpeed);
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "{type=" + getType() + ", lane=" + getLane().getIndex() + ", headCell=" + getFrontCell().getIndex() + "}";
 	}
 }
