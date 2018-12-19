@@ -1,5 +1,7 @@
 package de.superdudes.traffit.application;
 
+import java.awt.Dimension;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -91,8 +93,23 @@ public class Main extends Application {
 			primaryStage.show();
 
 			// Event Handler to change the size of the Street
-			controller.streetSize
-					.setOnAction(e -> primaryStage.setWidth(Integer.parseInt(controller.streetSize.getText())));
+			controller.streetSize.setOnAction(e -> {
+
+				Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+				double screenWidth = screenSize.getWidth();
+
+				int newWidth = Integer.parseInt(controller.streetSize.getText());
+				if (newWidth >= primaryStage.getMinWidth() & newWidth <= screenWidth) {
+					primaryStage.setWidth(newWidth);
+					controller.streetSize.setText(String.valueOf((int) primaryStage.getWidth()));
+				} else if (newWidth > screenWidth) {
+					primaryStage.setWidth(screenWidth);
+					controller.streetSize.setText(String.valueOf((int) screenWidth));
+				} else {
+					primaryStage.setWidth(primaryStage.getMinWidth());
+					controller.streetSize.setText(String.valueOf((int) primaryStage.getMinWidth()));
+				}
+			});
 
 			// Drag&Drop Function
 			// **** Vehicle ****
