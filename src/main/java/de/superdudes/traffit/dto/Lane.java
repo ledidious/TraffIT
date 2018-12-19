@@ -8,11 +8,18 @@ import lombok.ToString;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
+import de.superdudes.traffit.controller.AbstractController;
+
 @Getter
 @Setter
 @ToString(of = { "nr" })
-public class Lane extends SimulationObject {
+public class Lane extends SimulationObject  {
 
+	@NonNull
+	private Integer index;
+	
 	@NonNull
 	private Street street;
 
@@ -21,10 +28,16 @@ public class Lane extends SimulationObject {
 
 	@NonNull
 	private Set<ConstructionSite> constructionSites = new HashSet<>();
+	
+	public Lane()
+	{
+		
+	}
 
-	public Lane(@NonNull Street street) {
+	public Lane(@NonNull Street street, @NonNull Integer index) {
 		super();
 
+		this.index = index;
 		this.street = street;
 		this.cells = new Cell[street.getLength()];
 
@@ -32,7 +45,8 @@ public class Lane extends SimulationObject {
 			cells[i] = new Cell(i, this);
 		}
 		
-		for (int i = 1; i < cells.length; i++) {
+		cells[0].setSuccessor(cells[1]); // First cell
+		for (int i = 1; i < cells.length - 1; i++) { // Second until second-last cell
 			Cell currentCell = cells[i];
 			Cell previousCell = cells[i - 1];
 			Cell nextCell = cells[i + 1];
@@ -40,6 +54,15 @@ public class Lane extends SimulationObject {
 			currentCell.setAncestor(previousCell);
 			currentCell.setSuccessor(nextCell);
 		}
+		cells[cells.length - 1].setAncestor(cells[cells.length - 2]); // Last cell
+	}
+	
+	public boolean isTopLeftLane() {
+		return index <= 0;
+	}
+	
+	public boolean isTopRightLane() {
+		return index == street.getLength() - 1;
 	}
 
 	public boolean addConstuctionSite(@NonNull ConstructionSite constructionSite) {

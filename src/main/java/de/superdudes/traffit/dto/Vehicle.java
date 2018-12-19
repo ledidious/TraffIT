@@ -1,8 +1,10 @@
 package de.superdudes.traffit.dto;
 
 import java.util.Deque;
-import java.util.LinkedList;
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
+import de.superdudes.traffit.exception.ObjectMisplacedException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -10,8 +12,12 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(of = { "nr" })
 public class Vehicle extends SimulationObject {
+
+	public static final int MAX_SPEED = 200;
+
+	public static final int ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
+	public static final int ANCESTOR_DISTANCE_MIN = Type.CAR.getLength();
 
 	public enum Type {
 
@@ -29,7 +35,7 @@ public class Vehicle extends SimulationObject {
 	private Integer maxSpeed;
 
 	private Integer speedLimit;
-	
+
 	@NonNull
 	private Integer currentSpeed;
 
@@ -39,22 +45,98 @@ public class Vehicle extends SimulationObject {
 	@NonNull
 	private Deque<Cell> blockedCells;
 
-	public Vehicle(@NonNull Type type) {
+	private int gensSinceLastDrive = -1; // Never set
+
+	public Vehicle(@NonNull Type type, @NonNull Cell tailCell) {
 		this.type = type;
 
-		this.blockedCells = new LinkedList<>();
+		if (tailCell.isBlocked()) {
+			throw new ObjectMisplacedException(this, "Blocked by " + tailCell.getBlockingObject());
+		}
+		blockedCells.addFirst(tailCell);
+
+		for (int i = 1 /* First cell already set */; i < type.getLength(); i++) {
+			final Cell nextCell = tailCell.getSuccessor();
+
+			if (nextCell == null) {
+				throw new ObjectMisplacedException(this, "Reaches the end of street");
+			}
+			if (nextCell.isBlocked()) {
+				throw new ObjectMisplacedException(this, "Blocked by " + nextCell.getBlockingObject());
+			}
+			blockedCells.addFirst(nextCell);
+		}
 	}
 
 	public int getLength() {
 		return type.getLength();
 	}
 
-	public Cell getLatestCell() {
+	public Cell getFrontCell() {
 		return blockedCells.getFirst();
 	}
 
-	public Cell getEarliestCell() {
+	public Cell getBackCell() {
 		return blockedCells.getLast();
 	}
 
+	public Lane getLane() {
+		return getFrontCell().getLane();
+	}
+
+	public void accelerate() {
+		if (currentSpeed < maxSpeed) {
+			currentSpeed++;
+		}
+	}
+
+	public void brake() {
+		if (currentSpeed > 0) {
+			currentSpeed--;
+		}
+	}
+
+	// Moves one cell forward
+	public void drive() {
+		gensSinceLastDrive = 0;
+
+		blockedCells.removeLast();
+		blockedCells.addFirst(blockedCells.getLast().getSuccessor());
+	}
+
+	public void dontDrive() {
+		gensSinceLastDrive++;
+	}
+
+	public void setBlockedCells(@NonNull Deque<Cell> newCells) {
+
+		// if (!Reflection.getCallerClass().equals(VehicleController.class)) {
+		// throw new SecurityError();
+		// }
+
+		if (newCells.size() != getLength()) {
+			throw new IllegalArgumentException("Wrong number of cells corresponding to getLength()");
+		}
+
+		// Free old cells
+		for (Cell cell : this.blockedCells) {
+			cell.setBlockingVehicle(null);
+		}
+
+		// Block new cells
+		for (Cell cell : newCells) {
+			cell.setBlockingVehicle(this);
+		}
+
+		this.blockedCells = newCells;
+	}
+
+	public void setMaxSpeed(@NonNull Integer maxSpeed) {
+		this.maxSpeed = Math.max(MAX_SPEED - 1, maxSpeed);
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "{type=" + getType() + ", lane=" + getLane().getIndex() + ", headCell=" + getFrontCell().getIndex() + "}";
+	}
 }

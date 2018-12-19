@@ -18,14 +18,25 @@ public class Street extends SimulationObject {
 
     @NonNull
     private List<Lane> lanes = new ArrayList<>();
+    
+    public Street()
+    {
+    	
+    }
 
+    
     public Street( @NonNull Integer length, int laneCount ) {
         super();
 
         this.length = length;
         
+        // From left lane to right lane
         for (int i = 0; i < laneCount; i++) {
-			lanes.add(new Lane(this));
+			lanes.add(new Lane(this, i));
 		}
+    }
+    
+    public int getLaneCount() {
+    	return lanes.size();
     }
 }
