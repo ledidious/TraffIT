@@ -21,7 +21,7 @@ public class Main extends Application {
 			loader.setLocation(getClass().getResource("GUI.fxml"));
 			AnchorPane root = (AnchorPane) loader.load();
 			GUIController controller = loader.getController();
-			//controller.sayHi();
+			// controller.sayHi();
 
 			Scene scene = new Scene(root);
 
@@ -90,6 +90,10 @@ public class Main extends Application {
 			primaryStage.setResizable(false);
 			primaryStage.show();
 
+			// Event Handler to change the size of the Street
+			controller.streetSize
+					.setOnAction(e -> primaryStage.setWidth(Integer.parseInt(controller.streetSize.getText())));
+
 			// Drag&Drop Function
 			// **** Vehicle ****
 			controller.ivMotorcycle.setOnMousePressed(e -> {
@@ -127,17 +131,17 @@ public class Main extends Application {
 				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
 			});
-			
+
 			controller.ivSpeedLimit50.setOnMousePressed(e -> {
 				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
 			});
-			
+
 			controller.ivSpeedLimit70.setOnMousePressed(e -> {
 				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
 			});
-			
+
 			controller.ivSpeedLimit100.setOnMousePressed(e -> {
 				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
@@ -157,45 +161,47 @@ public class Main extends Application {
 				controller.ivSpeedLimit70.startFullDrag();
 				System.out.println("Event on Source: drag detected");
 			});
-			
+
 			controller.ivSpeedLimit100.setOnDragDetected(e -> {
 				controller.ivSpeedLimit100.startFullDrag();
 				System.out.println("Event on Source: drag detected");
 			});
-			
+
 			/*
 			 * Event Handler for locking the window size and starting the Simulation.
 			 * Necessary because you can't manipulate the Stage from within the Controller
 			 */
 			controller.button01.setOnAction(e -> {
-				//primaryStage.setResizable(false);
+				// primaryStage.setResizable(false);
 				controller.startSimulation();
 			});
 
 			// vice versa
 			controller.button02.setOnAction(e -> {
-				//primaryStage.setResizable(true);
+				// primaryStage.setResizable(true);
 				controller.stopSimulation();
 			});
 
 			// Event Handle for Fullscreen
 			controller.button05.setOnAction(e -> {
-				if (primaryStage.isFullScreen())
-					primaryStage.setFullScreen(false); 
-				else
+				if (primaryStage.isFullScreen()) {
+					controller.streetSize.setDisable(false);
+					primaryStage.setFullScreen(false);
+				} else {
+					controller.streetSize.setDisable(true);
 					primaryStage.setFullScreen(true);
+				}
 			});
-			
+
 			controller.streetSize.textProperty().addListener(new ChangeListener<String>() {
-			    @Override
-			    public void changed(ObservableValue<? extends String> observable, String oldValue, 
-			        String newValue) {
-			        if (!newValue.matches("\\d*")) {
-			        	controller.streetSize.setText(newValue.replaceAll("[^\\d]", ""));
-			        }
-			    }
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (!newValue.matches("\\d*")) {
+						controller.streetSize.setText(newValue.replaceAll("[^\\d]", ""));
+					}
+				}
 			});
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

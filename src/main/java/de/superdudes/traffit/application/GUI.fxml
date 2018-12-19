@@ -116,7 +116,7 @@
                   <Rectangle arcHeight="5.0" fill="#1f3cff" height="8.0" layoutX="14.0" layoutY="289.0" stroke="BLACK" strokeType="INSIDE" width="93.0" />
                   <Pane layoutX="688.0" layoutY="59.0" prefHeight="63.0" prefWidth="195.0" AnchorPane.bottomAnchor="273.0" AnchorPane.leftAnchor="688.0" AnchorPane.rightAnchor="395.0" AnchorPane.topAnchor="59.0">
                      <children>
-                        <TextField fx:id="streetSize" layoutX="2.0" layoutY="23.0" onAction="#onEnter" promptText="Enter No of Cells" />
+                        <TextField fx:id="streetSize" layoutX="2.0" layoutY="23.0" promptText="Enter No of Cells" />
                         <Label layoutX="2.0" layoutY="2.0" text="Configure Streetsize" />
                      </children>
                   </Pane>

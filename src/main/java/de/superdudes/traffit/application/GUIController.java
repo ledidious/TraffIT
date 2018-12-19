@@ -90,7 +90,11 @@ public class GUIController {
 	public Pane lane2;
 	@FXML
 	public Pane signlane;
-
+	@FXML
+	public Pane pane01;
+	@FXML
+	private AnchorPane anchPane01;
+	
 	// Logic
 
 	/* private void initSpinner() {
@@ -128,12 +132,6 @@ public class GUIController {
 	}
 
 	@FXML
-	public Pane pane01;
-
-	@FXML
-	private AnchorPane anchPane01;
-
-	@FXML
 	public void initialize() {
 		System.out.println("Init GUI");
 
@@ -155,6 +153,7 @@ public class GUIController {
 		ivConstruction.setImage(iconConstruction);
 
 		button02.setDisable(true);
+		streetSize.setDisable(true);
 		
 		//initSpinner();
 	}
@@ -187,16 +186,7 @@ public class GUIController {
 		System.out.println("Please implement logic!");
 	}
 
-	@FXML
-	public void onEnter(ActionEvent ae) {
-		System.out.println("test");
-	}
-
 	public void sayHi() {
 		System.out.println("Moinsen!");
-	}
-
-	public void drawStreet() {
-
 	}
 }
