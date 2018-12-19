@@ -108,6 +108,8 @@ public class VehicleController extends AbstractController<Vehicle> {
 		if (!vehicleForeseeableAhead) {
 			render_bySpeedLimits(vehicle);
 		}
+		
+		render_moveForward(vehicle);
 	}
 
 	/**
@@ -244,6 +246,16 @@ public class VehicleController extends AbstractController<Vehicle> {
 		}
 
 		vehicle.setBlockedCells(newCells);
+	}
+	
+	private void render_moveForward(Vehicle vehicle) {
+		
+		if (vehicle.getCurrentSpeed() - vehicle.getGensSinceLastDrive() <= 0) {
+			vehicle.drive();
+		}
+		else {
+			vehicle.dontDrive();
+		}
 	}
 
 	@Getter

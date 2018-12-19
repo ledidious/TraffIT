@@ -16,6 +16,8 @@ import sun.reflect.*;
 @ToString(of = { "nr" })
 public class Vehicle extends SimulationObject {
 
+	public static final int MAX_SPEED = 200;
+
 	public static final int ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
 	public static final int ANCESTOR_DISTANCE_MIN = Type.CAR.getLength();
 
@@ -45,6 +47,8 @@ public class Vehicle extends SimulationObject {
 	@NonNull
 	private Deque<Cell> blockedCells;
 
+	private int gensSinceLastDrive = -1; // Never set
+
 	public Vehicle(@NonNull Type type) {
 		this.type = type;
 
@@ -66,17 +70,29 @@ public class Vehicle extends SimulationObject {
 	public Lane getLane() {
 		return getFrontCell().getLane();
 	}
-	
+
 	public void accelerate() {
 		if (currentSpeed < maxSpeed) {
 			currentSpeed++;
 		}
 	}
-	
+
 	public void brake() {
 		if (currentSpeed > 0) {
 			currentSpeed--;
 		}
+	}
+
+	// Moves one cell forward
+	public void drive() {
+		gensSinceLastDrive = 0;
+
+		blockedCells.removeLast();
+		blockedCells.addFirst(blockedCells.getLast().getSuccessor());
+	}
+
+	public void dontDrive() {
+		gensSinceLastDrive++;
 	}
 
 	public void setBlockedCells(@NonNull Deque<Cell> newCells) {
@@ -88,17 +104,21 @@ public class Vehicle extends SimulationObject {
 		if (newCells.size() != getLength()) {
 			throw new IllegalArgumentException("Wrong number of cells corresponding to getLength()");
 		}
-		
+
 		// Free old cells
 		for (Cell cell : this.blockedCells) {
 			cell.setBlockingVehicle(null);
 		}
-		
+
 		// Block new cells
 		for (Cell cell : newCells) {
 			cell.setBlockingVehicle(this);
 		}
-		
+
 		this.blockedCells = newCells;
+	}
+
+	public void setMaxSpeed(@NonNull Integer maxSpeed) {
+		this.maxSpeed = Math.max(MAX_SPEED - 1, maxSpeed);
 	}
 }

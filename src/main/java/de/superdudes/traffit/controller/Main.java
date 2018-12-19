@@ -11,8 +11,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		final StartingGrid startingGrid = szenario1();
-		consoleOutput(startingGrid);
+		
 	}
 	
 	private static StartingGrid szenario1() {
@@ -29,34 +28,5 @@ public class Main {
 		startingGrid.addVehicle(vehicle3);
 		
 		return startingGrid;
-	}
-	
-	private static void consoleOutput(StartingGrid startingGrid) {
-		
-		final Street street = startingGrid.getStreet();
-		
-		for (int i = 0; i < street.getLength(); i++) {
-			System.out.print("-");
-		}
-		System.out.println();
-		
-		for (Lane lane : street.getLanes()) {
-		
-			for (Cell cell : lane.getCells()) {
-				if (cell.getBlockingVehicle() != null) {
-					System.out.print("*");
-				}
-				if (cell.getBlockingConstructionSite() != null) {
-					System.out.print("#");
-				}
-			}
-			System.out.println();
-			
-			for (int i = 0; i < street.getLength(); i++) {
-				System.out.print("-");
-			}
-			
-			System.out.println();
-		}
 	}
 }
