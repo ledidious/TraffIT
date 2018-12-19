@@ -138,30 +138,34 @@ public class Cell extends Rectangle {
 
 				if (myParent.getId().equals("signlane")) {
 
-					Cell[] myNeighbours50 = new Cell[500];
+					int ivSpeedLimit50Width = showModalDialog();
 
-					text.setText("50");
+					if (ivSpeedLimit50Width > 0) {
+						Cell[] myNeighbours50 = new Cell[ivSpeedLimit50Width];
 
-					for (int i = 0; i < myNeighbours50.length; i++) {
-						myNeighbours50[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+						text.setText("50");
+
+						for (int i = 0; i < myNeighbours50.length; i++) {
+							myNeighbours50[i] = (Cell) myParent.getChildren()
+									.get(Integer.parseInt(this.getId()) + (i + 1));
+						}
+
+						for (Cell c : myNeighbours50) {
+							c.setFill(javafx.scene.paint.Color.SALMON);
+							c.stopPainting = true;
+						}
+
+						double xValue50 = myNeighbours50[(myNeighbours50.length / 2)].getX();
+						double yValue50 = myNeighbours50[(myNeighbours50.length / 2)].getY();
+
+						myParent.getChildren().add(text);
+
+						text.setLayoutX(xValue50 - 12);
+						text.setLayoutY(yValue50 + (height / 2));
+
+						this.setFill(javafx.scene.paint.Color.SALMON);
+						this.stopPainting = true;
 					}
-
-					for (Cell c : myNeighbours50) {
-						c.setFill(javafx.scene.paint.Color.SALMON);
-						c.stopPainting = true;
-					}
-
-					double xValue50 = myNeighbours50[(myNeighbours50.length / 2)].getX();
-					double yValue50 = myNeighbours50[(myNeighbours50.length / 2)].getY();
-
-					myParent.getChildren().add(text);
-
-					text.setLayoutX(xValue50 - 12);
-					text.setLayoutY(yValue50 + (height / 2));
-
-					this.setFill(javafx.scene.paint.Color.SALMON);
-					this.stopPainting = true;
-
 				} else {
 					this.setFill(javafx.scene.paint.Color.GREY);
 				}
@@ -171,34 +175,36 @@ public class Cell extends Rectangle {
 
 				if (myParent.getId().equals("signlane")) {
 
-					Cell[] myNeighbours100 = new Cell[500];
+					int ivSpeedLimit100Width = showModalDialog();
 
-					text.setText("100");
-					text.setStyle("-fx-font: 20 arial;");
+					if (ivSpeedLimit100Width > 0) {
+						Cell[] myNeighbours100 = new Cell[ivSpeedLimit100Width];
 
-					for (int i = 0; i < myNeighbours100.length; i++) {
-						myNeighbours100[i] = (Cell) myParent.getChildren()
-								.get(Integer.parseInt(this.getId()) + (i + 1));
+						text.setText("100");
+						text.setStyle("-fx-font: 20 arial;");
+
+						for (int i = 0; i < myNeighbours100.length; i++) {
+							myNeighbours100[i] = (Cell) myParent.getChildren()
+									.get(Integer.parseInt(this.getId()) + (i + 1));
+						}
+
+						for (Cell c : myNeighbours100) {
+							c.setFill(javafx.scene.paint.Color.SALMON);
+							c.stopPainting = true;
+						}
+
+						double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
+						double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
+
+						myParent.getChildren().add(text);
+
+						text.setLayoutX(xValue100 - 17);
+						text.setLayoutY(yValue100 + (height / 2));
+
+						this.setFill(javafx.scene.paint.Color.SALMON);
+						this.stopPainting = true;
 					}
-
-					for (Cell c : myNeighbours100) {
-						c.setFill(javafx.scene.paint.Color.SALMON);
-						c.stopPainting = true;
-					}
-
-					double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
-					double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
-
-					myParent.getChildren().add(text);
-
-					text.setLayoutX(xValue100 - 17);
-					text.setLayoutY(yValue100 + (height / 2));
-
-					this.setFill(javafx.scene.paint.Color.SALMON);
-					this.stopPainting = true;
-				}
-
-				else {
+				} else {
 					this.setFill(javafx.scene.paint.Color.GREY);
 				}
 
@@ -208,30 +214,35 @@ public class Cell extends Rectangle {
 
 				if (myParent.getId().equals("signlane")) {
 
-					Cell[] myNeighbours70 = new Cell[50];
+					int ivSpeedLimit70Width = showModalDialog();
 
-					text.setText("70");
+					if (ivSpeedLimit70Width > 0) {
+						Cell[] myNeighbours70 = new Cell[ivSpeedLimit70Width];
 
-					for (int i = 0; i < myNeighbours70.length; i++) {
-						myNeighbours70[i] = (Cell) myParent.getChildren().get(Integer.parseInt(this.getId()) + (i + 1));
+						text.setText("70");
+
+						for (int i = 0; i < myNeighbours70.length; i++) {
+							myNeighbours70[i] = (Cell) myParent.getChildren()
+									.get(Integer.parseInt(this.getId()) + (i + 1));
+						}
+
+						for (Cell c : myNeighbours70) {
+							c.setFill(javafx.scene.paint.Color.SALMON);
+							c.stopPainting = true;
+						}
+
+						double xValue70 = myNeighbours70[(myNeighbours70.length / 2)].getX();
+						double yValue70 = myNeighbours70[(myNeighbours70.length / 2)].getY();
+
+						myParent.getChildren().add(text);
+
+						text.setLayoutX(xValue70 - 12);
+						text.setLayoutY(yValue70 + (height / 2));
+
+						this.setFill(javafx.scene.paint.Color.SALMON);
+						this.stopPainting = true;
+
 					}
-
-					for (Cell c : myNeighbours70) {
-						c.setFill(javafx.scene.paint.Color.SALMON);
-						c.stopPainting = true;
-					}
-
-					double xValue70 = myNeighbours70[(myNeighbours70.length / 2)].getX();
-					double yValue70 = myNeighbours70[(myNeighbours70.length / 2)].getY();
-
-					myParent.getChildren().add(text);
-
-					text.setLayoutX(xValue70 - 12);
-					text.setLayoutY(yValue70 + (height / 2));
-
-					this.setFill(javafx.scene.paint.Color.SALMON);
-					this.stopPainting = true;
-
 				}
 
 				else {
@@ -245,32 +256,33 @@ public class Cell extends Rectangle {
 					int constructionWidth = showModalDialog();
 					int counter = 0;
 
-				if (constructionWidth > 0) {
-					Cell[] allConstructionCells = new Cell[constructionWidth];
+					if (constructionWidth > 0) {
+						Cell[] allConstructionCells = new Cell[constructionWidth];
 
-					for (int i = 0; i < allConstructionCells.length; i++) {
-						allConstructionCells[i] = (Cell) myParent.getChildren()
-								.get(Integer.parseInt(this.getId()) + (i));
-					}
-
-					for (int i = 0; i < allConstructionCells.length; i++) {
-						if (counter <= 5) {
-							allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
-							allConstructionCells[i].stopPainting = true;
-						} else {
-							allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
-							allConstructionCells[i].stopPainting = true;
+						for (int i = 0; i < allConstructionCells.length; i++) {
+							allConstructionCells[i] = (Cell) myParent.getChildren()
+									.get(Integer.parseInt(this.getId()) + (i));
 						}
-						counter++;
-						if (counter == 10) {
-							counter = 0;
+
+						for (int i = 0; i < allConstructionCells.length; i++) {
+							if (counter <= 5) {
+								allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
+								allConstructionCells[i].stopPainting = true;
+							} else {
+								allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
+								allConstructionCells[i].stopPainting = true;
+							}
+							counter++;
+							if (counter == 10) {
+								counter = 0;
+							}
 						}
 					}
 				}
 
 				else {
 					this.setFill(javafx.scene.paint.Color.DARKSEAGREEN);
-					}
+
 				}
 
 				break;
@@ -280,11 +292,6 @@ public class Cell extends Rectangle {
 
 			System.out.println(this.getId());
 
-//			System.out.println(this.getId());
-//			System.out.println("Das Parent Node lautet: ");
-//			System.out.println(this.getParent());
-//
-//			System.out.println("Hi Mario! Ich sende Text!");
 			this.stopPainting = true;
 		});
 
@@ -337,8 +344,6 @@ public class Cell extends Rectangle {
 				label01.setText("Construction site doesn't fit on Street.");
 				label01.setTextFill(javafx.scene.paint.Color.RED);
 
-				// spinner01.getValueFactory().setValue(spinner01.getValue() - (number -
-				// Integer.parseInt(this.getId())));
 			} else {
 				dialog.close();
 			}
