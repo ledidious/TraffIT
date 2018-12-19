@@ -1,5 +1,9 @@
 package de.superdudes.traffit.application;
 
+import de.superdudes.traffit.SimulationManager;
+import de.superdudes.traffit.dto.Lane;
+import de.superdudes.traffit.dto.StartingGrid;
+import de.superdudes.traffit.dto.Vehicle;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -59,7 +63,23 @@ public class Cell extends Rectangle {
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
 
 					Cell[] myNeighboursCar = new Cell[20];
-
+					
+					int backendLaneId;
+					
+					if (myParent.getId().equals("lane1")) {
+						backendLaneId = 0;
+					} else {
+						backendLaneId = 1;
+					}
+					
+					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+					
+					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+					
+					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
+					
+					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
+					
 					for (int i = 0; i < myNeighboursCar.length; i++) {
 						myNeighboursCar[i] = (Cell) myParent.getChildren()
 								.get(Integer.parseInt(this.getId()) + (i + 1));
