@@ -62,24 +62,26 @@ public class Cell extends Rectangle {
 
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
 
-					Cell[] myNeighboursCar = new Cell[20];
-					
 					int backendLaneId;
-					
+
 					if (myParent.getId().equals("lane1")) {
 						backendLaneId = 0;
 					} else {
 						backendLaneId = 1;
 					}
-					
+
 					StartingGrid myGrid = SimulationManager.getRunningSimulation();
-					
+
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-					
+
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
-					
+
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
-					
+
+					myGrid.addVehicle(aVehicle);
+
+					Cell[] myNeighboursCar = new Cell[aVehicle.getLength()];
+
 					for (int i = 0; i < myNeighboursCar.length; i++) {
 						myNeighboursCar[i] = (Cell) myParent.getChildren()
 								.get(Integer.parseInt(this.getId()) + (i + 1));
@@ -105,7 +107,25 @@ public class Cell extends Rectangle {
 
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
 
-					Cell[] myNeighboursMotor = new Cell[5];
+					int backendLaneId;
+
+					if (myParent.getId().equals("lane1")) {
+						backendLaneId = 0;
+					} else {
+						backendLaneId = 1;
+					}
+
+					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+
+					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+
+					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
+
+					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
+
+					myGrid.addVehicle(aVehicle);
+
+					Cell[] myNeighboursMotor = new Cell[aVehicle.getLength()];
 
 					for (int i = 0; i < myNeighboursMotor.length; i++) {
 						myNeighboursMotor[i] = (Cell) myParent.getChildren()
@@ -131,7 +151,25 @@ public class Cell extends Rectangle {
 
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
 
-					Cell[] myNeighboursTruck = new Cell[40];
+					int backendLaneId;
+
+					if (myParent.getId().equals("lane1")) {
+						backendLaneId = 0;
+					} else {
+						backendLaneId = 1;
+					}
+
+					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+
+					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+
+					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
+
+					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
+
+					myGrid.addVehicle(aVehicle);
+
+					Cell[] myNeighboursTruck = new Cell[aVehicle.getLength()];
 
 					for (int i = 0; i < myNeighboursTruck.length; i++) {
 						myNeighboursTruck[i] = (Cell) myParent.getChildren()
@@ -302,7 +340,6 @@ public class Cell extends Rectangle {
 
 				else {
 					this.setFill(javafx.scene.paint.Color.DARKSEAGREEN);
-
 				}
 
 				break;
