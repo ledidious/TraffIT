@@ -2,6 +2,9 @@ package de.superdudes.traffit.application;
 
 import java.awt.Dimension;
 
+import de.superdudes.traffit.SimulationManager;
+import de.superdudes.traffit.dto.StartingGrid;
+import de.superdudes.traffit.dto.Street;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +42,10 @@ public class Main extends Application {
 			controller.lane1.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.lane2.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.signlane.getChildren().addAll(controller.buildSignLane(1280, 800));
+			
+			Street street1 = new Street(1280, 2);
+			StartingGrid grid1 = new StartingGrid("grid1", street1);
+			SimulationManager.setRunningSimulation(grid1);
 
 			// Listener to resize the window
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
@@ -61,6 +68,10 @@ public class Main extends Application {
 					controller.signlane.getChildren().clear();
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
+					
+					street1.setLength((int) controller.lane1.getWidth()); 
+					//System.out.println("lane1 breite: " + controller.lane1.getWidth());
+					//System.out.println(street1.getLength());
 				}
 			});
 

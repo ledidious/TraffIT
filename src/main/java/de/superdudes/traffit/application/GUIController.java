@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.File;
 
 import de.superdudes.traffit.SimulationManager;
+import de.superdudes.traffit.dto.Street;
 
 public class GUIController {
 
@@ -161,6 +162,10 @@ public class GUIController {
 		button06.setDisable(true);
 		streetSize.setDisable(true);
 		
+		System.out.println(anchPane01.getWidth());
+		
+		//Street test = new Street();
+		
 		//initSpinner();
 	}
 
@@ -176,7 +181,7 @@ public class GUIController {
 		streetSize.setDisable(true);
 		System.out.println("Simulation has been started...");
 		
-		//SimulationManager.start();
+		SimulationManager.start();
 	}
 	
 	@FXML
@@ -186,7 +191,7 @@ public class GUIController {
 		button06.setDisable(true);
 		System.out.println("Simulation has been paused...");
 		
-		//SimulationManager.halt();
+		SimulationManager.halt();
 	}
 
 	@FXML
@@ -201,7 +206,7 @@ public class GUIController {
 		streetSize.setDisable(false);
 		System.out.println("Simulation has been stopped!");
 		
-		//SimulationManager.stop();
+		SimulationManager.stop();
 	}
 
 	@FXML
