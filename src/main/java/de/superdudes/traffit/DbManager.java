@@ -13,26 +13,34 @@ public class DbManager{
 	public static DbManager instance() {
 		return Singletons.INSTANCE;
 	}
+
+	String  url = "jdbc:mariadb://localhost/TraffIT";
+	String  user = "TraffIT";
+	String  pw  = "pw";
 	
-	public static Connection myConn = null;
+	public  void getConnection()
+	{
+		 try
+		    {
+		      Class.forName( "org.mariadb.jdbc" );
+		    }
+		    catch ( ClassNotFoundException e )
+		    {
+		      System.err.println( "Keine Treiber-Klasse!" );
+		      return;
+		    }
+
 		
-	public static Connection getConnection()
-	{
-		String url = "jdbc:mariadb://localhost/TraffIT";
-		
-	try
-	{
-          myConn = DriverManager.getConnection(url);
-          return myConn;
-	}
-	catch (SQLException ex)
-	{
-		ex.printStackTrace();
-		System.out.println("Verbindung konnte nicht aufgebaut werden!!!");
+		try
+		{
+			Connection myConn = DriverManager.getConnection(url, user, pw);
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
-	return myConn;
 	
-	}
+	
 	
 }           

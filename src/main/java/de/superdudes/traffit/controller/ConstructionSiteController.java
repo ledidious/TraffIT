@@ -23,42 +23,82 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 	}
 
 	@Override
-	public void save(ConstructionSite object) {
-
-		if (object.getId() != null) {
-			try {
+	public void save(ConstructionSite object) throws SQLException 
+	{
+		      Connection myConn = null;
+         try
+			{
+				if (object.getId() != null)
+				{
+				 myConn = DriverManager.getConnection(url,user,pw);
+				
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE ConstructionSite SET" + " cs_id = ('" + object.getId() + "')" + " nr =  ('"
-						+ object.getNr() + "')" + " sg_id = ('" + object.getLength() + " WHERE sg_id = 1";
+				String sql = "UPDATE ConstructionSite SET" + " cs_id = '" + object.getId() + "'," + " nr = '" + object.getNr() + "',"  
+				            +  " sg_id = '" + object.getLength() +"' " + " WHERE sg_id = 1";
+
+				myStmt.executeUpdate(sql);
+				}
+				
+				else
+				{
+				 myConn = DriverManager.getConnection(url,user,pw);
+					
+				Statement myStmt = myConn.createStatement();
+
+			    String sql = " INSERT INTO ConstructionSite (nr, name) " + " VALUES ('" +  object.getNr() + "','" + object.getLength() + "')";
 
 				myStmt.executeUpdate(sql);
 
+				}
 			}
 
-			catch (SQLException ex) {
+			catch (SQLException ex) 
+			{
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
 			}
-		} else {
+<<<<<<< Updated upstream
+		}else
+
+	{
 			Statement myStmt = myConn.createStatement();
 
 			String sql = " INSERT INTO ConstructionSite (cs_id, nr, name) " + " VALUES ('" + object.getId()
 					+ object.getNr() + object.ge + "')";
 
 			myStmt.executeUpdate(sql);
-
+=======
+         finally
+         {
+        	 myConn.close();
+         }
 		}
 
-	}
+	>>>>>>>Stashed changes
 
 	@Override
+	<<<<<<<Updated upstream
+
 	public ConstructionSite load(Integer Id) {
 
 		try {
 			Statement myStmt = conn.createStatement();
 
 			String sql = "SELECT cs_id , nr , cs_length ConstructionSite WHERE sg_id = '" + Id + "' ";
+=======
+
+	public ConstructionSite load(Integer Id) throws SQLException
+	{
+		   Connection myConn = null;
+		try 
+		{
+			 myConn = DriverManager.getConnection(url,user,pw);
+			
+			Statement myStmt =myConn.createStatement();
+
+		    String sql = "SELECT cs_id , nr , cs_length ConstructionSite WHERE sg_id = '" + Id + "' ";
+>>>>>>> Stashed changes
 
 			ResultSet result = myStmt.executeQuery(sql);
 
@@ -67,6 +107,7 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 				Integer nr = result.getInt(2);
 				Integer length = result.getInt(3);
 
+<<<<<<< Updated upstream
 				ConstructionSite object = new ConstructionSite(length);
 
 				object.setId(sg_id);
@@ -78,9 +119,36 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 			}
 
 		} catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
+=======
+	      ConstructionSite object = new ConstructionSite(length);
+
+			object.setId(sg_id);
+			object.setNr(nr);
+			object.setLength(length);
+			
+			 return object;
+		      
+		   }
+		
 		}
 
+	catch(
+
+	SQLException ex)
+	{
+>>>>>>> Stashed changes
+			ex.printStackTrace();
+			System.out.print("Laden der Daten nicht m�glich!!!");
+		}finally
+	{
+		myConn.close();
+	}return null;
+
+	}
+
+	@Override
+	public void render(ConstructionSite object) {
+		// TODO Auto-generated method stub
+		
 	}
 }

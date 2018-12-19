@@ -22,39 +22,48 @@ public class StreetSignController extends AbstractController<StreetSign> {
 	}
 
 	@Override
-	public void save(StreetSign object) {
+	public void save(StreetSign object) throws SQLException {
+		Connection myConn = null;
+		try {
+			if (object.getId() != null) {
+				myConn = DriverManager.getConnection(url, user, pw);
 
-		if (object.getId() != null) {
-			try {
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE STREET_SIGN SET" + " ss_id = ('" + object.getId() + "')" + " nr =  ('"
-						+ object.getNr() + "')" + " speedLimit = ('" + object.getSpeedLimit() + " WHERE sg_id = 1";
+				String sql = "UPDATE STREET_SIGN SET" + " ss_id = '" + object.getId() + "'," + " nr = '"
+						+ object.getNr() + "'," + " speedLimit = '" + object.getSpeedLimit() + "' "
+						+ " WHERE sg_id = 1";
+
+				myStmt.executeUpdate(sql);
+			} else {
+				myConn = DriverManager.getConnection(url, user, pw);
+
+				Statement myStmt = myConn.createStatement();
+
+				String sql = " INSERT INTO STREET_SIGN (nr, speedLimit) " + " VALUES ('" + object.getNr() + "','"
+						+ object.getSpeedLimit() + "')";
 
 				myStmt.executeUpdate(sql);
 
 			}
+		}
 
-			catch (SQLException ex) {
-				ex.printStackTrace();
-				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-			}
-		} else {
-			Statement myStmt = myConn.createStatement();
-
-			String sql = " INSERT INTO STREET_SIGN (ss_id, nr, speedLimit) " + " VALUES ('" + object.getId()
-					+ object.getNr() + object.getSpeedLimit() + "')";
-
-			myStmt.executeUpdate(sql);
-
+		catch (SQLException ex) {
+			ex.printStackTrace();
+			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+		} finally {
+			myConn.close();
 		}
 
 	}
 
 	@Override
-	public StreetSign load(Integer Id) {
 
+	public StreetSign load(Integer Id) throws SQLException {
+		Connection myConn = null;
 		try {
+			myConn = DriverManager.getConnection(url, user, pw);
+
 			Statement myStmt = myConn.createStatement();
 
 			String sql = "SELECT ss_id , nr , speedLimit STREEET_SIGN WHERE sg_id = '" + Id + "' ";
@@ -79,7 +88,10 @@ public class StreetSignController extends AbstractController<StreetSign> {
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			System.out.print("Laden der Daten nicht m�glich!!!");
+		} finally {
+			myConn.close();
 		}
+		return null;
 
 	}
 }

@@ -23,22 +23,41 @@ public class LaneController extends AbstractController<Lane> {
 	}
 
 	@Override
-	public void save(Lane object) {
-
-		if (object.getId() != null) {
-			try {
+	public void save(Lane object) throws SQLException 
+	{
+		   Connection myConn = null;
+		
+		try 
+		{
+				if (object.getId() != null)
+				{
+				 myConn = DriverManager.getConnection(url,user,pw);
+					
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE LANE SET" + " l_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr()
-						+ "')" + " WHERE sg_id = 1";
+				String sql = "UPDATE LANE SET" + " l_id = '" + object.getId() + "'," + " nr = '"+ object.getNr() + "' "
+				           +  " WHERE sg_id = 1";
 
 				myStmt.executeUpdate(sql);
 
-			}
+			    }
+				else 
+				{
+					 myConn = DriverManager.getConnection(url,user,pw);
+					
+					Statement myStmt = myConn.createStatement();
 
-			catch (SQLException ex) {
+					String sql = " INSERT INTO LANE (nr) " + " VALUE ('" + object.getNr() + "')";
+
+					 myStmt.executeUpdate(sql);
+			    }
+
+		}
+	    catch (SQLException ex)
+	    {
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+<<<<<<< Updated upstream
 			}
 		} else {
 			Connection myConn = DriverManager.getConnection(url);
@@ -49,15 +68,27 @@ public class LaneController extends AbstractController<Lane> {
 
 			myStmt.executeUpdate(sql);
 
+=======
+	    }
+		finally
+		{
+			myConn.close();
+>>>>>>> Stashed changes
 		}
-
+		
+		
 	}
 
 	@Override
-	public Lane load(Integer Id)
+	public Lane load(Integer Id) throws SQLException
 	{
+<<<<<<< Updated upstream
+=======
+		   Connection myConn = null;
+>>>>>>> Stashed changes
 		try 
 		{
+			 myConn = DriverManager.getConnection(url,user,pw);
 			
 			Statement myStmt = myConn.createStatement();
 
@@ -72,7 +103,7 @@ public class LaneController extends AbstractController<Lane> {
 				Integer nr = result.getInt(2);
 			
 
-	      Lane object = new Lane(new StreetController().load(Id), new Lane().getIndex());
+	      Lane object = new Lane(new Street(nr, nr), nr);
 
 			object.setId(l_id);
 			object.setNr(nr);
@@ -87,5 +118,22 @@ public class LaneController extends AbstractController<Lane> {
 			ex.printStackTrace();
 			System.out.print("Laden der Daten nicht m�glich!!!");
 		}
+		finally
+		{
+			myConn.close();
+		}
+		return null;
 
 	}
+
+<<<<<<< Updated upstream
+	}
+=======
+	@Override
+	public void render(Lane object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
+>>>>>>> Stashed changes

@@ -30,42 +30,58 @@ public class VehicleController extends AbstractController<Vehicle> {
 	}
 
 	@Override
-	public void save(Vehicle object) {
+	public void save(Vehicle object) throws SQLException 
+	{
+		Connection myConn = null;
+		try {
+				if (object.getId() != null)
+				{
+				 myConn = DriverManager.getConnection(url,user,pw);
+					
+				 Statement myStmt = myConn.createStatement();
 
-		if (object.getId() != null) {
-			try {
-				Statement myStmt = myConn.createStatement();
-
-				String sql = "UPDATE VEHICLE" + " v_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr()
-						+ "')" + " currentSpeed = ('" + object.getCurrentSpeed() + " maxSpeed = ('"
-						+ object.getMaxSpeed() + "')" + " speedLimit = ('" + object.getSpeedLimit() + "')"
-						+ " WHERE sg_id = 1";
+				 String sql = "UPDATE VEHICLE" + " v_id = '" + object.getId() + "'," + " nr = '" + object.getNr() + "',"  
+				           +  "currentSpeed = '" + object.getCurrentSpeed() + "'," + " maxSpeed ='" + object.getMaxSpeed() + "',"
+						   + " speedLimit = '" + object.getSpeedLimit() + "'," +  " WHERE sg_id = 1";
 
 				myStmt.executeUpdate(sql);
+				}
+				else
+				{
+					 myConn = DriverManager.getConnection(url,user,pw);
+					
+					Statement myStmt = myConn.createStatement();
 
+					String sql = " INSERT INTO VEHICLE (nr, currentSpeed, maxSpeed, speedLimit) " + " VALUES ('"  + object.getNr() + "','"
+					          + object.getCurrentSpeed() + "','" + object.getMaxSpeed() + "','" + object.getSpeedLimit() + "')";
+
+					myStmt.executeUpdate(sql);
+
+				}
 			}
 
 			catch (SQLException ex) {
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
 			}
-		} else {
-			Statement myStmt = myConn.createStatement();
 
-			String sql = " INSERT INTO VEHICLE (v_id, nr, currentSpeed, maxSpeed, speedLimit) " + " VALUES ('"
-					+ object.getId() + object.getNr() + object.getCurrentSpeed() + object.getMaxSpeed()
-					+ object.getSpeedLimit() + "')";
-
-			myStmt.executeUpdate(sql);
-
-		}
+		   finally
+		   {
+			   myConn.close();
+		   }
+		
+		
 
 	}
 
 	@Override
-	public Vehicle load(Integer Id) {
 
+	public Vehicle load(Integer Id) throws SQLException
+	{
+		Connection myConn = null;
 		try {
+		     myConn = DriverManager.getConnection(url,user,pw);
+			
 			Statement myStmt = myConn.createStatement();
 
 			String sql = "SELECT v_id , nr , currentSpeed, maxSpeed, speedLimit FROM VEHICLE WHERE sg_id = '" + Id
@@ -80,24 +96,34 @@ public class VehicleController extends AbstractController<Vehicle> {
 				Integer maxSpeed = result.getInt(4);
 				Integer speedLimit = result.getInt(5);
 
-				Vehicle object = new Vehicle(Type.CAR);
+				Vehicle object = new Vehicle(Type.CAR);                   // ??????????
+						
+			    object.setId(v_id);
+			    object.setNr(nr);
+			    object.setCurrentSpeed(currentSpeed);
+			    object.setMaxSpeed(maxSpeed);
+			    object.setSpeedLimit(speedLimit);
+			
+	           return object;
+		   }
+		
+		} 
+		catch (SQLException ex)
+		{
 
-				object.setId(v_id);
-				object.setNr(nr);
-				object.setCurrentSpeed(currentSpeed);
-				object.setMaxSpeed(maxSpeed);
-				object.setSpeedLimit(speedLimit);
-
-				return object;
-
-			}
-
-		} catch (SQLException ex) {
 			ex.printStackTrace();
 			System.out.print("Laden der Daten nicht m�glich!!!");
 		}
+		finally
+		{
+			myConn.close();
+		}
+		return null;
+
+
 	}
 
+	
 	public void render(Vehicle object) {
 
 		final Vehicle vehicle = object; // To rename fitting

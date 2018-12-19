@@ -22,81 +22,78 @@ public class StreetController extends AbstractController<Street> {
 	}
 
 	@Override
-	public void save(Street object) {
-	    
-		if (object.getId() != null)
-		{
-			try {
+	public void save(Street object) throws SQLException {
+		Connection myConn = null;
+		try {
+			if (object.getId() != null) {
+
+				myConn = DriverManager.getConnection(url, user, pw);
+
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE STREET SET" + " s_id = ('" + object.getId() + "')" + " nr =  ('"
-						+ object.getNr() + "')" + " s_length = ('" + object.getLength() + "') " + " WHERE sg_id = 1";
+				String sql = "UPDATE STREET SET" + " s_id = '" + object.getId() + "'," + " nr = '" + object.getNr()
+						+ "'," + " s_length = '" + object.getLength() + "' " + " WHERE sg_id = 1";
+
+				myStmt.executeUpdate(sql);
+			}
+
+			else {
+				myConn = DriverManager.getConnection(url, user, pw);
+
+				Statement myStmt = myConn.createStatement();
+
+				String sql = " INSERT INTO STREET(nr, s_length) " + " VALUES ('" + object.getNr() + "','"
+						+ object.getLength() + "')";
 
 				myStmt.executeUpdate(sql);
 
 			}
 
-			catch (SQLException ex) {
-				ex.printStackTrace();
-				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-			}
-		}
-		else
-		{
-		try 
-		{
-			Statement myStmt = myConn.createStatement();
-
-			String sql = " INSERT INTO STREET(s_id, nr, s_length) " + " VALUES ('" + object.getId() + object.getNr()
-					+ object.getLength() + "')";
-
-			myStmt.executeUpdate(sql);
-
 		}
 
-		catch (SQLException ex)
-		 {
+		catch (SQLException ex) {
 			ex.printStackTrace();
 			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		 }
-	   }
+		} finally {
+			myConn.close();
+		}
+
 	}
 
 	@Override
-	public Street load(Integer Id)
-	{
-
+	public Street load(Integer Id) throws SQLException {
+		Connection myConn = null;
 		try {
+			myConn = DriverManager.getConnection(url, user, pw);
+
 			Statement myStmt = myConn.createStatement();
 
-		    String sql = "SELECT s_id , nr , s_length FROM STREET WHERE sg_id = '" + Id + "' ";
+			String sql = "SELECT s_id , nr , s_length FROM STREET WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next())
-			{
+			while (result.next()) {
 				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				Integer sLength = result.getInt(3);
 
-	      Street object = new Street(sLength, new Street().getLaneCount());
-	      
-	     
-	        object.setId(sg_id);
-			object.setNr(nr);
-			object.setLength(sLength);
-		
-			
-			 return object;
-		      
-		   }
-		
-		} 
-		catch (SQLException ex)
-		{
+				Street object = new Street(sLength, nr);
+
+				object.setId(sg_id);
+				object.setNr(nr);
+				object.setLength(sLength);
+
+				return object;
+
+			}
+
+		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht mï¿½glich!!!");
+			System.out.print("Laden der Daten nicht möglich!!!");
+		} finally {
+			myConn.close();
 		}
+		return null;
 
 	}
 }

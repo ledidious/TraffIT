@@ -1,6 +1,6 @@
 CREATE TABLE STARTING_GRID
 (
-  sg_id   INTEGER(10),
+  sg_id   INTEGER(10)  Auto_Increment,    
   nr      INTEGER(10),
   name    VARCHAR(255),
 
@@ -9,9 +9,10 @@ CREATE TABLE STARTING_GRID
 
 CREATE TABLE STREET
 (
-  s_id          INTEGER(10),
+  s_id          INTEGER(10)  Auto_Increment,
   nr            INTEGER(10),
   s_length      INTEGER(10),
+  numberLanes   INTEGER(10),
 
   PRIMARY KEY (s_id),
   FOREIGN KEY (s_id) REFERENCES STARTING_GRID (sg_id)
@@ -22,7 +23,7 @@ CREATE TABLE STREET
 
 CREATE TABLE LANE
 (
-  l_id   INTEGER(10),
+  l_id   INTEGER(10) Auto_Increment,
   nr     INTEGER(10),
 
   PRIMARY KEY (l_id),
@@ -34,7 +35,7 @@ CREATE TABLE LANE
 
 CREATE TABLE CONSRTUCTIONSITE
 (
-  cs_id       INTEGER(10),
+  cs_id       INTEGER(10) Auto_Increment,
   nr          INTEGER(10),
   cs_length   INTEGER(10),
 
@@ -48,9 +49,9 @@ CREATE TABLE CONSRTUCTIONSITE
 
 CREATE TABLE CELL
 (
-  c_id                      INTEGER(10),
+  c_id                      INTEGER(10)    Auto_Increment,
   nr                        INTEGER(10),
-  c_index                   INTEGER(10)
+  c_index                   INTEGER(10),
 
   PRIMARY KEY (c_id),
   FOREIGN KEY (c_id) REFERENCES LANE (l_id)
@@ -62,7 +63,7 @@ CREATE TABLE CELL
 
 CREATE TABLE STREET_SIGN (
 
-  ss_id        INTEGER(10),
+  ss_id        INTEGER(10) Auto_Increment,
   nr           INTEGER(10),
   speedLimit   INTEGER(10),
 
@@ -75,7 +76,7 @@ CREATE TABLE STREET_SIGN (
 
 CREATE TABLE VEHICLE
 (
-  v_id            INTEGER(10),
+  v_id            INTEGER(10) Auto_Increment,
   nr              INTEGER(10),
   currentspeed    INTEGER(10),
   maxspeed        INTEGER(10),
