@@ -50,21 +50,18 @@ public class Vehicle extends SimulationObject {
 	public Vehicle(@NonNull Type type, @NonNull Cell tailCell) {
 		this.type = type;
 
-		if (tailCell.isBlocked()) {
-			throw new ObjectMisplacedException(this, "Blocked by " + tailCell.getBlockingObject());
-		}
-		blockedCells.addFirst(tailCell);
+		Cell currentCell = tailCell;
+		for (int i = 0 /* First cell already set */; i < type.getLength(); i++) {
+			currentCell = currentCell.getSuccessor();
 
-		for (int i = 1 /* First cell already set */; i < type.getLength(); i++) {
-			final Cell nextCell = tailCell.getSuccessor();
-
-			if (nextCell == null) {
+			if (currentCell == null) {
 				throw new ObjectMisplacedException(this, "Reaches the end of street");
 			}
-			if (nextCell.isBlocked()) {
-				throw new ObjectMisplacedException(this, "Blocked by " + nextCell.getBlockingObject());
+			if (currentCell.isBlocked()) {
+				throw new ObjectMisplacedException(this, "Blocked by " + currentCell.getBlockingObject());
 			}
-			blockedCells.addFirst(nextCell);
+			blockedCells.addFirst(currentCell);
+			currentCell.setBlockingVehicle(this);
 		}
 	}
 
