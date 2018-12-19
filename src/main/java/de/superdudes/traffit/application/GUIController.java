@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.io.File;
 
+import de.superdudes.traffit.SimulationManager;
+
 public class GUIController {
 
 	public DoubleProperty currentWidth = new SimpleDoubleProperty();
@@ -82,6 +84,8 @@ public class GUIController {
 	private Button button04;
 	@FXML
 	public Button button05;
+	@FXML
+	private Button button06;
 
 	// Panes
 	@FXML
@@ -153,6 +157,8 @@ public class GUIController {
 		ivConstruction.setImage(iconConstruction);
 
 		button02.setDisable(true);
+		button04.setDisable(true);
+		button06.setDisable(true);
 		streetSize.setDisable(true);
 		
 		//initSpinner();
@@ -160,20 +166,42 @@ public class GUIController {
 
 	@FXML
 	public void startSimulation() {
-		button05.setDisable(true);
 		button01.setDisable(true);
 		button02.setDisable(false);
 		button03.setDisable(true);
+		button04.setDisable(true);
+		button05.setDisable(true);
+		button06.setDisable(false);
+		
+		streetSize.setDisable(true);
 		System.out.println("Simulation has been started...");
+		
+		//SimulationManager.start();
+	}
+	
+	@FXML
+	public void haltSimulation() {
+		button01.setDisable(false);
+		button04.setDisable(false);
+		button06.setDisable(true);
+		System.out.println("Simulation has been paused...");
+		
+		//SimulationManager.halt();
 	}
 
 	@FXML
 	public void stopSimulation() {
-		button05.setDisable(false);
 		button01.setDisable(false);
 		button02.setDisable(true);
 		button03.setDisable(false);
+		button04.setDisable(true);
+		button05.setDisable(false);
+		button06.setDisable(true);
+		
+		streetSize.setDisable(false);
 		System.out.println("Simulation has been stopped!");
+		
+		//SimulationManager.stop();
 	}
 
 	@FXML

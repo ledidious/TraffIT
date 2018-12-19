@@ -44,12 +44,12 @@
 				</AnchorPane>
 				<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
 					<children>
-						<Pane layoutX="986.0" layoutY="356.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="167.0">
+						<Pane layoutX="986.0" layoutY="356.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="165.0">
 							<children>
 								<Button fx:id="button03" mnemonicParsing="false" onAction="#loadSimulation" text="Load Simulation" />
 							</children>
 						</Pane>
-						<Pane layoutX="1138.0" layoutY="356.0" prefHeight="31.0" prefWidth="127.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="13.0">
+						<Pane layoutX="1138.0" layoutY="356.0" prefHeight="31.0" prefWidth="127.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="15.0">
 							<children>
 								<Button fx:id="button04" mnemonicParsing="false" onAction="#saveSimulation" text="Save Simulation" />
 							</children>
@@ -99,12 +99,12 @@
 								<ImageView fx:id="ivConstruction" fitHeight="79.0" fitWidth="93.0" preserveRatio="true" />
 							</children>
 						</Pane>
-						<Pane layoutX="830.0" layoutY="357.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="323.0">
+						<Pane layoutX="830.0" layoutY="357.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="310.0">
 							<children>
 								<Button fx:id="button02" layoutX="1.0" mnemonicParsing="false" onAction="#stopSimulation" text="Stop Simulation" />
 							</children>
 						</Pane>
-						<Pane layoutX="677.0" layoutY="357.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="476.0">
+						<Pane layoutX="494.0" layoutY="355.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="595.0">
 							<children>
 								<Button fx:id="button01" layoutX="1.0" mnemonicParsing="false" text="Start Simulation" />
 							</children>
@@ -118,6 +118,11 @@
                      <children>
                         <TextField fx:id="streetSize" layoutX="2.0" layoutY="23.0" promptText="Enter No of Cells" />
                         <Label layoutX="2.0" layoutY="2.0" text="Configure Streetsize" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="688.0" layoutY="356.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="450.0">
+                     <children>
+                        <Button fx:id="button06" layoutX="1.0" mnemonicParsing="false" onAction="#haltSimulation" text="Halt Simulation" />
                      </children>
                   </Pane>
                   <!--  <Pane layoutX="481.0" layoutY="59.0" prefHeight="63.0" prefWidth="193.0">
