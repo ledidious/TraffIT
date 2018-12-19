@@ -1,6 +1,7 @@
 package de.superdudes.traffit.dto;
 
 import java.util.Deque;
+import java.util.LinkedList;
 
 import javax.swing.text.AbstractDocument.LeafElement;
 
@@ -43,7 +44,7 @@ public class Vehicle extends SimulationObject {
 	private Type type;
 
 	@NonNull
-	private Deque<Cell> blockedCells;
+	private Deque<Cell> blockedCells = new LinkedList<>();
 
 	private int gensSinceLastDrive = -1; // Never set
 
