@@ -57,23 +57,12 @@ public class LaneController extends AbstractController<Lane> {
 	    {
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-<<<<<<< Updated upstream
-			}
-		} else {
-			Connection myConn = DriverManager.getConnection(url);
 
-			Statement myStmt = myConn.createStatement();
-
-			String sql = " INSERT INTO LANE (l_id, nr) " + " VALUES ('" + object.getId() + object.getNr() + "')";
-
-			myStmt.executeUpdate(sql);
-
-=======
-	    }
-		finally
+		}
+		 finally
 		{
 			myConn.close();
->>>>>>> Stashed changes
+
 		}
 		
 		
@@ -82,10 +71,8 @@ public class LaneController extends AbstractController<Lane> {
 	@Override
 	public Lane load(Integer Id) throws SQLException
 	{
-<<<<<<< Updated upstream
-=======
-		   Connection myConn = null;
->>>>>>> Stashed changes
+        Connection myConn = null;
+
 		try 
 		{
 			 myConn = DriverManager.getConnection(url,user,pw);
@@ -126,14 +113,7 @@ public class LaneController extends AbstractController<Lane> {
 
 	}
 
-<<<<<<< Updated upstream
-	}
-=======
-	@Override
-	public void render(Lane object) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 }
->>>>>>> Stashed changes
+

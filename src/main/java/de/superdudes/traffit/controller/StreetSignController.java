@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.superdudes.traffit.dto.Cell;
 import de.superdudes.traffit.dto.ConstructionSite;
+import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.SimulationObject;
+import de.superdudes.traffit.dto.Street;
 import de.superdudes.traffit.dto.StreetSign;
 
 public class StreetSignController extends AbstractController<StreetSign> {
@@ -75,7 +78,7 @@ public class StreetSignController extends AbstractController<StreetSign> {
 				Integer nr = result.getInt(2);
 				Integer speedLimit = result.getInt(3);
 
-				StreetSign object = new StreetSign(speedLimit);
+				StreetSign object = new StreetSign(nr, new Cell(speedLimit, new Lane(new Street(speedLimit, speedLimit), speedLimit)), speedLimit);
 
 				object.setId(sg_id);
 				object.setNr(nr);

@@ -24,73 +24,48 @@ public class CellController extends AbstractController<Cell> {
 	}
 
 	@Override
-	public void save(Cell object) throws SQLException 
-	{
-		     Connection myConn = null;
-		try 
-			{
-				if (object.getId() != null)
-				{
-				 myConn = DriverManager.getConnection(url,user,pw);	
-					
+	public void save(Cell object) throws SQLException {
+		Connection myConn = null;
+		try {
+			if (object.getId() != null) {
+				myConn = DriverManager.getConnection(url, user, pw);
+
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE CELL SET" + " c_id = '" + object.getId() + "'," + " nr = '"
-						+ object.getNr() + "'," + " index = '" + object.getIndex() +"' " + " WHERE sg_id = 1";
+				String sql = "UPDATE CELL SET" + " c_id = '" + object.getId() + "'," + " nr = '" + object.getNr() + "',"
+						+ " index = '" + object.getIndex() + "' " + " WHERE sg_id = 1";
 
 				myStmt.executeUpdate(sql);
-				}
-				else 
-				{
-					 myConn = DriverManager.getConnection(url,user,pw);
-					
-					Statement myStmt = myConn.createStatement();
+			} else {
+				myConn = DriverManager.getConnection(url, user, pw);
 
-					String sql = " INSERT INTO Cell (nr, index) " + " VALUES ('" + object.getNr() + "','" + object.getIndex() + "')";
+				Statement myStmt = myConn.createStatement();
 
-					myStmt.executeUpdate(sql);
-                }
+				String sql = " INSERT INTO Cell (nr, index) " + " VALUES ('" + object.getNr() + "','"
+						+ object.getIndex() + "')";
+
+				myStmt.executeUpdate(sql);
 			}
+		}
 
-			catch (SQLException ex)
-		    {
-				ex.printStackTrace();
-				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-			}
-<<<<<<< Updated upstream
-		}else
+		catch (SQLException ex) {
+			ex.printStackTrace();
+			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+		}
 
-	{
-			Statement myStmt = myConn.createStatement();
-
-			String sql = " INSERT INTO Cell (c_id, nr, index) " + " VALUES ('" + object.getId() + object.getNr()
-					+ object.getIndex() + "')";
-
-			myStmt.executeUpdate(sql);
-
-=======
-		finally
-		{
+		finally {
 			myConn.close();
 		}
->>>>>>> Stashed changes
-		}
 
-	<<<<<<<Updated upstream
+	}
 
 	@Override
-	public Cell load(Integer Id) {
+	public Cell load(Integer Id) throws SQLException {
+		Connection myConn = null;
 
-=======
-
-	@Override
-	public Cell load(Integer Id) throws SQLException
-	{
-    	    Connection myConn = null;
->>>>>>> Stashed changes
 		try {
-			 myConn = DriverManager.getConnection(url,user,pw);
-			
+			myConn = DriverManager.getConnection(url, user, pw);
+
 			Statement myStmt = myConn.createStatement();
 
 			String sql = "SELECT c_id, nr, index FROM CELL WHERE c_id = '" + Id + "' ";
@@ -102,8 +77,7 @@ public class CellController extends AbstractController<Cell> {
 				Integer nr = result.getInt(2);
 				Integer index = result.getInt(3);
 
-<<<<<<< Updated upstream
-				Cell object = new Cell(index, new LaneController().load(Id));
+				Cell object = new Cell(index, new Lane(new Street(2, 6), index));
 
 				object.setId(c_id);
 				object.setNr(nr);
@@ -113,35 +87,17 @@ public class CellController extends AbstractController<Cell> {
 
 			}
 
-		} catch (SQLException ex) {
-=======
-	      Cell object = new Cell(index, new Lane(new Street (2, 6), index));
+		} catch (
 
-			object.setId(c_id);
-			object.setNr(nr);
-			object.setIndex(index);
-			
-			return object;
-		      
-		   }
-		
-		}catch(
+		SQLException ex) {
 
-	SQLException ex)
-	{
->>>>>>> Stashed changes
 			ex.printStackTrace();
 			System.out.print("Laden der Daten nicht m�glich!!!");
-		}finally
-	{
-		myConn.close();
-	}return null;
+		} finally {
+			myConn.close();
+		}
+		return null;
 
 	}
 
-	@Override
-	public void render(Cell object) {
-		// TODO Auto-generated method stub
-		
-	}
 }

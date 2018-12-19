@@ -2,7 +2,7 @@ package de.superdudes.traffit.controller;
 
 import java.sql.*;
 
-import de.superdudes.traffit.DbManager;
+
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
 
