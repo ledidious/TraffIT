@@ -22,15 +22,14 @@ public class StreetSignController extends AbstractController<StreetSign> {
 	}
 
 	@Override
-	public void save(StreetSign object) 
-	{
-		
-		if (object.getId() != null)
-		{
+	public void save(StreetSign object) {
+
+		if (object.getId() != null) {
 			try {
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE STREET_SIGN SET" + " ss_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr() + "')"  +  " speedLimit = ('" + object.getSpeedLimit() + " WHERE sg_id = 1";
+				String sql = "UPDATE STREET_SIGN SET" + " ss_id = ('" + object.getId() + "')" + " nr =  ('"
+						+ object.getNr() + "')" + " speedLimit = ('" + object.getSpeedLimit() + " WHERE sg_id = 1";
 
 				myStmt.executeUpdate(sql);
 
@@ -40,8 +39,7 @@ public class StreetSignController extends AbstractController<StreetSign> {
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
 			}
-		}
-		else {
+		} else {
 			Statement myStmt = myConn.createStatement();
 
 			String sql = " INSERT INTO STREET_SIGN (ss_id, nr, speedLimit) " + " VALUES ('" + object.getId()
@@ -54,38 +52,33 @@ public class StreetSignController extends AbstractController<StreetSign> {
 	}
 
 	@Override
-	public StreetSign load(Integer Id)
-	{
+	public StreetSign load(Integer Id) {
 
 		try {
 			Statement myStmt = myConn.createStatement();
 
-		
 			String sql = "SELECT ss_id , nr , speedLimit STREEET_SIGN WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next())
-			{
+			while (result.next()) {
 				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				Integer speedLimit = result.getInt(3);
 
 				StreetSign object = new StreetSign(speedLimit);
-						
-			    object.setId(sg_id);
-			    object.setNr(nr);
-			    object.setSpeedLimit(speedLimit);
-			
-	           return object;
-		      
-		   }
-		
-		} 
-		catch (SQLException ex)
-		{
+
+				object.setId(sg_id);
+				object.setNr(nr);
+				object.setSpeedLimit(speedLimit);
+
+				return object;
+
+			}
+
+		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht möglich!!!");
+			System.out.print("Laden der Daten nicht mï¿½glich!!!");
 		}
 
 	}

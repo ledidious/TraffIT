@@ -16,11 +16,9 @@ public class StartingGridController extends AbstractController<StartingGrid> {
 	}
 
 	@Override
-	public void save(StartingGrid object) 
-	{
-		
-		if (object.getId() != null)
-		{
+	public void save(StartingGrid object) {
+
+		if (object.getId() != null) {
 			try {
 				Statement myStmt = myConn.createStatement();
 
@@ -35,8 +33,7 @@ public class StartingGridController extends AbstractController<StartingGrid> {
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
 			}
-		}
-		else {
+		} else {
 			Statement myStmt = myConn.createStatement();
 
 			String sql = " INSERT INTO STARTING_GRID (sg_id, nr, name) " + " VALUES ('" + object.getId()
@@ -49,40 +46,34 @@ public class StartingGridController extends AbstractController<StartingGrid> {
 	}
 
 	@Override
-	public StartingGrid load(Integer Id)
-	{
+	public StartingGrid load(Integer Id) {
 
 		try {
 			Statement myStmt = myConn.createStatement();
 
-		
 			String sql = "SELECT sg_id , nr , name FROM STARTING_GRID WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next())
-			{
+			while (result.next()) {
 				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				String name = result.getString(3);
 
-	      StartingGrid object = new StartingGrid(name, new StreetController().load(Id) );
+				StartingGrid object = new StartingGrid(name, new StreetController().load(Id));
 
-			object.setId(sg_id);
-			object.setNr(nr);
-			object.setName(name);
-			
-			 return object;
-		      
-		   }
-		
-		} 
-		catch (SQLException ex)
-		{
+				object.setId(sg_id);
+				object.setNr(nr);
+				object.setName(name);
+
+				return object;
+
+			}
+
+		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht möglich!!!");
+			System.out.print("Laden der Daten nicht mï¿½glich!!!");
 		}
 
 	}
-
 }

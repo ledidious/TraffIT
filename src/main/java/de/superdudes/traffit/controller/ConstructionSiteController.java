@@ -23,15 +23,14 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 	}
 
 	@Override
-	public void save(ConstructionSite object) 
-	{
-		
-		if (object.getId() != null)
-		{
+	public void save(ConstructionSite object) {
+
+		if (object.getId() != null) {
 			try {
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE ConstructionSite SET" + " cs_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr() + "')"  +  " sg_id = ('" + object.getLength() + " WHERE sg_id = 1";
+				String sql = "UPDATE ConstructionSite SET" + " cs_id = ('" + object.getId() + "')" + " nr =  ('"
+						+ object.getNr() + "')" + " sg_id = ('" + object.getLength() + " WHERE sg_id = 1";
 
 				myStmt.executeUpdate(sql);
 
@@ -41,8 +40,7 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
 			}
-		}
-		else {
+		} else {
 			Statement myStmt = myConn.createStatement();
 
 			String sql = " INSERT INTO ConstructionSite (cs_id, nr, name) " + " VALUES ('" + object.getId()
@@ -55,41 +53,34 @@ public class ConstructionSiteController extends AbstractController<ConstructionS
 	}
 
 	@Override
-	public ConstructionSite load(Integer Id)
-	{
+	public ConstructionSite load(Integer Id) {
 
 		try {
 			Statement myStmt = conn.createStatement();
 
-		
 			String sql = "SELECT cs_id , nr , cs_length ConstructionSite WHERE sg_id = '" + Id + "' ";
 
 			ResultSet result = myStmt.executeQuery(sql);
 
-			while (result.next())
-			{
+			while (result.next()) {
 				Integer sg_id = result.getInt(1);
 				Integer nr = result.getInt(2);
 				Integer length = result.getInt(3);
 
-	      ConstructionSite object = new ConstructionSite(length);
+				ConstructionSite object = new ConstructionSite(length);
 
-			object.setId(sg_id);
-			object.setNr(nr);
-			object.setLength(length);
-			
-			 return object;
-		      
-		   }
-		
-		} 
-		catch (SQLException ex)
-		{
+				object.setId(sg_id);
+				object.setNr(nr);
+				object.setLength(length);
+
+				return object;
+
+			}
+
+		} catch (SQLException ex) {
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht möglich!!!");
+			System.out.print("Laden der Daten nicht mï¿½glich!!!");
 		}
 
 	}
-
-
 }

@@ -8,6 +8,8 @@ import lombok.ToString;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
 import de.superdudes.traffit.controller.AbstractController;
 
 @Getter
@@ -43,7 +45,8 @@ public class Lane extends SimulationObject  {
 			cells[i] = new Cell(i, this);
 		}
 		
-		for (int i = 1; i < cells.length; i++) {
+		cells[0].setSuccessor(cells[1]); // First cell
+		for (int i = 1; i < cells.length - 1; i++) { // Second until second-last cell
 			Cell currentCell = cells[i];
 			Cell previousCell = cells[i - 1];
 			Cell nextCell = cells[i + 1];
@@ -51,6 +54,7 @@ public class Lane extends SimulationObject  {
 			currentCell.setAncestor(previousCell);
 			currentCell.setSuccessor(nextCell);
 		}
+		cells[cells.length - 1].setAncestor(cells[cells.length - 2]); // Last cell
 	}
 	
 	public boolean isTopLeftLane() {

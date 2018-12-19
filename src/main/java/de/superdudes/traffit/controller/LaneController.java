@@ -23,15 +23,14 @@ public class LaneController extends AbstractController<Lane> {
 	}
 
 	@Override
-	public void save(Lane object) 
-	{
-		
-		if (object.getId() != null)
-		{
+	public void save(Lane object) {
+
+		if (object.getId() != null) {
 			try {
 				Statement myStmt = myConn.createStatement();
 
-				String sql = "UPDATE LANE SET" + " l_id = ('" + object.getId() + "')" + " nr =  ('"+ object.getNr() + "')" +  " WHERE sg_id = 1";
+				String sql = "UPDATE LANE SET" + " l_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr()
+						+ "')" + " WHERE sg_id = 1";
 
 				myStmt.executeUpdate(sql);
 
@@ -41,16 +40,14 @@ public class LaneController extends AbstractController<Lane> {
 				ex.printStackTrace();
 				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
 			}
-		}
-		else 
-		{
+		} else {
 			Connection myConn = DriverManager.getConnection(url);
-			
+
 			Statement myStmt = myConn.createStatement();
 
-			String sql = " INSERT INTO LANE (l_id, nr) " + " VALUES ('" + object.getId() + object.getNr() +  "')";
+			String sql = " INSERT INTO LANE (l_id, nr) " + " VALUES ('" + object.getId() + object.getNr() + "')";
 
-			 myStmt.executeUpdate(sql);
+			myStmt.executeUpdate(sql);
 
 		}
 
@@ -59,7 +56,6 @@ public class LaneController extends AbstractController<Lane> {
 	@Override
 	public Lane load(Integer Id)
 	{
-
 		try 
 		{
 			
@@ -89,9 +85,7 @@ public class LaneController extends AbstractController<Lane> {
 		catch (SQLException ex)
 		{
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht möglich!!!");
+			System.out.print("Laden der Daten nicht mï¿½glich!!!");
 		}
 
 	}
-
-}

@@ -95,9 +95,8 @@ public class StreetController extends AbstractController<Street> {
 		catch (SQLException ex)
 		{
 			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht möglich!!!");
+			System.out.print("Laden der Daten nicht mï¿½glich!!!");
 		}
 
 	}
-
 }
