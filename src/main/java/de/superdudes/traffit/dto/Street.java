@@ -19,12 +19,14 @@ public class Street extends SimulationObject {
     @NonNull
     private List<Lane> lanes = new ArrayList<>();
     
-
+    @NonNull
+    private StartingGrid startingGrid;
  
-    public Street( @NonNull Integer length, int laneCount ) {
+    public Street( @NonNull Integer length, int laneCount, @NonNull StartingGrid startingGrid ) {
         super();
 
         this.length = length;
+        this.startingGrid = startingGrid;
         
         // From left lane to right lane
         for (int i = 0; i < laneCount; i++) {
