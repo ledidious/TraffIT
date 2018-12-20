@@ -7,3 +7,6 @@ How to install lombok
 
 Now the getter and setter should be displayed under 'Outline' and their usages furthermore shouldn't be a compilation error. 
 
+How to run in IntelliJ
+----------------------
+Install plugin lombok (very simple).
