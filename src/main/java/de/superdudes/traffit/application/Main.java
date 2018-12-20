@@ -69,6 +69,8 @@ public class Main extends Application {
 					controller.lane2.getChildren().addAll(controller.buildLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 
+					// Warum fehlte hier der Reset? Unötig?
+					Cell.number = 0;
 					controller.signlane.getChildren().clear();
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));

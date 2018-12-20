@@ -1,11 +1,15 @@
 package de.superdudes.traffit.application;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.ConstructionSite;
 import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.StreetSign;
 import de.superdudes.traffit.dto.Vehicle;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -28,7 +32,7 @@ public class Cell extends Rectangle {
 
 	private ImageView currentImage;
 	private Boolean stopPainting = false;
-	static int number = 1;
+	static int number = 0;
 
 	public void count() {
 		if (this.getId() == null) {
@@ -80,14 +84,17 @@ public class Cell extends Rectangle {
 
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
+					System.out.println(this.getId());
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
-				
 					
 					aVehicle = createVehicleListener(aVehicle);
 					
+					System.out.println(this.getId());
+					System.out.println(aVehicle.getBackCell().getIndex());
+					
 					myGrid.addVehicle(aVehicle);
 					
-					aVehicle.drive();
+					//aVehicle.drive();
 
 					Cell[] myNeighboursCar = new Cell[aVehicle.getLength()];
 
@@ -499,8 +506,23 @@ public class Cell extends Rectangle {
 	}
 	
 	private Vehicle createVehicleListener(Vehicle vehicle) {
-		ObservableList<de.superdudes.traffit.dto.Cell> cellList = (ObservableList) vehicle.getBlockedCells();
-		cellList.addListener((Change<? extends de.superdudes.traffit.dto.Cell> change) -> {
+		
+		LinkedList<de.superdudes.traffit.dto.Cell> myList = new LinkedList<>();
+		
+		ObservableList<de.superdudes.traffit.dto.Cell> myOb = FXCollections.observableList(myList);
+		myOb.addAll(vehicle.getBlockedCells());
+		
+		myOb.addListener((Change<? extends de.superdudes.traffit.dto.Cell> change) -> {
+			while (change.next()) {
+				if (change.wasRemoved()) {
+					System.out.println("Löppt");
+				}
+			}
+		});
+		
+		//cellList.addAll(vehicle.getBlockedCells());
+				
+		/*cellList.addListener((Change<? extends de.superdudes.traffit.dto.Cell> change) -> {
             while (change.next()) {
                 if (change.wasAdded()) {
                     System.out.println("Added: "+change.getAddedSubList());
@@ -515,7 +537,7 @@ public class Cell extends Rectangle {
                     System.out.println("Replaced");
                 }
             }
-        });
+        });*/
 		
 		return vehicle;
 	}
