@@ -6,6 +6,8 @@ import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.StreetSign;
 import de.superdudes.traffit.dto.Vehicle;
+import javafx.collections.ListChangeListener.Change;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -79,8 +81,13 @@ public class Cell extends Rectangle {
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
-
+				
+					
+					aVehicle = createVehicleListener(aVehicle);
+					
 					myGrid.addVehicle(aVehicle);
+					
+					aVehicle.drive();
 
 					Cell[] myNeighboursCar = new Cell[aVehicle.getLength()];
 
@@ -168,9 +175,9 @@ public class Cell extends Rectangle {
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
-
+					
 					myGrid.addVehicle(aVehicle);
-
+					
 					Cell[] myNeighboursTruck = new Cell[aVehicle.getLength()];
 
 					for (int i = 0; i < myNeighboursTruck.length; i++) {
@@ -489,5 +496,27 @@ public class Cell extends Rectangle {
 		IntegerStringConverter.createFor(theSpinner);
 
 		return theSpinner;
+	}
+	
+	private Vehicle createVehicleListener(Vehicle vehicle) {
+		ObservableList<de.superdudes.traffit.dto.Cell> cellList = (ObservableList) vehicle.getBlockedCells();
+		cellList.addListener((Change<? extends de.superdudes.traffit.dto.Cell> change) -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    System.out.println("Added: "+change.getAddedSubList());
+                }
+                if (change.wasRemoved()) {
+                    System.out.println("Removed: "+change.getRemoved());
+                }
+                if (change.wasUpdated()) {
+                    System.out.println("Updated: "+cellList.subList(change.getFrom(), change.getTo()));
+                }
+                if (change.wasReplaced()) {
+                    System.out.println("Replaced");
+                }
+            }
+        });
+		
+		return vehicle;
 	}
 }

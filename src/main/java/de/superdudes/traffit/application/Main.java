@@ -1,10 +1,13 @@
 package de.superdudes.traffit.application;
 
 import java.awt.Dimension;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
+import de.superdudes.traffit.dto.Vehicle;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -43,8 +46,9 @@ public class Main extends Application {
 			controller.lane2.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.signlane.getChildren().addAll(controller.buildSignLane(1280, 800));
 			
-			Street street1 = new Street(1280, 2);
-			StartingGrid grid1 = new StartingGrid("grid1", street1);
+			StartingGrid grid1 = new StartingGrid("grid1");
+			Street street1 = new Street(1280, 2, grid1);
+			grid1.setStreet(street1);
 			SimulationManager.setRunningSimulation(grid1);
 
 			// Listener to resize the window
@@ -96,8 +100,8 @@ public class Main extends Application {
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 				}
-			});
-
+			});	
+			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
