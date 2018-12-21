@@ -2,8 +2,11 @@ package de.superdudes.traffit;
 
 import java.sql.*;
 
+public class DbManager {
 
-public class DbManager{
+	private static final String url = "jdbc:mariadb://localhost/TraffIT";
+	private static final String user = "TraffIT";
+	private static final String pw = "TraffIT";
 
 	private static class Singletons {
 
@@ -14,33 +17,26 @@ public class DbManager{
 		return Singletons.INSTANCE;
 	}
 
-	String  url = "jdbc:mariadb://localhost/TraffIT";
-	String  user = "TraffIT";
-	String  pw  = "pw";
-	
-	public  void getConnection()
-	{
-		 try
-		    {
-		      Class.forName( "org.mariadb.jdbc" );
-		    }
-		    catch ( ClassNotFoundException e )
-		    {
-		      System.err.println( "Keine Treiber-Klasse!" );
-		      return;
-		    }
+	private Connection connection;
 
-		
-		try
-		{
-			Connection myConn = DriverManager.getConnection(url, user, pw);
-		} catch (SQLException e)
-		{
-			e.printStackTrace();
+	public Connection getConnection() {
+
+		if (connection == null) {
+			try {
+				connection = DriverManager.getConnection(url, user, pw);
+			} catch (SQLException e) {
+				throw new InternalError("Database connection cannot be established", e);
+			}
 		}
+		
+		return connection;
 	}
-	
-	
-	
-	
-}           
+
+	@Override
+	protected void finalize() throws Throwable {
+		if (connection != null) {
+			connection.close();
+		}
+		super.finalize();
+	}
+}

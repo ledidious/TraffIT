@@ -1,103 +1,124 @@
 package de.superdudes.traffit.controller;
 
+import de.superdudes.traffit.DbManager;
+import de.superdudes.traffit.dto.*;
+import de.superdudes.traffit.exception.ObjectNotPersistedException;
+import lombok.NonNull;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import de.superdudes.traffit.dto.Cell;
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.SimulationObject;
-import de.superdudes.traffit.dto.StartingGrid;
-import de.superdudes.traffit.dto.Street;
+import java.util.*;
 
 public class CellController extends AbstractController<Cell> {
 
-	private static class Singletons {
+    private static class Singletons {
 
-		private static final CellController INSTANCE = new CellController();
-	}
+        private static final CellController INSTANCE = new CellController();
+    }
 
-	public static CellController instance() {
-		return Singletons.INSTANCE;
-	}
+    public static CellController instance() {
+        return Singletons.INSTANCE;
+    }
 
-	@Override
-	public void save(Cell object) throws SQLException {
-		Connection myConn = null;
-		try {
-			if (object.getId() != null) {
-				myConn = DriverManager.getConnection(url, user, pw);
+    void save(@NonNull Cell object) {
 
-				Statement myStmt = myConn.createStatement();
+        if (object.getLane().getId() == null) {
+            throw new ObjectNotPersistedException(object.getLane());
+        }
+        try {
+            // language=sql
+            final String sql;
 
-				String sql = "UPDATE CELL SET" + " c_id = '" + object.getId() + "'," + " nr = '" + object.getNr() + "',"
-						+ " index = '" + object.getIndex() + "' " + " WHERE sg_id = 1";
+            if (object.getId() != null) {
 
-				myStmt.executeUpdate(sql);
-			} else {
-				myConn = DriverManager.getConnection(url, user, pw);
+                sql = "UPDATE CELL SET c_id = '" + object.getId() + "', nr = '" + object.getNr() + "', " +
+                        "c_index = '" + object.getIndex() + "', lane_id = '" + object.getLane().getId() + "'";
+            } else {
+                sql = "INSERT INTO CELL (nr, c_index, lane_id) " + " " +
+                        "VALUES ('" + object.getNr() + "', '" + object.getIndex() + "', '" + object.getLane().getId() + "')";
+            }
 
-				Statement myStmt = myConn.createStatement();
+            insertOrUpdate(sql, object);
 
-				String sql = " INSERT INTO Cell (nr, index) " + " VALUES ('" + object.getNr() + "','"
-						+ object.getIndex() + "')";
+            // I know, multiple cells have the same construction site, so this means multiple updates with same data
+            final ConstructionSite constructionSite = object.getBlockingConstructionSite();
+            if (constructionSite != null && constructionSite.getId() == null) {
+                ConstructionSiteController.instance().save(constructionSite);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+        }
+    }
 
-				myStmt.executeUpdate(sql);
-			}
-		}
+    List<Cell> load(@NonNull Lane lane) {
 
-		catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		}
+        if (lane.getId() == null) {
+            throw new ObjectNotPersistedException(lane);
+        }
 
-		finally {
-			myConn.close();
-		}
+        try {
+            final Connection connection = DbManager.instance().getConnection();
+            final ResultSet resultSet = connection.createStatement().executeQuery(
+                    "SELECT * FROM CELL WHERE lane_id = '" + lane.getId() + "' ORDER BY c_index ASC"
+            );
 
-	}
+            final List<Cell> results = new LinkedList<>();
+            final Set<ConstructionSite> constructionSites = new HashSet<>();
+            final Set<Vehicle> vehicles = new HashSet<>();
+            final Set<StreetSign> streetSigns = new HashSet<>();
 
-	@Override
-	public Cell load(Integer Id) throws SQLException {
-		Connection myConn = null;
+            while (resultSet.next()) {
+                final Integer id = resultSet.getInt("c_id");
+                final Integer nr = resultSet.getInt("nr");
+                final Integer index = resultSet.getInt("c_index");
 
-		try {
-			myConn = DriverManager.getConnection(url, user, pw);
+                final Cell cell = new Cell(index, lane);
+                cell.setId(id);
+                cell.setNr(nr);
 
-			Statement myStmt = myConn.createStatement();
+                lane.setCell(cell);
 
-			String sql = "SELECT c_id, nr, index FROM CELL WHERE c_id = '" + Id + "' ";
+                // Load dependencies
+                final ConstructionSite constructionSite = ConstructionSiteController.instance().load(cell);
+                if (constructionSite != null) {
+                    constructionSites.add(constructionSite);
+                }
+                final StreetSign streetSign = StreetSignController.instance().load(cell);
+                if (streetSign != null) {
+                    streetSigns.add(streetSign);
+                }
+                final Set<Vehicle> loadedVehicles = VehicleController.instance().load(cell.getLane().getStreet().getStartingGrid(), cell);
+                if (loadedVehicles != null) {
+                    vehicles.addAll(loadedVehicles);
+                }
 
-			ResultSet result = myStmt.executeQuery(sql);
+                // Add cell
+                results.add(cell);
+            }
 
-			while (result.next()) {
-				Integer c_id = result.getInt(1);
-				Integer nr = result.getInt(2);
-				Integer index = result.getInt(3);
+            // Remove null values
+            streetSigns.removeIf(Objects::isNull);
+            constructionSites.removeIf(Objects::isNull);
+            vehicles.removeIf(Objects::isNull);
 
-				Cell object = new Cell(index, new Lane(new Street(2, 6), index));
+            // Connect other cells to constructionSite, vehicles and streetSigns (only tailCell has foreign key in db)
+            for (ConstructionSite constructionSite : constructionSites) {
+                constructionSite.connectCells(constructionSite.getTailCell(), Cell::setBlockingConstructionSite);
+            }
+            for (Vehicle vehicle : vehicles) {
+                vehicle.connectCells(vehicle.getTailCell(), Cell::setBlockingVehicle);
+            }
+            for (StreetSign streetSign : streetSigns) {
+                streetSign.connectCells(streetSign.getTailCell(), Cell::setStreetSign);
+            }
 
-				object.setId(c_id);
-				object.setNr(nr);
-				object.setIndex(index);
-
-				return object;
-
-			}
-
-		} catch (
-
-		SQLException ex) {
-
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
-		} finally {
-			myConn.close();
-		}
-		return null;
-
-	}
-
+            return results;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.print("Laden der Daten nicht mögch!!!");
+        }
+        return null;
+    }
 }

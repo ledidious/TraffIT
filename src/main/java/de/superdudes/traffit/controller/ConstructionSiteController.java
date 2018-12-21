@@ -1,105 +1,80 @@
 package de.superdudes.traffit.controller;
 
+import de.superdudes.traffit.DbManager;
+import de.superdudes.traffit.dto.Cell;
+import de.superdudes.traffit.dto.ConstructionSite;
+import de.superdudes.traffit.exception.ObjectNotPersistedException;
+import lombok.NonNull;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import de.superdudes.traffit.dto.ConstructionSite;
-import de.superdudes.traffit.dto.SimulationObject;
-import de.superdudes.traffit.dto.StartingGrid;
-import de.superdudes.traffit.dto.Street;
 
 public class ConstructionSiteController extends AbstractController<ConstructionSite> {
 
-	private static class Singletons {
+    private static class Singletons {
 
-		private static final ConstructionSiteController INSTANCE = new ConstructionSiteController();
-	}
+        private static final ConstructionSiteController INSTANCE = new ConstructionSiteController();
+    }
 
-	public static ConstructionSiteController instance() {
-		return Singletons.INSTANCE;
-	}
+    public static ConstructionSiteController instance() {
+        return Singletons.INSTANCE;
+    }
 
-	@Override
-	public void save(ConstructionSite object) throws SQLException {
-		Connection myConn = null;
-		try {
-			if (object.getId() != null) {
-				myConn = DriverManager.getConnection(url, user, pw);
+    void save(@NonNull ConstructionSite object) {
 
-				Statement myStmt = myConn.createStatement();
+        try {
+            // language=sql
+            final String sql;
 
-				String sql = "UPDATE ConstructionSite SET" + " cs_id = '" + object.getId() + "'," + " nr = '"
-						+ object.getNr() + "'," + " sg_id = '" + object.getLength() + "' " + " WHERE sg_id = 1";
+            if (object.getId() != null) {
+                sql = "UPDATE CONSTRUCTION_SITE SET cs_id = '" + object.getId() + "', nr = '" + object.getNr() + "', " +
+                        "length = '" + object.getLength() + "', tailCell_id = '" + object.getTailCell().getId() + "'";
+            } else {
+                sql = "INSERT INTO CONSTRUCTION_SITE (nr, length, tailCell_id) VALUES ('" + object.getNr() + "', '"
+                        + object.getLength() + "', '" + object.getTailCell().getId() + "')";
+            }
 
-				myStmt.executeUpdate(sql);
-			}
+            insertOrUpdate(sql, object);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+        }
+    }
 
-			else {
-				myConn = DriverManager.getConnection(url, user, pw);
+    ConstructionSite load(@NonNull Cell tailCell) {
 
-				Statement myStmt = myConn.createStatement();
+        if (tailCell.getId() == null) {
+            throw new ObjectNotPersistedException(tailCell);
+        }
 
-				String sql = " INSERT INTO ConstructionSite (nr, name) " + " VALUES ('" + object.getNr() + "','"
-						+ object.getLength() + "')";
+        try {
+            final Connection connection = DbManager.instance().getConnection();
+            final ResultSet resultSet = connection.createStatement().executeQuery(
+                    "SELECT * FROM CONSTRUCTION_SITE WHERE tailCell_id = '" + tailCell.getId() + "' LIMIT 1"
+            );
 
-				myStmt.executeUpdate(sql);
+            while (resultSet.next()) {
+                final Integer id = resultSet.getInt("cs_id");
+                final Integer nr = resultSet.getInt("nr");
+                final Integer length = resultSet.getInt("length");
 
-			}
-		}
+                final ConstructionSite object = new ConstructionSite(length, tailCell, false);
 
-		catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		}
+                object.setId(id);
+                object.setNr(nr);
+                object.setLength(length);
 
-		finally {
-			myConn.close();
-		}
-	}
+                // Connect cell on other side
+                tailCell.setBlockingConstructionSite(object);
 
-	@Override
+                return object;
+            }
+        } catch (SQLException ex) {
 
-	public ConstructionSite load(Integer Id) throws SQLException {
-		Connection myConn = null;
-		try {
-			myConn = DriverManager.getConnection(url, user, pw);
-
-			Statement myStmt = myConn.createStatement();
-
-			String sql = "SELECT cs_id , nr , cs_length ConstructionSite WHERE sg_id = '" + Id + "' ";
-
-			ResultSet result = myStmt.executeQuery(sql);
-
-			while (result.next()) {
-				Integer sg_id = result.getInt(1);
-				Integer nr = result.getInt(2);
-				Integer length = result.getInt(3);
-
-				ConstructionSite object = new ConstructionSite(length);
-
-				object.setId(sg_id);
-				object.setNr(nr);
-				object.setLength(length);
-
-				return object;
-
-			}
-
-		}
-
-		catch (SQLException ex) {
-
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
-		} finally {
-			myConn.close();
-		}
-		return null;
-
-	}
-
-
+            ex.printStackTrace();
+            System.out.print("Laden der Daten nicht m�glich!!!");
+        }
+        return null;
+    }
 }

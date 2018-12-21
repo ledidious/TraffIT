@@ -1,295 +1,262 @@
 package de.superdudes.traffit.controller;
 
-import java.sql.*;
+import de.superdudes.traffit.DbManager;
 import de.superdudes.traffit.dto.Cell;
-
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-
+import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Vehicle;
-import de.superdudes.traffit.dto.Vehicle.Type;
+import de.superdudes.traffit.exception.ObjectNotPersistedException;
 import lombok.Getter;
-import de.superdudes.traffit.dto.Cell;
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.Street;
-import de.superdudes.traffit.dto.StreetSign;
+import lombok.NonNull;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VehicleController extends AbstractController<Vehicle> {
 
-	private static class Singletons {
+    private static class Singletons {
 
-		private static final VehicleController INSTANCE = new VehicleController();
-	}
+        private static final VehicleController INSTANCE = new VehicleController();
+    }
 
-	public static VehicleController instance() {
-		return Singletons.INSTANCE;
-	}
+    public static VehicleController instance() {
+        return Singletons.INSTANCE;
+    }
 
-	@Override
-	public void save(Vehicle object) throws SQLException 
-	{
-		Connection myConn = null;
-		try {
-				if (object.getId() != null)
-				{
-				 myConn = DriverManager.getConnection(url,user,pw);
-					
-				 Statement myStmt = myConn.createStatement();
+    // ===============================================
+    // Database
+    // ===============================================
 
-				 String sql = "UPDATE VEHICLE" + " v_id = '" + object.getId() + "'," + " nr = '" + object.getNr() + "',"  
-				           +  "currentSpeed = '" + object.getCurrentSpeed() + "'," + " maxSpeed ='" + object.getMaxSpeed() + "',"
-						   + " speedLimit = '" + object.getSpeedLimit() + "'," +  " WHERE sg_id = 1";
+    void save(@NonNull Vehicle object) {
 
-				myStmt.executeUpdate(sql);
-				}
-				else
-				{
-					 myConn = DriverManager.getConnection(url,user,pw);
-					
-					Statement myStmt = myConn.createStatement();
+        if (object.getStartingGrid().getId() == null) {
+            throw new ObjectNotPersistedException(object.getStartingGrid());
+        }
+        if (object.getBackCell().getId() == null) {
+            throw new ObjectNotPersistedException(object.getBackCell());
+        }
 
-					String sql = " INSERT INTO VEHICLE (nr, currentSpeed, maxSpeed, speedLimit) " + " VALUES ('"  + object.getNr() + "','"
-					          + object.getCurrentSpeed() + "','" + object.getMaxSpeed() + "','" + object.getSpeedLimit() + "')";
+        try {
+            // language=sql
+            final String sql;
 
-					myStmt.executeUpdate(sql);
+            if (object.getId() != null) {
+                sql = "UPDATE VEHICLE set v_id = '" + object.getId() + "', type = '"
+                        + object.getType() + "', nr = '', tailCell_id = '" + object.getBackCell().getId()
+                        + "', currentspeed = '" + object.getCurrentSpeed() + "', maxspeed = '"
+                        + object.getMaxSpeed() + "', startinggrid_id = '" + object.getStartingGrid().getId() + "'";
+            } else {
+                sql = " INSERT INTO VEHICLE (type, nr, tailCell_id, currentspeed, maxspeed, startinggrid_id) "
+                        + " VALUES ('" + object.getType().name() + "', '" + object.getNr() + "', '"
+                        + object.getBackCell().getId() + "', " + object.getCurrentSpeed() + ", "
+                        + object.getMaxSpeed() + ", '" + object.getStartingGrid().getId() + "')";
+            }
 
-				}
-			}
+            insertOrUpdate(sql, object);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+        }
+    }
 
-			catch (SQLException ex) {
-				ex.printStackTrace();
-				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-			}
+    Set<Vehicle> load(@NonNull StartingGrid startingGrid, @NonNull Cell tailCell) {
 
-		   finally
-		   {
-			   myConn.close();
-		   }
-		
-		
+        if (startingGrid.getId() == null) {
+            throw new ObjectNotPersistedException(startingGrid);
+        }
 
-	}
+        try {
+            final Connection connection = DbManager.instance().getConnection();
+            final ResultSet resultSet = connection.createStatement().executeQuery(
+                    "SELECT * FROM VEHICLE v, CELL c"
+                            + " WHERE v.tailCell_id = c.c_id "
+                            + " AND c.c_id = " + tailCell.getId()
+                            + " AND v.startinggrid_id = " + startingGrid.getId()
+            );
 
-	@Override
+            final Set<Vehicle> results = new HashSet<>();
+            while (resultSet.next()) {
+                final Integer id = resultSet.getInt("v_id");
+                final Vehicle.Type type = Vehicle.Type.valueOf(resultSet.getString("type"));
+                final Integer nr = resultSet.getInt("nr");
+                final Integer currentSpeed = resultSet.getInt("currentspeed");
+                final Integer maxSpeed = resultSet.getInt("maxspeed");
 
-	public Vehicle load(Integer Id) throws SQLException
-	{
-		Connection myConn = null;
-		try {
-		     myConn = DriverManager.getConnection(url,user,pw);
-			
-			Statement myStmt = myConn.createStatement();
+                final Vehicle object = new Vehicle(type, tailCell, false);
+                object.setId(id);
+                object.setNr(nr);
+                object.setCurrentSpeed(currentSpeed);
+                object.setMaxSpeed(maxSpeed);
 
-			String sql = "SELECT v_id , nr , currentSpeed, maxSpeed, speedLimit FROM VEHICLE WHERE sg_id = '" + Id
-					+ "' ";
+                results.add(object);
+            }
 
-			ResultSet result = myStmt.executeQuery(sql);
+            return results;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.print("Laden der Daten nicht m�glich!!!");
+        }
+        return null;
+    }
 
-			while (result.next()) {
-				Integer v_id = result.getInt(1);
-				Integer nr = result.getInt(2);
-				Integer currentSpeed = result.getInt(3);
-				Integer maxSpeed = result.getInt(4);
-				Integer speedLimit = result.getInt(5);
+    // ===============================================
+    // Simulation Logic
+    // ===============================================
 
-				Vehicle object = new Vehicle(Type.CAR);                   // ??????????
-						
-			    object.setId(v_id);
-			    object.setNr(nr);
-			    object.setCurrentSpeed(currentSpeed);
-			    object.setMaxSpeed(maxSpeed);
-			    object.setSpeedLimit(speedLimit);
-			
-	           return object;
-		   }
-		
-		} 
-		catch (SQLException ex)
-		{
+    @Override
+    public void render(Vehicle object) {
 
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
-		}
-		finally
-		{
-			myConn.close();
-		}
-		return null;
+        final Vehicle vehicle = object; // To rename fitting
 
+        boolean vehicleForeseeableAhead = render_byOtherVehicles(vehicle);
 
-	}
+        if (!vehicleForeseeableAhead) {
+            render_bySpeedLimits(vehicle);
+        }
 
-	
-	public void render(Vehicle object) {
+        render_moveForward(vehicle);
+    }
 
-		final Vehicle vehicle = object; // To rename fitting
+    /**
+     * @param vehicle
+     * @return whether a car is ahead on the same line in a forseeable distance
+     */
+    private boolean render_byOtherVehicles(Vehicle vehicle) {
 
-		boolean vehicleForeseeableAhead = render_byOtherVehicles(vehicle);
+        // Distance -> Vehicle
+        DistanceToAnotherVehicle ancestor = null;
+        DistanceToAnotherVehicle successor = null;
+        DistanceToAnotherVehicle overtakenVehicle = null;
+        DistanceToAnotherVehicle overtakingVehicle = null;
 
-		if (!vehicleForeseeableAhead) {
-			render_bySpeedLimits(vehicle);
-		}
+        // When ancestor in short distance
+        if ((ancestor = findAncestor(vehicle)) != null
+                && ancestor.getDistance() < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED
+                && vehicle.getCurrentSpeed() > ancestor.getVehicle().getCurrentSpeed()) {
 
-		render_moveForward(vehicle);
-	}
+            overtakingVehicle = findOvertaker(vehicle);
+            if (overtakingVehicle.getDistance() > Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED) {
+                turnLeft(vehicle);
+            } else {
+                // Cannot overtake
+                vehicle.brake();
+                return true;
+            }
+        }
+        // Turn back to right lane
+        else if ((overtakenVehicle = findOvertaken(vehicle)) != null
+                && ancestor.getDistance() > Vehicle.ANCESTOR_DISTANCE_MIN) {
+            turnRight(vehicle);
+        }
 
-	/**
-	 * 
-	 * @param vehicle
-	 * @return whether a car is ahead on the same line in a forseeable distance
-	 */
-	private boolean render_byOtherVehicles(Vehicle vehicle) {
+        return ancestor != null && ancestor.getDistance() < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED;
+    }
 
-		// Distance -> Vehicle
-		DistanceToAnotherVehicle ancestor = null;
-		DistanceToAnotherVehicle successor = null;
-		DistanceToAnotherVehicle overtakenVehicle = null;
-		DistanceToAnotherVehicle overtakingVehicle = null;
+    // Preamble: No car forseeable ahead, see in render()
+    private void render_bySpeedLimits(Vehicle vehicle) {
 
-		// When ancestor in short distance
-		if ((ancestor = findAncestor(vehicle)) != null
-				&& ancestor.getDistance() < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED
-				&& vehicle.getCurrentSpeed() > ancestor.getVehicle().getCurrentSpeed()) {
+        final Cell currentCell = vehicle.getFrontCell();
 
-			overtakingVehicle = findOvertaker(vehicle);
-			if (overtakingVehicle.getDistance() > Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED) {
-				turnLeft(vehicle);
-			} else {
-				// Cannot overtake
-				vehicle.brake();
-				return true;
-			}
-		}
-		// Turn back to right lane
-		else if ((overtakenVehicle = findOvertaken(vehicle)) != null
-				&& ancestor.getDistance() > Vehicle.ANCESTOR_DISTANCE_MIN) {
-			turnRight(vehicle);
-		}
+        int speedLimit = Integer.MAX_VALUE;
+        if (currentCell.getStreetSign() != null) {
+            speedLimit = currentCell.getStreetSign().getSpeedLimit();
+        }
 
-		return ancestor != null && ancestor.getDistance() < Vehicle.ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED;
-	}
+        // Brake if too fast
+        if (speedLimit < vehicle.getCurrentSpeed()) {
+            vehicle.brake();
+        } // or accelerate if possible
+        else if (vehicle.getCurrentSpeed() < vehicle.getMaxSpeed()) {
+            vehicle.accelerate();
+        }
+    }
 
-	// Preamble: No car forseeable ahead, see in render()
-	private void render_bySpeedLimits(Vehicle vehicle) {
+    private DistanceToAnotherVehicle findAncestor(Vehicle vehicle) {
+        return findVehicle(vehicle.getFrontCell(), false);
+    }
 
-		final Cell currentCell = vehicle.getFrontCell();
+    private DistanceToAnotherVehicle findSuccessor(Vehicle vehicle) {
+        return findVehicle(vehicle.getFrontCell(), true);
+    }
 
-		int speedLimit = Integer.MAX_VALUE;
-		if (currentCell.getStreetSign() != null) {
-			speedLimit = currentCell.getStreetSign().getSpeedLimit();
-		}
+    private DistanceToAnotherVehicle findOvertaker(Vehicle overtaken) {
 
-		// Brake if too fast
-		if (speedLimit < vehicle.getCurrentSpeed()) {
-			vehicle.brake();
-		} // or accelerate if possible
-		else if (vehicle.getCurrentSpeed() < vehicle.getMaxSpeed()) {
-			vehicle.accelerate();
-		}
-	}
+        if (overtaken.getBackCell().getLane().isTopLeftLane()) {
+            return null;
+        }
 
-	private DistanceToAnotherVehicle findAncestor(Vehicle vehicle) {
-		return findVehicle(vehicle.getFrontCell(), false);
-	}
+        final Cell rightNeighbourCell = overtaken.getBackCell().getRightNeighbour();
+        return findVehicle(rightNeighbourCell, true);
+    }
 
-	private DistanceToAnotherVehicle findSuccessor(Vehicle vehicle) {
-		return findVehicle(vehicle.getFrontCell(), true);
-	}
+    private DistanceToAnotherVehicle findOvertaken(Vehicle overtaker) {
 
-	private DistanceToAnotherVehicle findOvertaker(Vehicle overtaken) {
+        if (overtaker.getBackCell().getLane().isTopLeftLane()) {
+            return null;
+        }
 
-		if (overtaken.getBackCell().getLane().isTopLeftLane()) {
-			return null;
-		}
+        final Cell rightNeighbourCell = overtaker.getBackCell().getRightNeighbour();
+        return findVehicle(rightNeighbourCell, true);
+    }
 
-		final Cell rightNeighbourCell = overtaken.getBackCell().getRightNeighbour();
-		return findVehicle(rightNeighbourCell, true);
-	}
+    /**
+     * The central algorithm to find vehicles by searching cell for cell.
+     *
+     * @param fromCell
+     * @param backwards
+     * @return entry consisting of distance and vehicle or {@code null} if no
+     * vehicle can be found until end of street
+     */
+    private DistanceToAnotherVehicle findVehicle(Cell fromCell, boolean backwards) {
 
-	private DistanceToAnotherVehicle findOvertaken(Vehicle overtaker) {
+        Cell currentCell = fromCell;
+        Vehicle ancestorOrSuccessor = null;
 
-		if (overtaker.getBackCell().getLane().isTopLeftLane()) {
-			return null;
-		}
+        int distance = 0;
+        do {
+            distance++;
+        } while ((currentCell = (backwards ? currentCell.getAncestor() : currentCell.getSuccessor())) != null
+                && (ancestorOrSuccessor = currentCell.getBlockingVehicle()) == null);
 
-		final Cell rightNeighbourCell = overtaker.getBackCell().getRightNeighbour();
-		return findVehicle(rightNeighbourCell, true);
-	}
+        return ancestorOrSuccessor != null ? new DistanceToAnotherVehicle(distance, ancestorOrSuccessor) : null;
+    }
 
-	/**
-	 * The central algorithm to find vehicles by searching cell for cell.
-	 * 
-	 * @param fromCell
-	 * @param backwards
-	 * @return entry consisting of distance and vehicle or {@code null} if no
-	 *         vehicle can be found until end of street
-	 */
-	private DistanceToAnotherVehicle findVehicle(Cell fromCell, boolean backwards) {
+    private void turnLeft(Vehicle vehicle) {
 
-		Cell currentCell = fromCell;
-		Vehicle ancestorOrSuccessor = null;
+        if (vehicle.getLane().isTopLeftLane()) {
+            throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
+        }
+        vehicle.turnLeft();
+    }
 
-		int distance = 0;
-		do {
-			distance++;
-		} while ((currentCell = (backwards ? currentCell.getAncestor() : currentCell.getSuccessor())) != null
-				&& (ancestorOrSuccessor = currentCell.getBlockingVehicle()) == null);
+    private void turnRight(Vehicle vehicle) {
 
-		return ancestorOrSuccessor != null ? new DistanceToAnotherVehicle(distance, ancestorOrSuccessor) : null;
-	}
+        if (vehicle.getLane().isTopRightLane()) {
+            throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
+        }
+        vehicle.turnRight();
+    }
 
-	private void turnLeft(Vehicle vehicle) {
+    private void render_moveForward(Vehicle vehicle) {
 
-		if (vehicle.getLane().isTopLeftLane()) {
-			throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
-		}
-		final Deque<Cell> vehicleCells = vehicle.getBlockedCells();
+        if (vehicle.getCurrentSpeed() - vehicle.getGensSinceLastDrive() <= 0) {
+            vehicle.drive();
+        } else {
+            vehicle.dontDrive();
+        }
+    }
 
-		final Deque<Cell> newCells = new LinkedList<>();
-		for (Cell cell : vehicleCells) {
-			newCells.addFirst(cell.getLeftNeighbour());
-		}
+    @Getter
+    private class DistanceToAnotherVehicle {
+        private final int distance;
+        private final Vehicle vehicle;
 
-		vehicle.setBlockedCells(newCells);
-	}
-
-	private void turnRight(Vehicle vehicle) {
-
-		if (vehicle.getLane().isTopRightLane()) {
-			throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
-		}
-		final Deque<Cell> vehicleCells = vehicle.getBlockedCells();
-
-		final Deque<Cell> newCells = new LinkedList<>();
-		for (Cell cell : vehicleCells) {
-			newCells.addFirst(cell.getRightNeighbour());
-		}
-
-		vehicle.setBlockedCells(newCells);
-	}
-
-	private void render_moveForward(Vehicle vehicle) {
-
-		if (vehicle.getCurrentSpeed() - vehicle.getGensSinceLastDrive() <= 0) {
-			vehicle.drive();
-		} else {
-			vehicle.dontDrive();
-		}
-	}
-
-	@Getter
-	private class DistanceToAnotherVehicle {
-		private final int distance;
-		private final Vehicle vehicle;
-
-		public DistanceToAnotherVehicle(int distance, Vehicle vehicle) {
-			super();
-			this.distance = distance;
-			this.vehicle = vehicle;
-		}
-	}
+        public DistanceToAnotherVehicle(int distance, Vehicle vehicle) {
+            super();
+            this.distance = distance;
+            this.vehicle = vehicle;
+        }
+    }
 }

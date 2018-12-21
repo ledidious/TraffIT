@@ -1,100 +1,84 @@
 package de.superdudes.traffit.controller;
 
+import de.superdudes.traffit.DbManager;
+import de.superdudes.traffit.dto.Cell;
+import de.superdudes.traffit.dto.StreetSign;
+import de.superdudes.traffit.exception.ObjectNotPersistedException;
+import lombok.NonNull;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import de.superdudes.traffit.dto.Cell;
-import de.superdudes.traffit.dto.ConstructionSite;
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.SimulationObject;
-import de.superdudes.traffit.dto.Street;
-import de.superdudes.traffit.dto.StreetSign;
 
 public class StreetSignController extends AbstractController<StreetSign> {
 
-	private static class Singletons {
+    private static class Singletons {
 
-		private static final StreetSignController INSTANCE = new StreetSignController();
-	}
+        private static final StreetSignController INSTANCE = new StreetSignController();
+    }
 
-	public static StreetSignController instance() {
-		return Singletons.INSTANCE;
-	}
+    public static StreetSignController instance() {
+        return Singletons.INSTANCE;
+    }
 
-	@Override
-	public void save(StreetSign object) throws SQLException {
-		Connection myConn = null;
-		try {
-			if (object.getId() != null) {
-				myConn = DriverManager.getConnection(url, user, pw);
+    void save(@NonNull StreetSign object) {
 
-				Statement myStmt = myConn.createStatement();
+        if (object.getTailCell().getId() == null) {
+            throw new ObjectNotPersistedException(object.getTailCell());
+        }
 
-				String sql = "UPDATE STREET_SIGN SET" + " ss_id = '" + object.getId() + "'," + " nr = '"
-						+ object.getNr() + "'," + " speedLimit = '" + object.getSpeedLimit() + "' "
-						+ " WHERE sg_id = 1";
+        try {
+            // language=sql
+            final String sql;
 
-				myStmt.executeUpdate(sql);
-			} else {
-				myConn = DriverManager.getConnection(url, user, pw);
+            if (object.getId() != null) {
+                sql = "UPDATE STREET_SIGN SET ss_id = " + object.getId() + ", nr = " + object.getNr() + ", speedLimit = "
+                        + object.getSpeedLimit() + ", tailCell_id = " + object.getTailCell().getId()
+                        + ", length = " + object.getLength();
+            } else {
+                sql = "INSERT INTO STREET_SIGN (nr, speedLimit, tailCell_id, length) VALUES (" + object.getTailCell()
+                        + ", " + object.getSpeedLimit() + ", " + object.getTailCell().getId()
+                        + ", " + object.getLength() + ")";
+            }
 
-				Statement myStmt = myConn.createStatement();
+            insertOrUpdate(sql, object);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+        }
+    }
 
-				String sql = " INSERT INTO STREET_SIGN (nr, speedLimit) " + " VALUES ('" + object.getNr() + "','"
-						+ object.getSpeedLimit() + "')";
+    StreetSign load(@NonNull Cell tailCell) {
 
-				myStmt.executeUpdate(sql);
+        if (tailCell.getId() == null) {
+            throw new ObjectNotPersistedException(tailCell);
+        }
 
-			}
-		}
+        try {
+            final Connection connection = DbManager.instance().getConnection();
+            final ResultSet resultSet = connection.createStatement().executeQuery(
+                    "SELECT * FROM STREET_SIGN WHERE tailCell_id = '" + tailCell.getId() + "'"
+            );
 
-		catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-		} finally {
-			myConn.close();
-		}
+            while (resultSet.next()) {
+                final Integer id = resultSet.getInt("ss_id");
+                final Integer nr = resultSet.getInt("nr");
+                final Integer speedLimit = resultSet.getInt("streetLimit");
+                final Integer length = resultSet.getInt("length");
 
-	}
 
-	@Override
+                final StreetSign object = new StreetSign(speedLimit, tailCell, length);
+                object.setId(id);
+                object.setNr(nr);
 
-	public StreetSign load(Integer Id) throws SQLException {
-		Connection myConn = null;
-		try {
-			myConn = DriverManager.getConnection(url, user, pw);
+                tailCell.setStreetSign(object);
 
-			Statement myStmt = myConn.createStatement();
-
-			String sql = "SELECT ss_id , nr , speedLimit STREEET_SIGN WHERE sg_id = '" + Id + "' ";
-
-			ResultSet result = myStmt.executeQuery(sql);
-
-			while (result.next()) {
-				Integer sg_id = result.getInt(1);
-				Integer nr = result.getInt(2);
-				Integer speedLimit = result.getInt(3);
-
-				StreetSign object = new StreetSign(nr, new Cell(speedLimit, new Lane(new Street(speedLimit, speedLimit), speedLimit)), speedLimit);
-
-				object.setId(sg_id);
-				object.setNr(nr);
-				object.setSpeedLimit(speedLimit);
-
-				return object;
-
-			}
-
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
-		} finally {
-			myConn.close();
-		}
-		return null;
-
-	}
+                return object;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.print("Laden der Daten nicht m�glich!!!");
+        }
+        return null;
+    }
 }

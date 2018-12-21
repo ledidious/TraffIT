@@ -7,87 +7,100 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(of = { "nr" })
+@ToString(of = {"index"})
 public class Cell extends SimulationObject {
 
-	@NonNull
-	private Integer index;
+    @NonNull
+    private Integer index;
 
-	@NonNull
-	private Lane lane;
+    @NonNull
+    private Lane lane;
 
-	private Vehicle blockingVehicle;
-	private ConstructionSite blockingConstructionSite;
+    private Vehicle blockingVehicle;
+    private ConstructionSite blockingConstructionSite;
 
-	private Cell ancestor;
-	private Cell successor;
+    private StreetSign streetSign;
 
-	private StreetSign streetSign;
+    public Cell(@NonNull Integer index, @NonNull Lane lane) {
+        super();
 
-	public Cell(@NonNull Integer index, @NonNull Lane lane) {
-		super();
+        this.index = index;
+        this.lane = lane;
+    }
 
-		this.index = index;
-		this.lane = lane;
-	}
+    public Cell getAncestor() {
+        return index > 0 ? lane.getCell(index - 1) : null;
+    }
 
-	// Provides both ConstructionSite and Vehicle for general purposes
-	public Object getBlockingObject() {
-		return blockingVehicle != null ? blockingVehicle
-				: blockingConstructionSite != null ? blockingConstructionSite : null;
-	}
+    public Cell getSuccessor() {
+        return lane.getLength() > index + 1 ? lane.getCell(index + 1) : null;
+    }
 
-	public boolean isBlocked() {
-		return blockingVehicle != null || blockingConstructionSite != null;
-	}
+    // Provides both ConstructionSite and Vehicle for general purposes
+    public Object getBlockingObject() {
+        return blockingVehicle != null ? blockingVehicle : blockingConstructionSite;
+    }
 
-	public Cell getLeftNeighbour() {
+    public boolean isBlocked() {
+        return blockingVehicle != null || blockingConstructionSite != null;
+    }
 
-		if (index <= 0) {
-			return null;
-		}
+    public Cell getLeftNeighbour() {
 
-		final Lane leftLane = lane.getStreet().getLanes().get(lane.getIndex() - 1);
-		return leftLane.getCells()[index];
-	}
+        if (index <= 0) {
+            return null;
+        }
 
-	public Cell getRightNeighbour() {
+        final Lane leftLane = lane.getStreet().getLanes().get(lane.getIndex() - 1);
+        return leftLane.getCells()[index];
+    }
 
-		if (index >= lane.getStreet().getLaneCount()) {
-			return null;
-		}
+    public Cell getRightNeighbour() {
 
-		final Lane rightLane = lane.getStreet().getLanes().get(lane.getIndex() + 1);
-		return rightLane.getCells()[index];
-	}
+        if (index >= lane.getStreet().getLaneCount()) {
+            return null;
+        }
 
-	// Implement because package-private with restricted access
-	// Only invokable by vehicle if blocked by vehicle
-	void setBlockingVehicle(Vehicle vehicle) {
-		if (vehicle == null) {
-			blockingVehicle = null;
-		} else {
-			if (blockingVehicle != null) {
-				throw new IllegalStateException("Already blocked");
-			}
-			blockingVehicle = vehicle;
-		}
+        final Lane rightLane = lane.getStreet().getLanes().get(lane.getIndex() + 1);
+        return rightLane.getCells()[index];
+    }
 
-		// Cannot be set both
-		blockingConstructionSite = null;
-	}
+    // toask unify with setBlockingConstructionSite ?
+    public void setBlockingVehicle(Vehicle vehicle) {
+        if (vehicle == null) {
+            blockingVehicle = null;
+        } else {
+            if (blockingConstructionSite != null) {
+                throw new IllegalStateException("Already blocked");
+            }
+            if (blockingVehicle != null && !blockingVehicle.equals(vehicle)) {
+                throw new IllegalStateException("Already blocked");
+            }
+            blockingVehicle = vehicle;
+        }
 
-	public void setBlockingConstructionSite(ConstructionSite constructionSite) {
-		if (constructionSite == null) {
-			blockingConstructionSite = null;
-		} else {
-			if (blockingConstructionSite != null) {
-				throw new IllegalStateException("Already blocked");
-			}
-			blockingConstructionSite = constructionSite;
-		}
+        // To add to startingGrid
+        getLane().getStreet().getStartingGrid().addVehicle(vehicle);
 
-		// Cannot be set both
-		blockingVehicle = null;
-	}
+        // Cannot be set both
+        blockingConstructionSite = null;
+    }
+
+    // toask unify with setBlockingVehicle?
+    public void setBlockingConstructionSite(ConstructionSite constructionSite) {
+        if (constructionSite == null) {
+            blockingConstructionSite = null;
+        } else {
+            if (blockingVehicle != null) {
+                throw new IllegalStateException("Already blocked");
+            }
+            if (blockingConstructionSite != null && !blockingConstructionSite.equals(constructionSite)) {
+                throw new IllegalStateException("Already blocked");
+            }
+            blockingConstructionSite = constructionSite;
+        }
+
+        // Cannot be set both
+        blockingVehicle = null;
+    }
 }
