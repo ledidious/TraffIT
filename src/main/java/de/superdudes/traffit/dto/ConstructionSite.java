@@ -2,6 +2,7 @@ package de.superdudes.traffit.dto;
 
 import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
+import de.superdudes.traffit.exception.ObjectTooCloseException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
