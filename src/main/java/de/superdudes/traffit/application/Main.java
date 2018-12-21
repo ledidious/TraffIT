@@ -48,7 +48,7 @@ public class Main extends Application {
 			
 			StartingGrid grid1 = new StartingGrid("grid1");
 			Street street1 = new Street(1280, 2, grid1);
-			grid1.setStreet(street1);
+			//grid1.setStreet(street1);
 			SimulationManager.setRunningSimulation(grid1);
 
 			// Listener to resize the window
@@ -75,7 +75,12 @@ public class Main extends Application {
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 					
-					street1.setLength((int) controller.lane1.getWidth()); 
+					
+					//street1.setLength((int) controller.lane1.getWidth()); 
+					Street street1 = new Street((int) controller.lane1.getWidth(), 2, grid1);
+					//grid1.setStreet(street1);
+					
+					
 					//System.out.println("lane1 breite: " + controller.lane1.getWidth());
 					//System.out.println(street1.getLength());
 				}
