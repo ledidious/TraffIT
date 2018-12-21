@@ -112,6 +112,22 @@ public class GUIController {
         spinner01.getValueFactory().setValue(newValue);
     }*/
 	
+	public Pane getLane1() {
+		return lane1;
+	}
+
+	public void setLane1(Pane lane1) {
+		this.lane1 = lane1;
+	}
+
+	public Pane getLane2() {
+		return lane2;
+	}
+
+	public void setLane2(Pane lane2) {
+		this.lane2 = lane2;
+	}
+
 	public Cell[] buildLane(int width, int height) {
 		Cell[] ca = new Cell[width];
 
@@ -181,6 +197,7 @@ public class GUIController {
 		streetSize.setDisable(true);
 		System.out.println("Simulation has been started...");
 		
+		SimulationManager.genWasRendered(true);
 		SimulationManager.start();
 	}
 	

@@ -16,7 +16,7 @@ public class SimulationManager {
 	private static Thread executingThread = null;
 	private static Semaphore semaphore = new Semaphore(MAX_RUNNING_SIMULATION);
 
-	private static boolean genWasRendered = false;
+	public static boolean genWasRendered = false;
 
 	public static boolean load() {
 		runningSimulation = StartingGridController.instance().load();

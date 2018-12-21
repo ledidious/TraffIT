@@ -8,6 +8,7 @@ import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.StreetSign;
 import de.superdudes.traffit.dto.Vehicle;
+import de.superdudes.traffit.dto.Vehicle.Type;
 import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
 import de.superdudes.traffit.exception.ObjectTooCloseException;
@@ -184,7 +185,7 @@ public class Cell extends Rectangle {
 
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
+					Vehicle aVehicle = new Vehicle(Vehicle.Type.TRUCK, laneCells[Integer.parseInt(this.getId())]);
 
 					// myGrid.addVehicle(aVehicle); // Wird nicht mehr benötigt
 
@@ -625,5 +626,48 @@ public class Cell extends Rectangle {
 		 */
 
 		return vehicle;
+	}
+
+	public void redrawVehicle(Vehicle aVehicle) {
+		Cell[] myNeighbours = new Cell[aVehicle.getLength()];
+
+		for (int i = 0; i < myNeighbours.length; i++) {
+			myNeighbours[i] = (Cell) ((Pane) this.getParent()).getChildren()
+					.get(Integer.parseInt(this.getId()) + (i + 1));
+		}
+
+		switch (aVehicle.getType()) {
+		case CAR:
+			for (Cell c : myNeighbours) {
+				c.setFill(javafx.scene.paint.Color.BLUE);
+				c.stopPainting = true;
+			}
+
+			this.setFill(javafx.scene.paint.Color.BLUE);
+			this.stopPainting = true;
+
+			break;
+		case TRUCK:
+			for (Cell c : myNeighbours) {
+				c.setFill(javafx.scene.paint.Color.RED);
+				c.stopPainting = true;
+			}
+
+			this.setFill(javafx.scene.paint.Color.RED);
+			this.stopPainting = true;
+			break;
+		case MOTORCYCLE:
+			for (Cell c : myNeighbours) {
+				c.setFill(javafx.scene.paint.Color.GREEN);
+				c.stopPainting = true;
+			}
+
+			this.setFill(javafx.scene.paint.Color.GREEN);
+			this.stopPainting = true;
+			break;
+		default:
+			break;
+		}
+
 	}
 }

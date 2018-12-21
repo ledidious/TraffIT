@@ -3,17 +3,25 @@ package de.superdudes.traffit.application;
 import java.awt.Dimension;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
 import de.superdudes.traffit.dto.Vehicle;
 import javafx.application.Application;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -45,12 +53,25 @@ public class Main extends Application {
 			controller.lane1.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.lane2.getChildren().addAll(controller.buildLane(1280, 800));
 			controller.signlane.getChildren().addAll(controller.buildSignLane(1280, 800));
-			
-			StartingGrid grid1 = new StartingGrid("grid1");
-			new Street(1280, 2, grid1);
-			//grid1.setStreet(street1);
-			SimulationManager.setRunningSimulation(grid1);
 
+			StartingGrid backendGrid = new StartingGrid("grid1");
+			new Street(1280, 2, backendGrid);
+			// grid1.setStreet(street1);
+			SimulationManager.setRunningSimulation(backendGrid);
+
+			ObservableBooleanValue nemesis = new SimpleBooleanProperty();
+			
+			nemesis.addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					// TODO Auto-generated method stub
+					System.out.println("Moin");
+					if(newValue) {
+						repaintVehicle(backendGrid.getVehicles(), controller);
+					}
+				}	
+			});;
+			
 			// Listener to resize the window
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
 
@@ -74,15 +95,13 @@ public class Main extends Application {
 					controller.signlane.getChildren().clear();
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
-					
-					
-					//street1.setLength((int) controller.lane1.getWidth()); 
-					new Street((int) controller.lane1.getWidth(), 2, grid1);
-					//grid1.setStreet(street1);
-					
-					
-					//System.out.println("lane1 breite: " + controller.lane1.getWidth());
-					//System.out.println(street1.getLength());
+
+					// street1.setLength((int) controller.lane1.getWidth());
+					new Street((int) controller.lane1.getWidth(), 2, backendGrid);
+					// grid1.setStreet(street1);
+
+					// System.out.println("lane1 breite: " + controller.lane1.getWidth());
+					// System.out.println(street1.getLength());
 				}
 			});
 
@@ -107,8 +126,8 @@ public class Main extends Application {
 					controller.signlane.getChildren().addAll(controller.buildSignLane(
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 				}
-			});	
-			
+			});
+
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
@@ -248,5 +267,14 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public void repaintVehicle(Set<Vehicle> vehicle, GUIController myController) {
+		List<Cell> cells = myController.getLane1().getChildren().stream().map(Cell.class::cast)
+				.collect(Collectors.toList());
+
+		for (Vehicle v : vehicle) {
+			cells.get(v.getTailCell().getIndex()).redrawVehicle(v);
+		}
 	}
 }
