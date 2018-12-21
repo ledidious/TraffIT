@@ -80,7 +80,9 @@ public class Cell extends SimulationObject {
         }
 
         // To add to startingGrid
-        getLane().getStreet().getStartingGrid().addVehicle(vehicle);
+        if (vehicle != null) {
+            getLane().getStreet().getStartingGrid().addVehicle(vehicle);
+        }
 
         // Cannot be set both
         blockingConstructionSite = null;
