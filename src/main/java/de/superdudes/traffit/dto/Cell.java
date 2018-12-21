@@ -47,7 +47,7 @@ public class Cell extends SimulationObject {
 
     public Cell getLeftNeighbour() {
 
-        if (index <= 0) {
+        if (lane.getIndex() <= 0) {
             return null;
         }
 
@@ -57,7 +57,7 @@ public class Cell extends SimulationObject {
 
     public Cell getRightNeighbour() {
 
-        if (index >= lane.getStreet().getLaneCount()) {
+        if (lane.getIndex() >= lane.getStreet().getLaneCount() - 1) {
             return null;
         }
 
