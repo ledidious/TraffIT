@@ -31,7 +31,8 @@ import javafx.stage.StageStyle;
 
 public class Cell extends Rectangle {
 
-	// private ImageView currentImage; // Wird nicht mehr benötigt, jetzt nurnoch Rectangle einfärben
+	// private ImageView currentImage; // Wird nicht mehr benötigt, jetzt nurnoch
+	// Rectangle einfärben
 	private Boolean stopPainting = false;
 	static int number = 0;
 
@@ -85,17 +86,17 @@ public class Cell extends Rectangle {
 
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					//System.out.println(this.getId());
+					// System.out.println(this.getId());
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
 
 					aVehicle = createVehicleListener(aVehicle);
 
-					//System.out.println(this.getId());
-					//System.out.println(aVehicle.getBackCell().getIndex());
+					// System.out.println(this.getId());
+					// System.out.println(aVehicle.getBackCell().getIndex());
 
 					// myGrid.addVehicle(aVehicle); // Wird nicht mehr benötigt
 
-					aVehicle.drive();
+					// aVehicle.drive();
 
 					Cell[] myNeighboursCar = new Cell[aVehicle.getLength()];
 
@@ -226,10 +227,8 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
-									ivSpeedLimit50Width);
-							new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
-									ivSpeedLimit50Width);
+							new StreetSign(50, laneCells0[Integer.parseInt(this.getId())], ivSpeedLimit50Width);
+							new StreetSign(50, laneCells1[Integer.parseInt(this.getId())], ivSpeedLimit50Width);
 
 							Cell[] myNeighbours50 = new Cell[ivSpeedLimit50Width];
 
@@ -256,7 +255,7 @@ public class Cell extends Rectangle {
 							this.setFill(javafx.scene.paint.Color.SALMON);
 							this.stopPainting = true;
 						} catch (ObjectMisplacedException e2) {
-							showErrorDialog();
+							showErrorDialog(0);
 						}
 					}
 				} else {
@@ -282,10 +281,8 @@ public class Cell extends Rectangle {
 
 						try {
 
-							new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
-									ivSpeedLimit100Width);
-							new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
-									ivSpeedLimit100Width);
+							new StreetSign(100, laneCells0[Integer.parseInt(this.getId())], ivSpeedLimit100Width);
+							new StreetSign(100, laneCells1[Integer.parseInt(this.getId())], ivSpeedLimit100Width);
 
 							Cell[] myNeighbours100 = new Cell[ivSpeedLimit100Width];
 
@@ -314,7 +311,7 @@ public class Cell extends Rectangle {
 							this.stopPainting = true;
 
 						} catch (ObjectMisplacedException e2) {
-							showErrorDialog();
+							showErrorDialog(0);
 						}
 					}
 				} else {
@@ -340,10 +337,8 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
-									ivSpeedLimit70Width);
-							new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
-									ivSpeedLimit70Width);
+							new StreetSign(70, laneCells0[Integer.parseInt(this.getId())], ivSpeedLimit70Width);
+							new StreetSign(70, laneCells1[Integer.parseInt(this.getId())], ivSpeedLimit70Width);
 
 							Cell[] myNeighbours70 = new Cell[ivSpeedLimit70Width];
 
@@ -371,7 +366,7 @@ public class Cell extends Rectangle {
 							this.stopPainting = true;
 
 						} catch (ObjectMisplacedException e2) {
-							showErrorDialog();
+							showErrorDialog(0);
 						}
 					}
 				}
@@ -402,8 +397,7 @@ public class Cell extends Rectangle {
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
 					try {
-						new ConstructionSite(constructionWidth,
-								laneCells[Integer.parseInt(this.getId())]);
+						new ConstructionSite(constructionWidth, laneCells[Integer.parseInt(this.getId())]);
 
 						if (constructionWidth > 0) {
 							Cell[] allConstructionCells = new Cell[constructionWidth];
@@ -427,10 +421,10 @@ public class Cell extends Rectangle {
 								}
 							}
 						}
-					} catch (ObjectMisplacedException e2) {
-						showErrorDialog();
 					} catch (ObjectDistanceException e2) {
-						System.err.println("Sind Sie dumm?");
+						showErrorDialog(1);
+					} catch (ObjectMisplacedException e2) {
+						showErrorDialog(0);
 					}
 				}
 
@@ -513,7 +507,11 @@ public class Cell extends Rectangle {
 		return spinner01.getValue();
 	}
 
-	private void showErrorDialog() {
+	/**
+	 * 
+	 * @param messageType 0: Cell is blocked; 1: Construction Site is too close
+	 */
+	private void showErrorDialog(int messageType) {
 		Stage errorDialog = new Stage();
 		Stage myStage = (Stage) this.getScene().getWindow();
 
@@ -529,7 +527,6 @@ public class Cell extends Rectangle {
 		AnchorPane dialogPane = new AnchorPane();
 
 		Label label01 = new Label();
-		label01.setText("A cell is blocked from another object!");
 		label01.setTextFill(javafx.scene.paint.Color.RED);
 		label01.setLayoutX(10);
 		label01.setLayoutY(1);
@@ -539,6 +536,26 @@ public class Cell extends Rectangle {
 		button01.setLayoutX(120);
 		button01.setLayoutY(25);
 
+		switch (messageType) {
+		case 0:
+			label01.setText("A cell is blocked from another object!");
+			break;
+		case 1:
+			label01.setText("The Construction Site is too close to another one. \nPlease let at least 100 Cells room between two Construction Sites.");
+			
+			errorDialog.setHeight(130);
+			errorDialog.setWidth(350);
+			button01.setLayoutY(35);
+			break;
+		default:
+			label01.setText("[The Type of the Message is unknown]");
+			break;
+		}
+		
+		if (messageType == 0) {
+			label01.setText("A cell is blocked from another object!");
+		}
+		
 		button01.setOnAction(e -> errorDialog.close());
 
 		dialogPane.getChildren().add(label01);
