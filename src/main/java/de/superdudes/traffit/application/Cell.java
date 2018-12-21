@@ -10,6 +10,7 @@ import de.superdudes.traffit.dto.StreetSign;
 import de.superdudes.traffit.dto.Vehicle;
 import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
+import de.superdudes.traffit.exception.ObjectTooCloseException;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
@@ -419,6 +420,9 @@ public class Cell extends Rectangle {
 									counter = 0;
 								}
 							}
+
+						} catch (ObjectTooCloseException e2) {
+							showErrorDialog(1);
 						} catch (ObjectDistanceException e2) {
 							showErrorDialog(1);
 						} catch (ObjectMisplacedException e2) {
