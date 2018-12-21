@@ -396,10 +396,9 @@ public class Cell extends Rectangle {
 
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					try {
-						new ConstructionSite(constructionWidth, laneCells[Integer.parseInt(this.getId())]);
-
-						if (constructionWidth > 0) {
+					if (constructionWidth > 0) {
+						try {
+							new ConstructionSite(constructionWidth, laneCells[Integer.parseInt(this.getId())]);
 							Cell[] allConstructionCells = new Cell[constructionWidth];
 
 							for (int i = 0; i < allConstructionCells.length; i++) {
@@ -420,15 +419,14 @@ public class Cell extends Rectangle {
 									counter = 0;
 								}
 							}
+						} catch (ObjectDistanceException e2) {
+							showErrorDialog(1);
+						} catch (ObjectMisplacedException e2) {
+							showErrorDialog(0);
 						}
-					} catch (ObjectDistanceException e2) {
-						showErrorDialog(1);
-					} catch (ObjectMisplacedException e2) {
-						showErrorDialog(0);
 					}
-				}
 
-				else {
+				} else {
 					this.setFill(javafx.scene.paint.Color.DARKSEAGREEN);
 				}
 
@@ -541,21 +539,22 @@ public class Cell extends Rectangle {
 			label01.setText("A cell is blocked from another object!");
 			break;
 		case 1:
-			label01.setText("The Construction Site is too close to another one. \nPlease let at least 100 Cells room between two Construction Sites.");
-			
-			errorDialog.setHeight(130);
-			errorDialog.setWidth(350);
-			button01.setLayoutY(35);
+			label01.setText(
+					"The Construction Site is too close to another one. \nPlease let at least 100 Cells room between two \nConstruction Sites.");
+
+			errorDialog.setHeight(160);
+			errorDialog.setWidth(390);
+			button01.setLayoutY(70);
 			break;
 		default:
 			label01.setText("[The Type of the Message is unknown]");
 			break;
 		}
-		
+
 		if (messageType == 0) {
 			label01.setText("A cell is blocked from another object!");
 		}
-		
+
 		button01.setOnAction(e -> errorDialog.close());
 
 		dialogPane.getChildren().add(label01);
