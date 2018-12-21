@@ -10,26 +10,27 @@ import java.util.Set;
 
 @Getter
 @Setter
-@ToString( of = { "nr", "name" } )
+@ToString(of = {"name"})
 public class StartingGrid extends SimulationObject {
 
 	private Street street;
 
     @NonNull
-    private Set<Vehicle> vehicles = new HashSet<>();
-
-    @NonNull
     private String name;
 
-    public StartingGrid (String name) {
-    	  this.name = name;
+    @NonNull
+    private Set<Vehicle> vehicles = new HashSet<>();
+
+    public StartingGrid(String name) {
+        this.name = name;
     }
-    
-    public boolean addVehicle(@NonNull Vehicle vehicle) {
-		    return vehicles.add(vehicle);
-	  }
-	
-	  public boolean removeVehicle(@NonNull Vehicle vehicle) {
-		    return vehicles.remove(vehicle);
-	  }
+
+    // Please use cells to
+    void addVehicle(@NonNull Vehicle vehicle) {
+        vehicles.add(vehicle);
+    }
+
+    void removeVehicle(@NonNull Vehicle vehicle) {
+        vehicles.remove(vehicle);
+    }
 }

@@ -1,91 +1,95 @@
 package de.superdudes.traffit.controller;
 
+import de.superdudes.traffit.DbManager;
+import de.superdudes.traffit.dto.Cell;
+import de.superdudes.traffit.dto.Lane;
+import de.superdudes.traffit.dto.Street;
+import de.superdudes.traffit.exception.ObjectNotPersistedException;
+import lombok.NonNull;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.SimulationObject;
-import de.superdudes.traffit.dto.StartingGrid;
-import de.superdudes.traffit.dto.Street;
+import java.util.LinkedList;
+import java.util.List;
 
 public class LaneController extends AbstractController<Lane> {
 
-	private static class Singletons {
+    private static class Singletons {
 
-		private static final LaneController INSTANCE = new LaneController();
-	}
+        private static final LaneController INSTANCE = new LaneController();
+    }
 
-	public static LaneController instance() {
-		return Singletons.INSTANCE;
-	}
+    public static LaneController instance() {
+        return Singletons.INSTANCE;
+    }
 
-	@Override
-	public void save(Lane object) {
+    void save(@NonNull Lane object) {
 
-		if (object.getId() != null) {
-			try {
-				Statement myStmt = myConn.createStatement();
+        if (object.getStreet().getId() == null) {
+            throw new ObjectNotPersistedException(object.getStreet());
+        }
+        try {
+            final String sql;
 
-				String sql = "UPDATE LANE SET" + " l_id = ('" + object.getId() + "')" + " nr =  ('" + object.getNr()
-						+ "')" + " WHERE sg_id = 1";
+            if (object.getId() != null) {
+                sql = "UPDATE LANE SET" + " l_id = '" + object.getId() + "'," + " nr = '" + object.getNr() + "' "
+                        + " WHERE l_id = '" + object.getId() + "'";
+            } else {
+                sql = " INSERT INTO LANE (nr, street_id, l_index) " + " VALUES ('" + object.getNr() +
+                        "', '" + object.getStreet().getId() + "', '" + object.getIndex() + "')";
+            }
 
-				myStmt.executeUpdate(sql);
+            insertOrUpdate(sql, object);
 
-			}
+            for (Cell cell : object.getCells()) {
+                CellController.instance().save(cell);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+        }
+    }
 
-			catch (SQLException ex) {
-				ex.printStackTrace();
-				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-			}
-		} else {
-			Connection myConn = DriverManager.getConnection(url);
+    List<Lane> load(@NonNull Street street) {
 
-			Statement myStmt = myConn.createStatement();
+        if (street.getId() == null) {
+            throw new ObjectNotPersistedException(street, "Lane needs a street in db");
+        }
 
-			String sql = " INSERT INTO LANE (l_id, nr) " + " VALUES ('" + object.getId() + object.getNr() + "')";
+        try {
+            final Connection myConn = DbManager.instance().getConnection();
+            final ResultSet resultSet = myConn.createStatement().executeQuery(
+                    "SELECT * FROM LANE WHERE street_id = '" + street.getId() + "' ORDER BY l_index ASC"
+            );
 
-			myStmt.executeUpdate(sql);
+            final List<Lane> results = new LinkedList<>();
+            while (resultSet.next()) {
+                final Integer l_id = resultSet.getInt("l_id");
+                final Integer nr = resultSet.getInt("nr");
+                final Integer index = resultSet.getInt("l_index");
 
-		}
+                final Lane object = new Lane(street, index);
+                object.setId(l_id);
+                object.setNr(nr);
 
-	}
+                // Load cells
+                final List<Cell> cellList = CellController.instance().load(object);
+                final Cell[] cellsArray = new Cell[cellList.size()];
+                cellList.toArray(cellsArray);
+                object.setCells(cellsArray);
 
-	@Override
-	public Lane load(Integer Id)
-	{
-		try 
-		{
-			
-			Statement myStmt = myConn.createStatement();
+                results.add(object);
+            }
 
-		
-			String sql = "SELECT l_id , nr , name FROM LANE WHERE sg_id = '" + Id + "' ";
+            // Set on street
+            street.setLanes(results);
 
-			ResultSet result = myStmt.executeQuery(sql);
-
-			while (result.next())
-			{
-				Integer l_id = result.getInt(1);
-				Integer nr = result.getInt(2);
-			
-
-	      Lane object = new Lane(new StreetController().load(Id), new Lane().getIndex());
-
-			object.setId(l_id);
-			object.setNr(nr);
-		
-			return object;
-		      
-		   }
-		
-		} 
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
-		}
-
-	}
+            return results;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.print("Laden der Daten nicht m�glich!!!");
+        }
+        return null;
+    }
+}

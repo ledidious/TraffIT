@@ -1,77 +1,75 @@
 package de.superdudes.traffit.dto;
 
-import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 @Getter
 @Setter
-@ToString(of = { "nr", "length" })
-public class ConstructionSite extends SimulationObject {
+@ToString( of = { "length" } )
+public class ConstructionSite extends SimulationObject implements AttachedToCell {
 
-	@NonNull
-	private Integer length;
+    @NonNull
+    private Deque<Cell> blockedCells = new LinkedList<>();
 
-	@NonNull
-	private Cell tailCell;
+    // Not persisted
+    @NonNull
+    private int length;
 
-	public ConstructionSite(@NonNull Integer length, @NonNull Cell tailCell) {
-		this.length = length;
+    public ConstructionSite( int length, @NonNull Cell tailCell ) {
+        this( length, tailCell, true );
+    }
 
-		setTailCell(tailCell);
-	}
+    // ! Please only use in ConstructionSiteController
+    // If cellSuccessorLoaded == false, please maintain other cells afterwards as soon as loaded
+    public ConstructionSite( @NonNull Integer length, @NonNull Cell tailCell, boolean cellSuccessorLoaded ) {
+        this.length = length;
 
-	public void setTailCell(@NonNull Cell tailCell) {
+        if( cellSuccessorLoaded ) {
+            setTailCell( tailCell, length );
+        }
+        else {
+            // Add to blockedCells so that getTailCell() is working
+            blockedCells.addFirst( tailCell );
+        }
+    }
 
-		Cell currentCell = tailCell;	
-		Cell currentCellOtherLane = null; 
-		
-		if(currentCell.getLane().getIndex() == 0) {
-			currentCellOtherLane = currentCell.getRightNeighbour();
-		} else {
-			currentCellOtherLane = currentCell.getLeftNeighbour();
-		}
-		
-		for (int i = 0 /* First cell already set */; i < length; i++) {
-			currentCell = currentCell.getSuccessor();
+    // todo unify in AttachedToCell
+    private void setTailCell( @NonNull Cell tailCell, int length ) {
 
-			if (currentCell == null) {
-				throw new ObjectMisplacedException(this, "Reaches the end of street");
-			}
-			if (currentCell.isBlocked()) {
-				throw new ObjectMisplacedException(this, "Blocked by " + currentCell.getBlockingObject());
-			}
+        // Block new cells
+        Cell currentCell = tailCell;
+        for( int i = 0 /* First cell already set */; i < length; i++ ) {
 
-			for (int j = 0; j <= 100; j++) {
-				if (currentCell.getAncestor().isBlocked()) {
-					throw new ObjectDistanceException("Too short distance from another construction site");
-				}
-			}
+            if( currentCell == null ) {
+                throw new ObjectMisplacedException( this, "Reaches the end of street" );
+            }
 
-			for (int j = 0; j <= 100 + length; j++) {
-				if (currentCell.getSuccessor().isBlocked()) {
-					throw new ObjectDistanceException("Too short distance from another construction site");
-				}
-			} 
-			
-			for (int j = 0; j <= 100; j++) {
-				if (currentCellOtherLane.getAncestor().isBlocked()) {
-					throw new ObjectDistanceException("Too short distance from another construction site");
-				}
-			}
+            if( currentCell.isBlocked() ) {
+                throw new ObjectMisplacedException( this, "Blocked by " + currentCell.getBlockingObject() );
+            }
 
-			for (int j = 0; j <= 100 + length; j++) {
-				if (currentCellOtherLane.getSuccessor().isBlocked()) {
-					throw new ObjectDistanceException("Too short distance from another construction site");
-				}
-			} 
+            blockedCells.addFirst( currentCell ); // Habe ich über die Prüfung gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;)
+            currentCell.setBlockingConstructionSite( this );
+            currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
+        }
+    }
 
-			currentCell.setBlockingConstructionSite(this);
-		}
+    public Cell getTailCell() {
+        return blockedCells.getLast();
+    }
 
-		this.tailCell = tailCell;
-	}
+    private void setBlockedCells() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Integer getLength() {
+        return length;
+    }
 }

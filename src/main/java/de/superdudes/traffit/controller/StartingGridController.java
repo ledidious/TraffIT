@@ -1,79 +1,95 @@
 package de.superdudes.traffit.controller;
 
-import java.sql.*;
+import de.superdudes.traffit.DbManager;
+import de.superdudes.traffit.dto.Cell;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
+import de.superdudes.traffit.dto.Vehicle;
+import lombok.NonNull;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.stream.Stream;
 
 public class StartingGridController extends AbstractController<StartingGrid> {
 
-	private static class Singletons {
+    private static class Singletons {
 
-		private static final StartingGridController INSTANCE = new StartingGridController();
-	}
+        private static final StartingGridController INSTANCE = new StartingGridController();
+    }
 
-	public static StartingGridController instance() {
-		return Singletons.INSTANCE;
-	}
+    public static StartingGridController instance() {
+        return Singletons.INSTANCE;
+    }
 
-	@Override
-	public void save(StartingGrid object) {
+    /*
+     * sg_id INTEGER(10) AUTO_INCREMENT, nr INTEGER(10), name VARCHAR(255),
+     */
 
-		if (object.getId() != null) {
-			try {
-				Statement myStmt = myConn.createStatement();
+    public void save(@NonNull StartingGrid object) {
+        final Connection myConn = DbManager.instance().getConnection();
 
-				String sql = "UPDATE STRARTING_GRID SET" + " sg_id = ('" + object.getId() + "')" + " nr =  ('"
-						+ object.getNr() + "')" + " name = ('" + object.getName() + "') " + " WHERE sg_id = 1";
+        try {
+            // language=sql
+            final String sql;
 
-				myStmt.executeUpdate(sql);
+            if (object.getId() != null) {
+                sql = "UPDATE STARTING_GRID SET sg_id = " + " sg_id = '" + object.getId() + "'," + " nr =  '"
+                        + object.getNr() + "'," + " name = '" + object.getName() + "' " + " WHERE sg_id = "
+                        + object.getId();
+            } else {
+                // Delete other startingGrids, until now we only provide one in parallel
+                //   !!! Therefore all foreign keys must be on update cascade on delete cascade
+                //       because everything is existence-dependent from startingGrid
+                myConn.createStatement().executeUpdate("delete from STARTING_GRID");
 
-			}
+                sql = "INSERT INTO STARTING_GRID (nr, name) " + " VALUES ('" + object.getNr() + "','"
+                        + object.getName() + "')";
+            }
 
-			catch (SQLException ex) {
-				ex.printStackTrace();
-				System.out.println("Eintragen der Daten fehlgeschlagen!!!");
-			}
-		} else {
-			Statement myStmt = myConn.createStatement();
+            // First insert, then save dependencies
+            insertOrUpdate(sql, object);
 
-			String sql = " INSERT INTO STARTING_GRID (sg_id, nr, name) " + " VALUES ('" + object.getId()
-					+ object.getNr() + object.getName() + "')";
+            StreetController.instance().save(object.getStreet());
 
-			myStmt.executeUpdate(sql);
+            for (Vehicle vehicle : object.getVehicles()) {
+                VehicleController.instance().save(vehicle);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println("Eintragen der Daten fehlgeschlagen!!!");
+        }
+    }
 
-		}
+    public StartingGrid load() {
 
-	}
+        final Connection connection = DbManager.instance().getConnection();
+        try {
+            // Until now we only provide one simulation to save and load
+            ResultSet result = connection.createStatement().executeQuery(
+                    "SELECT sg_id , nr , name FROM STARTING_GRID LIMIT 1"
+            );
 
-	@Override
-	public StartingGrid load(Integer Id) {
+            while (result.next()) {
+                final Integer sg_id = result.getInt("sg_id");
+                final Integer nr = result.getInt("nr");
+                final String name = result.getString("name");
 
-		try {
-			Statement myStmt = myConn.createStatement();
+                final StartingGrid object = new StartingGrid(name);
 
-			String sql = "SELECT sg_id , nr , name FROM STARTING_GRID WHERE sg_id = '" + Id + "' ";
+                object.setId(sg_id);
+                object.setNr(nr);
+                object.setName(name);
 
-			ResultSet result = myStmt.executeQuery(sql);
+                StreetController.instance().load(object);
 
-			while (result.next()) {
-				Integer sg_id = result.getInt(1);
-				Integer nr = result.getInt(2);
-				String name = result.getString(3);
-
-				StartingGrid object = new StartingGrid(name, new StreetController().load(Id));
-
-				object.setId(sg_id);
-				object.setNr(nr);
-				object.setName(name);
-
-				return object;
-
-			}
-
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			System.out.print("Laden der Daten nicht m�glich!!!");
-		}
-
-	}
+                return object;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.print("Laden der Daten nicht m�glich!!!");
+        }
+        return null;
+    }
 }

@@ -1,34 +1,30 @@
 package de.superdudes.traffit.controller;
 
-import de.superdudes.traffit.ControllerManager;
-import de.superdudes.traffit.dto.Cell;
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.StartingGrid;
-import de.superdudes.traffit.dto.Street;
-import de.superdudes.traffit.dto.Vehicle;
+import java.sql.SQLException;
+import java.util.List;
+
+import de.superdudes.traffit.SimulationManager;
+import de.superdudes.traffit.dto.*;
+import de.superdudes.traffit.dto.Vehicle.Type;
 
 public class Main {
 
-	public static void main(String[] args) {
-		
-		
-	}
-	
-	private static StartingGrid szenario1() {
+	public static void main(String[] args) throws SQLException {
 
-		final Street street = new Street(150, 2);
-		final StartingGrid startingGrid = new StartingGrid("try", street);
-		
-		final Vehicle vehicle = new Vehicle(Vehicle.Type.CAR);
-		final Vehicle vehicle2 = new Vehicle(Vehicle.Type.TRUCK);
-		final Vehicle vehicle3 = new Vehicle(Vehicle.Type.MOTORCYCLE);
+	    // our test class
+		final StartingGrid startingGrid = new StartingGrid("Frank");
+		final Street street = new Street(50, 3, startingGrid);
+        final Lane lane = street.getLanes().get(0);
+        final Cell cell1 = lane.getCells()[0];
+        final Cell cell2 = lane.getCells()[25];
 
-		startingGrid.addVehicle(vehicle);
-		startingGrid.addVehicle(vehicle2);
-		startingGrid.addVehicle(vehicle3);
-		
+        final ConstructionSite constructionSite = new ConstructionSite(20, cell1);
+        final Vehicle vehicle = new Vehicle(Type.MOTORCYCLE, cell2);
+		final StreetSign streetSign = new StreetSign(50, cell1, 12);
 
-		
-		return startingGrid;
+		StartingGridController.instance().save(startingGrid);
+
+		final StartingGrid startingGrid1 = StartingGridController.instance().load();
+        System.out.println();
 	}
 }
