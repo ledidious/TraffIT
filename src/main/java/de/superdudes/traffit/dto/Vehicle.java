@@ -52,18 +52,18 @@ public class Vehicle extends SimulationObject {
 		this.type = type;
 
 		Cell currentCell = tailCell;
-		blockedCells.addFirst(currentCell); // Habe ich über die Schleife gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;) 
-
+		 
 		for (int i = 0 /* First cell already set */; i < type.getLength(); i++) {
-			currentCell = currentCell.getSuccessor(); // WARUM? Deshalb wird die erste Zelle bei der Prüfung nicht berücksichtigt!
-
 			if (currentCell == null) {
 				throw new ObjectMisplacedException(this, "Reaches the end of street");
 			}
 			if (currentCell.isBlocked()) {
 				throw new ObjectMisplacedException(this, "Blocked by " + currentCell.getBlockingObject());
 			}
+			
+			blockedCells.addFirst(currentCell); // Habe ich über die Prüfung gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;)
 			currentCell.setBlockingVehicle(this);
+			currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
 		}
 	}
 
