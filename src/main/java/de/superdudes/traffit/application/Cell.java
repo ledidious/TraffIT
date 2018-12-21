@@ -1,6 +1,5 @@
 package de.superdudes.traffit.application;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import de.superdudes.traffit.SimulationManager;
@@ -9,6 +8,7 @@ import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.StreetSign;
 import de.superdudes.traffit.dto.Vehicle;
+import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
@@ -31,7 +31,7 @@ import javafx.stage.StageStyle;
 
 public class Cell extends Rectangle {
 
-	private ImageView currentImage;
+	// private ImageView currentImage; // Wird nicht mehr benötigt, jetzt nurnoch Rectangle einfärben
 	private Boolean stopPainting = false;
 	static int number = 0;
 
@@ -85,15 +85,15 @@ public class Cell extends Rectangle {
 
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					System.out.println(this.getId());
+					//System.out.println(this.getId());
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
 
 					aVehicle = createVehicleListener(aVehicle);
 
-					System.out.println(this.getId());
-					System.out.println(aVehicle.getBackCell().getIndex());
+					//System.out.println(this.getId());
+					//System.out.println(aVehicle.getBackCell().getIndex());
 
-					myGrid.addVehicle(aVehicle);
+					// myGrid.addVehicle(aVehicle); // Wird nicht mehr benötigt
 
 					aVehicle.drive();
 
@@ -140,7 +140,7 @@ public class Cell extends Rectangle {
 
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
 
-					myGrid.addVehicle(aVehicle);
+					// myGrid.addVehicle(aVehicle); // WIrd nicht mehr benötigt
 
 					Cell[] myNeighboursMotor = new Cell[aVehicle.getLength()];
 
@@ -184,7 +184,7 @@ public class Cell extends Rectangle {
 
 					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
 
-					myGrid.addVehicle(aVehicle);
+					// myGrid.addVehicle(aVehicle); // Wird nicht mehr benötigt
 
 					Cell[] myNeighboursTruck = new Cell[aVehicle.getLength()];
 
@@ -226,9 +226,9 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							StreetSign streetSignLane0 = new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
+							new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
 									ivSpeedLimit50Width);
-							StreetSign streetSignLane1 = new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
+							new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
 									ivSpeedLimit50Width);
 
 							Cell[] myNeighbours50 = new Cell[ivSpeedLimit50Width];
@@ -282,9 +282,9 @@ public class Cell extends Rectangle {
 
 						try {
 
-							StreetSign streetSignLane0 = new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
+							new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
 									ivSpeedLimit100Width);
-							StreetSign streetSignLane1 = new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
+							new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
 									ivSpeedLimit100Width);
 
 							Cell[] myNeighbours100 = new Cell[ivSpeedLimit100Width];
@@ -340,9 +340,9 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							StreetSign streetSignLane0 = new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
+							new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
 									ivSpeedLimit70Width);
-							StreetSign streetSignLane1 = new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
+							new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
 									ivSpeedLimit70Width);
 
 							Cell[] myNeighbours70 = new Cell[ivSpeedLimit70Width];
@@ -402,7 +402,7 @@ public class Cell extends Rectangle {
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
 					try {
-						ConstructionSite constructionSiteA = new ConstructionSite(constructionWidth,
+						new ConstructionSite(constructionWidth,
 								laneCells[Integer.parseInt(this.getId())]);
 
 						if (constructionWidth > 0) {
