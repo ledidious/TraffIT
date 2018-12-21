@@ -12,163 +12,154 @@ import java.util.LinkedList;
 @Setter
 public class Vehicle extends SimulationObject implements AttachedToCell {
 
-	public static final int MAX_SPEED = 200;
+    public static final int MAX_SPEED = 200;
 
-	public static final int ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
-	public static final int ANCESTOR_DISTANCE_MIN = Type.CAR.getLength();
+    public static final int ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
+    public static final int ANCESTOR_DISTANCE_MIN                = Type.CAR.getLength();
 
-	public enum Type {
+    public enum Type {
 
-		CAR(20),
-		TRUCK(40),
-		MOTORCYCLE(5);
+        CAR( 20 ),
+        TRUCK( 40 ),
+        MOTORCYCLE( 5 );
 
-		@Getter
-		private int length;
+        @Getter
+        private int length;
 
-		private Type(int length) {
-			this.length = length;
-		}
-	}
+        private Type( int length ) {
+            this.length = length;
+        }
+    }
 
-	@NonNull
-	private StartingGrid startingGrid;
+    @NonNull
+    private StartingGrid startingGrid;
 
-	@NonNull
-	private Type type;
+    @NonNull
+    private Type type;
 
-	@NonNull
-	private Deque<Cell> blockedCells = new LinkedList<>();
+    @NonNull
+    private Deque<Cell> blockedCells = new LinkedList<>();
 
-	@NonNull
-	private Integer maxSpeed;
+    @NonNull
+    private Integer maxSpeed;
 
-	// Volatile thus not in db !
-	private Integer speedLimit;
+    // Volatile thus not in db !
+    private Integer speedLimit;
 
-	private Integer currentSpeed;
+    private Integer currentSpeed;
 
-	// For simulation logic
-	private int gensSinceLastDrive = -1; // Never set
+    private int gensSinceLastDrive = - 1; // Never set
 
-	// For gui
-	private boolean carWasMoved = false;
+    public Vehicle( @NonNull Type type, @NonNull Cell tailCell ) {
+        this( type, tailCell, true );
+    }
 
-	public Vehicle(@NonNull Type type, @NonNull Cell tailCell) {
-		this(type, tailCell, true);
-	}
+    public Vehicle( @NonNull Type type, @NonNull Cell tailCell, boolean cellSuccessorsLoaded ) {
+        this.type = type;
+        this.startingGrid = tailCell.getLane().getStreet().getStartingGrid();
 
-	public Vehicle(@NonNull Type type, @NonNull Cell tailCell, boolean cellSuccessorsLoaded) {
-		this.type = type;
-		this.startingGrid = tailCell.getLane().getStreet().getStartingGrid();
+        if( cellSuccessorsLoaded ) {
+            connectNewCells( tailCell );
+        }
+        else {
+            // Add to blockedCells so that getTailCell() is working
+            blockedCells.addFirst( tailCell );
+        }
+    }
 
-		if (cellSuccessorsLoaded) {
-			connectNewCells(tailCell);
-		} else {
-			// Add to blockedCells so that getTailCell() is working
-			blockedCells.addFirst(tailCell);
-		}
-	}
+    @Override
+    public Integer getLength() {
+        return type.getLength();
+    }
 
-	@Override
-	public Integer getLength() {
-		return type.getLength();
-	}
+    public Cell getFrontCell() {
+        return blockedCells.getFirst();
+    }
 
-	public Cell getFrontCell() {
-		return blockedCells.getFirst();
-	}
+    @Deprecated
+    public Cell getBackCell() {
+        return getTailCell();
+    }
 
-	@Deprecated
-	public Cell getBackCell() {
-		return getTailCell();
-	}
+    @Override
+    public Cell getTailCell() {
+        return blockedCells.getLast();
+    }
 
-	@Override
-	public Cell getTailCell() {
-		return blockedCells.getLast();
-	}
+    public Lane getLane() {
+        return getFrontCell().getLane();
+    }
 
-	public Lane getLane() {
-		return getFrontCell().getLane();
-	}
+    public void accelerate() {
+        if( currentSpeed < maxSpeed ) {
+            currentSpeed++;
+        }
+    }
 
-	public void accelerate() {
-		if (currentSpeed < maxSpeed) {
-			currentSpeed++;
-		}
-	}
+    public void brake() {
+        if( currentSpeed > 0 ) {
+            currentSpeed--;
+        }
+    }
 
-	public void brake() {
-		if (currentSpeed > 0) {
-			currentSpeed--;
-		}
-	}
+    // Moves one cell forward
+    public void drive() {
+        gensSinceLastDrive = 0;
 
-	// Moves one cell forward
-	public void drive() {
-		gensSinceLastDrive = 0;
-		carWasMoved = true;
+        final Cell removedCell = blockedCells.removeLast();
+        removedCell.setBlockingVehicle( null );
 
-		final Cell removedCell = blockedCells.removeLast();
-		removedCell.setBlockingVehicle(null);
+        final Cell addedCell = blockedCells.getLast().getSuccessor();
+        blockedCells.addFirst( addedCell );
+        addedCell.setBlockingVehicle( this );
+    }
 
-		final Cell addedCell = blockedCells.getLast().getSuccessor();
-		blockedCells.addFirst(addedCell);
-		addedCell.setBlockingVehicle(this);
-	}
+    public void dontDrive() {
+        gensSinceLastDrive++;
+    }
 
-	public void dontDrive() {
-		gensSinceLastDrive++;
-	}
+    public void turnLeft() {
+        connectNewCells( getTailCell().getLeftNeighbour() );
+    }
 
-	// For gui
-	public void notifyCarWasMoved() {
-		carWasMoved = false;
-	}
+    public void turnRight() {
+        connectNewCells( getTailCell().getRightNeighbour() );
+    }
 
-	public void turnLeft() {
-		connectNewCells(getTailCell().getLeftNeighbour());
-	}
+    private void connectNewCells( @NonNull Cell tailCell ) {
 
-	public void turnRight() {
-		connectNewCells(getTailCell().getRightNeighbour());
-	}
+        // Free old
+        for( Cell blockedCell : blockedCells ) {
+            blockedCell.setBlockingVehicle( null );
+        }
+        blockedCells.clear();
 
-	private void connectNewCells(@NonNull Cell tailCell) {
+        // todo unify in AttachedToCell
+        // Block new cells
+        Cell currentCell = tailCell;
+        for( int i = 0 /* First cell already set */; i < type.getLength(); i++ ) {
 
-		// Free old
-		for (Cell blockedCell : blockedCells) {
-			blockedCell.setBlockingVehicle(null);
-		}
-		blockedCells.clear();
+            if( currentCell == null ) {
+                throw new ObjectMisplacedException( this, "Reaches the end of street" );
+            }
 
-		// todo unify in AttachedToCell
-		// Block new cells
-		Cell currentCell = tailCell;
-		for (int i = 0 /* First cell already set */; i < type.getLength(); i++) {
+            if( currentCell.isBlocked() ) {
+                throw new ObjectMisplacedException( this, "Blocked by " + currentCell.getBlockingObject() );
+            }
 
-			if (currentCell == null) {
-				throw new ObjectMisplacedException(this, "Reaches the end of street");
-			}
+            blockedCells.addFirst( currentCell ); // Habe ich über die Prüfung gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;)
+            currentCell.setBlockingVehicle( this );
+            currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
+        }
+    }
 
-			if (currentCell.isBlocked()) {
-				throw new ObjectMisplacedException(this, "Blocked by " + currentCell.getBlockingObject());
-			}
+    public void setMaxSpeed( @NonNull Integer maxSpeed ) {
+        this.maxSpeed = Math.max( MAX_SPEED - 1, maxSpeed );
+    }
 
-			blockedCells.addFirst(currentCell); // Habe ich über die Prüfung gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;)
-			currentCell.setBlockingVehicle(this);
-			currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
-		}
-	}
-
-	public void setMaxSpeed(@NonNull Integer maxSpeed) {
-		this.maxSpeed = Math.max(MAX_SPEED - 1, maxSpeed);
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "{type=" + getType() + ", lane=" + getLane().getIndex() + ", headCell=" + getFrontCell().getIndex() + "}";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{type=" + getType() + ", lane=" + getLane().getIndex() + ", headCell=" + getFrontCell().getIndex() + "}";
+    }
 }
 
