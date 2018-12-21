@@ -226,9 +226,9 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							StreetSign streetSignLane0 = new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
+							new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
 									ivSpeedLimit50Width);
-							StreetSign streetSignLane1 = new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
+							new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
 									ivSpeedLimit50Width);
 
 							Cell[] myNeighbours50 = new Cell[ivSpeedLimit50Width];
@@ -282,9 +282,9 @@ public class Cell extends Rectangle {
 
 						try {
 
-							StreetSign streetSignLane0 = new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
+							new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
 									ivSpeedLimit100Width);
-							StreetSign streetSignLane1 = new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
+							new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
 									ivSpeedLimit100Width);
 
 							Cell[] myNeighbours100 = new Cell[ivSpeedLimit100Width];
@@ -340,9 +340,9 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							StreetSign streetSignLane0 = new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
+							new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
 									ivSpeedLimit70Width);
-							StreetSign streetSignLane1 = new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
+							new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
 									ivSpeedLimit70Width);
 
 							Cell[] myNeighbours70 = new Cell[ivSpeedLimit70Width];
@@ -402,7 +402,7 @@ public class Cell extends Rectangle {
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
 					try {
-						ConstructionSite constructionSiteA = new ConstructionSite(constructionWidth,
+						new ConstructionSite(constructionWidth,
 								laneCells[Integer.parseInt(this.getId())]);
 
 						if (constructionWidth > 0) {

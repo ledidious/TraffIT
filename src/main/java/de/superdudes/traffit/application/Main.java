@@ -47,7 +47,7 @@ public class Main extends Application {
 			controller.signlane.getChildren().addAll(controller.buildSignLane(1280, 800));
 			
 			StartingGrid grid1 = new StartingGrid("grid1");
-			Street street1 = new Street(1280, 2, grid1);
+			new Street(1280, 2, grid1);
 			//grid1.setStreet(street1);
 			SimulationManager.setRunningSimulation(grid1);
 
@@ -77,7 +77,7 @@ public class Main extends Application {
 					
 					
 					//street1.setLength((int) controller.lane1.getWidth()); 
-					Street street1 = new Street((int) controller.lane1.getWidth(), 2, grid1);
+					new Street((int) controller.lane1.getWidth(), 2, grid1);
 					//grid1.setStreet(street1);
 					
 					
