@@ -563,10 +563,10 @@ public class Cell extends Rectangle {
 	}
 	
 	/**
-	 * Will remove all drawn objects from the street
+	 * Will remove all drawn objects from the lane
 	 * They will be still existing in the backend
 	 */
-	public void cleanUpStreet() {
+	public void cleanUpLane() {
 		Cell[] allCellsFromLane = new Cell[number];
 
 		for (int i = 0; i < allCellsFromLane.length; i++) {

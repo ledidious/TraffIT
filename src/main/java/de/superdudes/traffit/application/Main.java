@@ -284,8 +284,8 @@ public class Main extends Application {
 		List<Cell> cellsLane2 = myController.getLane2().getChildren().stream().map(Cell.class::cast)
 				.collect(Collectors.toList());
 
-		cellsLane1.get(0).cleanUpStreet();
-		cellsLane2.get(0).cleanUpStreet();
+		cellsLane1.get(0).cleanUpLane();
+		cellsLane2.get(0).cleanUpLane();
 
 		for (Vehicle v : vehicle) {
 			if (v.getTailCell().getLane().getIndex() == 0)
