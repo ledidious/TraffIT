@@ -15,6 +15,7 @@ import de.superdudes.traffit.exception.ObjectTooCloseException;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -559,5 +560,23 @@ public class Cell extends Rectangle {
 
 		this.setFill(javafx.scene.paint.Color.SALMON);
 		this.stopPainting = true;
+	}
+	
+	/**
+	 * Will remove all drawn objects from the street
+	 * They will be still existing in the backend
+	 */
+	public void cleanUpStreet() {
+		Cell[] allCellsFromLane = new Cell[number];
+
+		for (int i = 0; i < allCellsFromLane.length; i++) {
+			allCellsFromLane[i] = (Cell) ((Pane) this.getParent()).getChildren()
+					.get(i);
+		}
+		
+		for (Cell c : allCellsFromLane) {
+			c.setFill(javafx.scene.paint.Color.GRAY);
+			c.stopPainting = false;
+		}
 	}
 }

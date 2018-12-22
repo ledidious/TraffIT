@@ -63,21 +63,23 @@ public class Main extends Application {
 			// Listener for rendering Simulation
 			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.isGenWasRendered());
 			((BooleanProperty) nemesis).bindBidirectional(SimulationManager.listenToGenWasRendered);
-			
+
 			nemesis.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					// TODO Auto-generated method stub
-					if(newValue) {
+					if (newValue) {
 						System.out.println("Redrawing necessary!");
 						repaintVehicle(backendGrid.getVehicles(), controller);
-						
+
 						// Reset the Manager
-						//SimulationManager.genWasRendered(false); // Doesn't work: Listener stops listening
+						// SimulationManager.genWasRendered(false); // Doesn't work: Listener stops
+						// listening
 					}
-				}	
-			});;
-			
+				}
+			});
+			;
+
 			// Listener to resize the window
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
 
@@ -276,11 +278,21 @@ public class Main extends Application {
 	}
 
 	public void repaintVehicle(Set<Vehicle> vehicle, GUIController myController) {
-		List<Cell> cells = myController.getLane1().getChildren().stream().map(Cell.class::cast)
+		List<Cell> cellsLane1 = myController.getLane1().getChildren().stream().map(Cell.class::cast)
 				.collect(Collectors.toList());
 
+		List<Cell> cellsLane2 = myController.getLane2().getChildren().stream().map(Cell.class::cast)
+				.collect(Collectors.toList());
+
+		cellsLane1.get(0).cleanUpStreet();
+		cellsLane2.get(0).cleanUpStreet();
+
 		for (Vehicle v : vehicle) {
-			cells.get(v.getTailCell().getIndex()).drawVehicle(v);
+			if (v.getTailCell().getLane().getIndex() == 0)
+				cellsLane1.get(v.getTailCell().getIndex()).drawVehicle(v);
+			else if (v.getTailCell().getLane().getIndex() == 1) {
+				cellsLane2.get(v.getTailCell().getIndex()).drawVehicle(v);
+			}
 		}
 	}
 }
