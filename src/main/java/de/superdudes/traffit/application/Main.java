@@ -61,7 +61,6 @@ public class Main extends Application {
 			SimulationManager.setRunningSimulation(backendGrid);
 
 			// Listener for rendering Simulation
-			//ObservableBooleanValue nemesis = (ObservableBooleanValue) SimulationManager.isGenWasRendered();
 			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.isGenWasRendered());
 			((BooleanProperty) nemesis).bindBidirectional(SimulationManager.listenToGenWasRendered);
 			
@@ -69,9 +68,8 @@ public class Main extends Application {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					// TODO Auto-generated method stub
-					System.out.println("Moin i bims, 1 Listener!");
 					if(newValue) {
-						System.out.println("New Rendering necessary!");
+						System.out.println("Redrawing necessary!");
 						repaintVehicle(backendGrid.getVehicles(), controller);
 						
 						// Reset the Manager
@@ -282,7 +280,7 @@ public class Main extends Application {
 				.collect(Collectors.toList());
 
 		for (Vehicle v : vehicle) {
-			cells.get(v.getTailCell().getIndex()).redrawVehicle(v);
+			cells.get(v.getTailCell().getIndex()).drawVehicle(v);
 		}
 	}
 }

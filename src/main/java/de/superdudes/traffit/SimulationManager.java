@@ -19,6 +19,7 @@ public class SimulationManager {
 	private static Thread executingThread = null;
 	private static Semaphore semaphore = new Semaphore(MAX_RUNNING_SIMULATION);
 
+	// Do not change directly, use method (genWasRendered)
 	private static boolean genWasRendered = false;
 	
 	// API
@@ -36,7 +37,7 @@ public class SimulationManager {
 	}
 
 	public static void start() {
-		if (executingThread != null) {
+		if (executingThread == null) {
 			executingThread = new Thread(SimulationManager::run);
 			executingThread.start();
 		} else {
@@ -98,6 +99,7 @@ public class SimulationManager {
 
 				//genWasRendered = true;
 				genWasRendered(true);
+				genWasRendered(false);
 				semaphore.release();
 			}
 		} catch (InterruptedException e) {

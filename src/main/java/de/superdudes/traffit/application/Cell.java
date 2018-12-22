@@ -71,9 +71,7 @@ public class Cell extends Rectangle {
 
 			switch (id) {
 			case "ivCar":
-
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-
 					int backendLaneId;
 
 					if (myParent.getId().equals("lane1")) {
@@ -83,50 +81,23 @@ public class Cell extends Rectangle {
 					}
 
 					StartingGrid myGrid = SimulationManager.getRunningSimulation();
-
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					// System.out.println(this.getId());
-					Vehicle aVehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
-
-					aVehicle = createVehicleListener(aVehicle);
-
-					// System.out.println(this.getId());
-					// System.out.println(aVehicle.getBackCell().getIndex());
-
-					// myGrid.addVehicle(aVehicle); // Wird nicht mehr benötigt
-
-					// aVehicle.drive();
-
-					Cell[] myNeighboursCar = new Cell[aVehicle.getLength()];
-
-					for (int i = 0; i < myNeighboursCar.length; i++) {
-						myNeighboursCar[i] = (Cell) myParent.getChildren()
-								.get(Integer.parseInt(this.getId()) + (i + 1));
+					try {
+						Vehicle vehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
+						drawVehicle(vehicle);
+					} catch (ObjectMisplacedException e2) {
+						showErrorDialog(0);
 					}
-
-					for (Cell c : myNeighboursCar) {
-						c.setFill(javafx.scene.paint.Color.BLUE);
-						c.stopPainting = true;
-					}
-
-					this.setFill(javafx.scene.paint.Color.BLUE);
-					this.stopPainting = true;
-
-				}
-
-				else {
+				} else {
 					System.out.println("no lane");
 					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 				}
-
 				break;
+
 			case "ivMotorcycle":
-
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-
 					int backendLaneId;
 
 					if (myParent.getId().equals("lane1")) {
@@ -136,41 +107,24 @@ public class Cell extends Rectangle {
 					}
 
 					StartingGrid myGrid = SimulationManager.getRunningSimulation();
-
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					Vehicle aVehicle = new Vehicle(Vehicle.Type.MOTORCYCLE, laneCells[Integer.parseInt(this.getId())]);
-
-					// myGrid.addVehicle(aVehicle); // WIrd nicht mehr benötigt
-
-					Cell[] myNeighboursMotor = new Cell[aVehicle.getLength()];
-
-					for (int i = 0; i < myNeighboursMotor.length; i++) {
-						myNeighboursMotor[i] = (Cell) myParent.getChildren()
-								.get(Integer.parseInt(this.getId()) + (i + 1));
+					try {
+						Vehicle vehicle = new Vehicle(Vehicle.Type.MOTORCYCLE,
+								laneCells[Integer.parseInt(this.getId())]);
+						drawVehicle(vehicle);
+					} catch (ObjectMisplacedException e2) {
+						showErrorDialog(0);
 					}
-
-					for (Cell c : myNeighboursMotor) {
-						c.setFill(javafx.scene.paint.Color.GREEN);
-						c.stopPainting = true;
-					}
-
-					this.setFill(javafx.scene.paint.Color.GREEN);
-					this.stopPainting = true;
-				}
-
-				else {
+				} else {
 					System.out.println("no lane");
 					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 				}
-
 				break;
+
 			case "ivTruck":
-
 				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-
 					int backendLaneId;
 
 					if (myParent.getId().equals("lane1")) {
@@ -180,46 +134,26 @@ public class Cell extends Rectangle {
 					}
 
 					StartingGrid myGrid = SimulationManager.getRunningSimulation();
-
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					Vehicle aVehicle = new Vehicle(Vehicle.Type.TRUCK, laneCells[Integer.parseInt(this.getId())]);
-
-					// myGrid.addVehicle(aVehicle); // Wird nicht mehr benötigt
-
-					Cell[] myNeighboursTruck = new Cell[aVehicle.getLength()];
-
-					for (int i = 0; i < myNeighboursTruck.length; i++) {
-						myNeighboursTruck[i] = (Cell) myParent.getChildren()
-								.get(Integer.parseInt(this.getId()) + (i + 1));
+					try {
+						Vehicle vehicle = new Vehicle(Vehicle.Type.TRUCK, laneCells[Integer.parseInt(this.getId())]);
+						drawVehicle(vehicle);
+					} catch (ObjectMisplacedException e2) {
+						showErrorDialog(0);
 					}
-
-					for (Cell c : myNeighboursTruck) {
-						c.setFill(javafx.scene.paint.Color.RED);
-						c.stopPainting = true;
-					}
-
-					this.setFill(javafx.scene.paint.Color.RED);
-					this.stopPainting = true;
-				}
-
-				else {
+				} else {
 					System.out.println("no lane");
 					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 				}
-
 				break;
 
 			case "ivSpeedLimit50":
-
 				if (myParent.getId().equals("signlane")) {
-
 					int ivSpeedLimit50Width = showModalDialog();
 
 					if (ivSpeedLimit50Width > 0) {
-
 						StartingGrid myGrid = SimulationManager.getRunningSimulation();
 
 						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
@@ -229,33 +163,44 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
-							new StreetSign(50, laneCells0[Integer.parseInt(this.getId())], ivSpeedLimit50Width);
-							new StreetSign(50, laneCells1[Integer.parseInt(this.getId())], ivSpeedLimit50Width);
+							StreetSign signOnLane01 = new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
+									ivSpeedLimit50Width);
+							StreetSign signOnLane02 = new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
+									ivSpeedLimit50Width);
 
-							Cell[] myNeighbours50 = new Cell[ivSpeedLimit50Width];
+							drawStreetSign(signOnLane01);
+							drawStreetSign(signOnLane02);
+						} catch (ObjectMisplacedException e2) {
+							showErrorDialog(0);
+						}
+					}
+				} else {
+					this.setFill(javafx.scene.paint.Color.GREY);
+				}
+				break;
 
-							text.setText("50");
+			case "ivSpeedLimit70":
+				if (myParent.getId().equals("signlane")) {
+					int ivSpeedLimit70Width = showModalDialog();
 
-							for (int i = 0; i < myNeighbours50.length; i++) {
-								myNeighbours50[i] = (Cell) myParent.getChildren()
-										.get(Integer.parseInt(this.getId()) + (i + 1));
-							}
+					if (ivSpeedLimit70Width > 0) {
+						StartingGrid myGrid = SimulationManager.getRunningSimulation();
 
-							for (Cell c : myNeighbours50) {
-								c.setFill(javafx.scene.paint.Color.SALMON);
-								c.stopPainting = true;
-							}
+						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
+						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
 
-							double xValue50 = myNeighbours50[(myNeighbours50.length / 2)].getX();
-							double yValue50 = myNeighbours50[(myNeighbours50.length / 2)].getY();
+						de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
+						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
-							myParent.getChildren().add(text);
+						try {
+							StreetSign signOnLane01 = new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
+									ivSpeedLimit70Width);
+							StreetSign signOnLane02 = new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
+									ivSpeedLimit70Width);
 
-							text.setLayoutX(xValue50 - 12);
-							text.setLayoutY(yValue50 + (height / 2));
+							drawStreetSign(signOnLane01);
+							drawStreetSign(signOnLane02);
 
-							this.setFill(javafx.scene.paint.Color.SALMON);
-							this.stopPainting = true;
 						} catch (ObjectMisplacedException e2) {
 							showErrorDialog(0);
 						}
@@ -266,13 +211,10 @@ public class Cell extends Rectangle {
 				break;
 
 			case "ivSpeedLimit100":
-
 				if (myParent.getId().equals("signlane")) {
-
 					int ivSpeedLimit100Width = showModalDialog();
 
 					if (ivSpeedLimit100Width > 0) {
-
 						StartingGrid myGrid = SimulationManager.getRunningSimulation();
 
 						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
@@ -282,98 +224,45 @@ public class Cell extends Rectangle {
 						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
 
 						try {
+							StreetSign signOnLane01 = new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
+									ivSpeedLimit100Width);
+							StreetSign signOnLane02 = new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
+									ivSpeedLimit100Width);
 
-							new StreetSign(100, laneCells0[Integer.parseInt(this.getId())], ivSpeedLimit100Width);
-							new StreetSign(100, laneCells1[Integer.parseInt(this.getId())], ivSpeedLimit100Width);
+							drawStreetSign(signOnLane01);
+							drawStreetSign(signOnLane02);
 
-							Cell[] myNeighbours100 = new Cell[ivSpeedLimit100Width];
-
-							text.setText("100");
-							text.setStyle("-fx-font: 20 arial;");
-
-							for (int i = 0; i < myNeighbours100.length; i++) {
-								myNeighbours100[i] = (Cell) myParent.getChildren()
-										.get(Integer.parseInt(this.getId()) + (i + 1));
-							}
-
-							for (Cell c : myNeighbours100) {
-								c.setFill(javafx.scene.paint.Color.SALMON);
-								c.stopPainting = true;
-							}
-
-							double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
-							double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
-
-							myParent.getChildren().add(text);
-
-							text.setLayoutX(xValue100 - 17);
-							text.setLayoutY(yValue100 + (height / 2));
-
-							this.setFill(javafx.scene.paint.Color.SALMON);
-							this.stopPainting = true;
+//							Cell[] myNeighbours100 = new Cell[ivSpeedLimit100Width];
+//
+//							text.setText("100");
+//							text.setStyle("-fx-font: 20 arial;");
+//
+//							for (int i = 0; i < myNeighbours100.length; i++) {
+//								myNeighbours100[i] = (Cell) myParent.getChildren()
+//										.get(Integer.parseInt(this.getId()) + (i + 1));
+//							}
+//
+//							for (Cell c : myNeighbours100) {
+//								c.setFill(javafx.scene.paint.Color.SALMON);
+//								c.stopPainting = true;
+//							}
+//
+//							double xValue100 = myNeighbours100[(myNeighbours100.length / 2)].getX();
+//							double yValue100 = myNeighbours100[(myNeighbours100.length / 2)].getY();
+//
+//							myParent.getChildren().add(text);
+//
+//							text.setLayoutX(xValue100 - 17);
+//							text.setLayoutY(yValue100 + (height / 2));
+//
+//							this.setFill(javafx.scene.paint.Color.SALMON);
+//							this.stopPainting = true;
 
 						} catch (ObjectMisplacedException e2) {
 							showErrorDialog(0);
 						}
 					}
 				} else {
-					this.setFill(javafx.scene.paint.Color.GREY);
-				}
-
-				break;
-
-			case "ivSpeedLimit70":
-
-				if (myParent.getId().equals("signlane")) {
-
-					int ivSpeedLimit70Width = showModalDialog();
-
-					if (ivSpeedLimit70Width > 0) {
-
-						StartingGrid myGrid = SimulationManager.getRunningSimulation();
-
-						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
-						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
-
-						de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
-						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
-
-						try {
-							new StreetSign(70, laneCells0[Integer.parseInt(this.getId())], ivSpeedLimit70Width);
-							new StreetSign(70, laneCells1[Integer.parseInt(this.getId())], ivSpeedLimit70Width);
-
-							Cell[] myNeighbours70 = new Cell[ivSpeedLimit70Width];
-
-							text.setText("70");
-
-							for (int i = 0; i < myNeighbours70.length; i++) {
-								myNeighbours70[i] = (Cell) myParent.getChildren()
-										.get(Integer.parseInt(this.getId()) + (i + 1));
-							}
-
-							for (Cell c : myNeighbours70) {
-								c.setFill(javafx.scene.paint.Color.SALMON);
-								c.stopPainting = true;
-							}
-
-							double xValue70 = myNeighbours70[(myNeighbours70.length / 2)].getX();
-							double yValue70 = myNeighbours70[(myNeighbours70.length / 2)].getY();
-
-							myParent.getChildren().add(text);
-
-							text.setLayoutX(xValue70 - 12);
-							text.setLayoutY(yValue70 + (height / 2));
-
-							this.setFill(javafx.scene.paint.Color.SALMON);
-							this.stopPainting = true;
-
-						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(0);
-						}
-					}
-				}
-
-				else {
 					this.setFill(javafx.scene.paint.Color.GREY);
 				}
 				break;
@@ -541,7 +430,7 @@ public class Cell extends Rectangle {
 
 		switch (messageType) {
 		case 0:
-			label01.setText("A cell is blocked from another object!");
+			label01.setText("A cell is blocked by another object!");
 			break;
 		case 1:
 			label01.setText(
@@ -554,10 +443,6 @@ public class Cell extends Rectangle {
 		default:
 			label01.setText("[The Type of the Message is unknown]");
 			break;
-		}
-
-		if (messageType == 0) {
-			label01.setText("A cell is blocked from another object!");
 		}
 
 		button01.setOnAction(e -> errorDialog.close());
@@ -587,48 +472,7 @@ public class Cell extends Rectangle {
 		return theSpinner;
 	}
 
-	private Vehicle createVehicleListener(Vehicle vehicle) {
-
-		LinkedList<de.superdudes.traffit.dto.Cell> myList = new LinkedList<>();
-
-		ObservableList<de.superdudes.traffit.dto.Cell> myOb = FXCollections.observableList(myList);
-		myOb.addAll(vehicle.getBlockedCells());
-
-		myOb.addListener((Change<? extends de.superdudes.traffit.dto.Cell> change) -> {
-			while (change.next()) {
-				if (change.wasRemoved()) {
-					System.out.println("Löppt");
-				}
-			}
-		});
-
-		LinkedList<de.superdudes.traffit.dto.Cell> returnList = new LinkedList<de.superdudes.traffit.dto.Cell>(myOb);
-		vehicle.setBlockedCells(returnList);
-
-		/*
-		 * myList.clear(); for (de.superdudes.traffit.dto.Cell cell : myOb) {
-		 * myList.add(cell); }
-		 * 
-		 * vehicle.setBlockedCells(myList);
-		 */
-
-		// cellList.addAll(vehicle.getBlockedCells());
-
-		/*
-		 * cellList.addListener((Change<? extends de.superdudes.traffit.dto.Cell>
-		 * change) -> { while (change.next()) { if (change.wasAdded()) {
-		 * System.out.println("Added: "+change.getAddedSubList()); } if
-		 * (change.wasRemoved()) { System.out.println("Removed: "+change.getRemoved());
-		 * } if (change.wasUpdated()) {
-		 * System.out.println("Updated: "+cellList.subList(change.getFrom(),
-		 * change.getTo())); } if (change.wasReplaced()) {
-		 * System.out.println("Replaced"); } } });
-		 */
-
-		return vehicle;
-	}
-
-	public void redrawVehicle(Vehicle aVehicle) {
+	public void drawVehicle(Vehicle aVehicle) {
 		Cell[] myNeighbours = new Cell[aVehicle.getLength()];
 
 		for (int i = 0; i < myNeighbours.length; i++) {
@@ -668,6 +512,52 @@ public class Cell extends Rectangle {
 		default:
 			break;
 		}
+	}
 
+	public void drawStreetSign(StreetSign sign) {
+		Cell[] myNeighbours = new Cell[sign.getLength()];
+
+		for (int i = 0; i < myNeighbours.length; i++) {
+			myNeighbours[i] = (Cell) ((Pane) this.getParent()).getChildren()
+					.get(Integer.parseInt(this.getId()) + (i + 1));
+		}
+		
+		for (Cell c : myNeighbours) {
+			c.setFill(javafx.scene.paint.Color.SALMON);
+			c.stopPainting = true;
+		}
+		
+		double xValue = myNeighbours[(myNeighbours.length / 2)].getX();
+		double yValue = myNeighbours[(myNeighbours.length / 2)].getY();
+
+		Text text = new Text();
+		text.setStyle("-fx-font-weight: bold");
+		text.setStyle("-fx-font: 24 arial;");
+		text.setLayoutX(xValue - 12);
+		text.setLayoutY(yValue + (this.getHeight() / 2));
+
+		switch (sign.getSpeedLimit()) {
+		case 50:
+			text.setText("50");
+			break;
+
+		case 70:
+			text.setText("70");
+			break;
+
+		case 100:
+			text.setText("100");
+			text.setStyle("-fx-font: 20 arial;");
+			text.setLayoutX(xValue - 17);
+			break;
+
+		default:
+			break;
+		}
+
+		((Pane) this.getParent()).getChildren().add(text);
+
+		this.setFill(javafx.scene.paint.Color.SALMON);
+		this.stopPainting = true;
 	}
 }
