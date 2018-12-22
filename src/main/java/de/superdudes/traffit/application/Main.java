@@ -12,6 +12,7 @@ import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
 import de.superdudes.traffit.dto.Vehicle;
 import javafx.application.Application;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
@@ -59,15 +60,22 @@ public class Main extends Application {
 			// grid1.setStreet(street1);
 			SimulationManager.setRunningSimulation(backendGrid);
 
-			ObservableBooleanValue nemesis = new SimpleBooleanProperty();
+			// Listener for rendering Simulation
+			//ObservableBooleanValue nemesis = (ObservableBooleanValue) SimulationManager.isGenWasRendered();
+			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.isGenWasRendered());
+			((BooleanProperty) nemesis).bindBidirectional(SimulationManager.listenToGenWasRendered);
 			
 			nemesis.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					// TODO Auto-generated method stub
-					System.out.println("Moin");
+					System.out.println("Moin i bims, 1 Listener!");
 					if(newValue) {
+						System.out.println("New Rendering necessary!");
 						repaintVehicle(backendGrid.getVehicles(), controller);
+						
+						// Reset the Manager
+						//SimulationManager.genWasRendered(false); // Doesn't work: Listener stops listening
 					}
 				}	
 			});;

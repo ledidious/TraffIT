@@ -197,8 +197,10 @@ public class GUIController {
 		streetSize.setDisable(true);
 		System.out.println("Simulation has been started...");
 		
-		SimulationManager.genWasRendered(true);
-		SimulationManager.start();
+		//SimulationManager.start();
+		//SimulationManager.listernerTest(true);
+		//SimulationManager.genWasRendered(true);
+		SimulationManager.listernerTest();
 	}
 	
 	@FXML
@@ -223,7 +225,9 @@ public class GUIController {
 		streetSize.setDisable(false);
 		System.out.println("Simulation has been stopped!");
 		
-		SimulationManager.stop();
+		//SimulationManager.stop();
+		//SimulationManager.listernerTest(false);
+		//SimulationManager.genWasRendered(false);
 	}
 
 	@FXML

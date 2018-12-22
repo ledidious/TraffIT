@@ -3,8 +3,11 @@ package de.superdudes.traffit;
 import de.superdudes.traffit.controller.*;
 import de.superdudes.traffit.dto.*;
 import de.superdudes.traffit.test.TestUtils;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableBooleanValue;
 import lombok.NonNull;
 
+import java.util.Observer;
 import java.util.concurrent.Semaphore;
 
 public class SimulationManager {
@@ -16,7 +19,11 @@ public class SimulationManager {
 	private static Thread executingThread = null;
 	private static Semaphore semaphore = new Semaphore(MAX_RUNNING_SIMULATION);
 
-	public static boolean genWasRendered = false;
+	private static boolean genWasRendered = false;
+	
+	// API
+	public static SimpleBooleanProperty listenToGenWasRendered = new SimpleBooleanProperty(genWasRendered); // JAVAFX
+	//private static ObservableBooleanValue genWasRendered = new SimpleBooleanProperty(false);
 
 	public static boolean load() {
 		runningSimulation = StartingGridController.instance().load();
@@ -89,7 +96,8 @@ public class SimulationManager {
 				// Output current simulation
 				TestUtils.outputOnConsole(runningSimulation);
 
-				genWasRendered = true;
+				//genWasRendered = true;
+				genWasRendered(true);
 				semaphore.release();
 			}
 		} catch (InterruptedException e) {
@@ -115,5 +123,13 @@ public class SimulationManager {
 
 	public static void genWasRendered(boolean genWasRendered) {
 		SimulationManager.genWasRendered = genWasRendered;
+		
+		// API Calls
+		listenToGenWasRendered.setValue(genWasRendered); // JAVAFX
+	}
+	
+	public static void listernerTest() {
+		genWasRendered(true);
+		genWasRendered(false);
 	}
 }
