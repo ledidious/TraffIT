@@ -575,8 +575,11 @@ public class Cell extends Rectangle {
 		}
 		
 		for (Cell c : allCellsFromLane) {
-			c.setFill(javafx.scene.paint.Color.GRAY);
+			if(c.getFill() != javafx.scene.paint.Color.YELLOW & 
+					c.getFill() != javafx.scene.paint.Color.BLACK)
+			{c.setFill(javafx.scene.paint.Color.GRAY);
 			c.stopPainting = false;
+			}
 		}
 	}
 }
