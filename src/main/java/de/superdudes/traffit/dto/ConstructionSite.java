@@ -39,7 +39,12 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
         }
     }
 
-    // todo unify in AttachedToCell
+    /**
+     *  to do unify in AttachedToCell
+     *  
+     * @param tailCell first element of this deque
+     * @param length  length of the construction-site
+     */
     private void setTailCell(@NonNull Cell tailCell, int length) {
 
         // Block new cells
@@ -54,17 +59,22 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
                 throw new ObjectMisplacedException(this, "Blocked by " + currentCell.getBlockingObject());
             }
 
-            blockedCells.addFirst(currentCell); // Habe ich über die Prüfung gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;)
+            blockedCells.addFirst(currentCell);
             currentCell.setBlockingConstructionSite(this);
-            currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
+            currentCell = currentCell.getSuccessor(); 
         }
     }
 
+    /**
+     * @return first element of the deque blockedCells
+     */
     public Cell getTailCell() {
         return blockedCells.getLast();
     }
 
-    private void setBlockedCells() {
+    
+    @SuppressWarnings("unused")
+	private void setBlockedCells() {
         throw new UnsupportedOperationException();
     }
 

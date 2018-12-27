@@ -34,7 +34,12 @@ public class StreetSign extends SimulationObject implements AttachedToCell {
         setTailCell(tailCell);
     }
 
-    // todo unify in AttachedToCell
+    /**
+     * to do unify in AttachedToCell
+     * 
+     * @param tailCell set  first cell of  the StreetSign guilty 
+     * @param length  length of the street sign guilty to block the currentCell
+     */
     public void setTailCell(@NonNull Cell tailCell, int length) {
 
         // Block new cells
@@ -50,12 +55,12 @@ public class StreetSign extends SimulationObject implements AttachedToCell {
             }
 
             currentCell.setStreetSign(this);
-            currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
+            currentCell = currentCell.getSuccessor(); 
         }
     }
 
     // Not invokable -> private
-    private void setLength(@NonNull Integer length) {
+	private void setLength(@NonNull Integer length) {
         this.length = length;
     }
 

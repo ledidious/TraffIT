@@ -25,11 +25,16 @@ public class StartingGrid extends SimulationObject {
         this.name = name;
     }
 
-    // Please use cells to
+    /**
+     *  Please use cells to add a vehicle 
+     *  
+     *  @param vehicle
+     */
     void addVehicle(@NonNull Vehicle vehicle) {
         vehicles.add(vehicle);
     }
 
+  
     void removeVehicle(@NonNull Vehicle vehicle) {
         vehicles.remove(vehicle);
     }

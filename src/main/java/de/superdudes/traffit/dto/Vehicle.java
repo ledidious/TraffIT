@@ -70,6 +70,9 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
         return type.getLength();
     }
 
+    /**
+     * @return the last element of the deque blockedCells
+     */
     public Cell getFrontCell() {
         return blockedCells.getFirst();
     }
@@ -79,11 +82,18 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
         return getTailCell();
     }
 
+    /**
+     * @return the first element of the deque blockedCells
+     */
     @Override
     public Cell getTailCell() {
         return blockedCells.getLast();
     }
 
+    /**
+     * 
+     * @return lane which belongs to the current Cell
+     */
     public Lane getLane() {
         return getFrontCell().getLane();
     }
@@ -100,7 +110,9 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
         }
     }
 
-    // Moves one cell forward
+    /**
+     *  moves one cell forward
+     */
     public void drive() {
         gensSinceLastDrive = 0;
 
@@ -116,14 +128,23 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
         gensSinceLastDrive++;
     }
 
+    /**
+     *  set Vehicle at certainly position on the left lane
+     */
     public void turnLeft() {
         connectNewCells(getTailCell().getLeftNeighbour());
     }
 
+    /**
+     *  set Vehicle at certainly position on the right lane
+     */
     public void turnRight() {
         connectNewCells(getTailCell().getRightNeighbour());
     }
 
+    /**
+     * @param tailCell  Cell which connected new cells to  build a vehicle
+     */
     private void connectNewCells(@NonNull Cell tailCell) {
 
         // Free old
@@ -145,9 +166,9 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
                 throw new ObjectMisplacedException(this, "Blocked by " + currentCell.getBlockingObject());
             }
 
-            blockedCells.addFirst(currentCell); // Habe ich über die Prüfung gezogen, damit auch die tailCell dem Vehicle hinzugefügt wird. ;)
+            blockedCells.addFirst(currentCell); 
             currentCell.setBlockingVehicle(this);
-            currentCell = currentCell.getSuccessor(); // Hab ich nach untern gezogen, damit auch die erste Zelle hinzugefügt wird.
+            currentCell = currentCell.getSuccessor(); 
         }
     }
 

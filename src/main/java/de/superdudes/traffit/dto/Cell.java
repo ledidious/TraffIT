@@ -28,23 +28,41 @@ public class Cell extends SimulationObject {
         this.lane = lane;
     }
 
+    /**   
+     * @return ancestor Cell of an lane by his index or null
+     */
     public Cell getAncestor() {
         return index > 0 ? lane.getCell(index - 1) : null;
     }
 
+    /**
+     * @return successor Cell of an lane by his index or null
+     */
     public Cell getSuccessor() {
         return lane.getLength() > index + 1 ? lane.getCell(index + 1) : null;
     }
 
-    // Provides both ConstructionSite and Vehicle for general purposes
+    /**
+     * provides both ConstructionSite and Vehicle for general purposes
+     * 
+     * @return blockingVehicle || blockingConstructionsite
+     */
     public Object getBlockingObject() {
         return blockingVehicle != null ? blockingVehicle : blockingConstructionSite;
     }
 
+    /**
+     * if a Vehicle or Construction-Site blocked a Cell
+     * 
+     * @return true
+     */
     public boolean isBlocked() {
         return blockingVehicle != null || blockingConstructionSite != null;
     }
 
+    /**
+     *  @return Cell at a certainly Position in the Array of Cells, which belongs to the left Lane!
+     */
     public Cell getLeftNeighbour() {
 
         if (index <= 0) {
@@ -55,6 +73,9 @@ public class Cell extends SimulationObject {
         return leftLane.getCells()[index];
     }
 
+    /** 
+     * @return Cell at a certainly Position in the Array of Cells, which belongs to the right Lane!
+     */
     public Cell getRightNeighbour() {
 
         if (index >= lane.getStreet().getLaneCount()) {
@@ -65,7 +86,11 @@ public class Cell extends SimulationObject {
         return rightLane.getCells()[index];
     }
 
-    // toask unify with setBlockingConstructionSite ?
+    /**
+     *  to ask unify with setBlockingConstructionSite ?
+     *  
+     *  @param vehicle
+     */
     public void setBlockingVehicle(Vehicle vehicle) {
         if (vehicle == null) {
             blockingVehicle = null;
@@ -88,7 +113,11 @@ public class Cell extends SimulationObject {
         blockingConstructionSite = null;
     }
 
-    // toask unify with setBlockingVehicle?
+    /**
+     *  to ask unify with setBlockingVehicle?
+     *  
+     *  @param constructionSite
+     */
     public void setBlockingConstructionSite(ConstructionSite constructionSite) {
         if (constructionSite == null) {
             blockingConstructionSite = null;
