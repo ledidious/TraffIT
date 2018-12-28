@@ -1,26 +1,18 @@
 package de.superdudes.traffit.application;
 
+import de.superdudes.traffit.SimulationManager;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import java.io.File;
 
-import de.superdudes.traffit.SimulationManager;
-import de.superdudes.traffit.dto.Street;
+import java.io.File;
 
 public class GUIController {
 
@@ -126,6 +118,20 @@ public class GUIController {
 
 	public void setLane2(Pane lane2) {
 		this.lane2 = lane2;
+	}
+
+	public void buildStreet(int width, int height) {
+
+		Cell.number = 0;
+
+		lane1.getChildren().clear();
+		lane1.getChildren().addAll(buildLane(width, height));
+
+		lane2.getChildren().clear();
+		lane2.getChildren().addAll(buildLane(width, height));
+
+		signlane.getChildren().clear();
+		signlane.getChildren().addAll(buildSignLane(width, height));
 	}
 
 	public Cell[] buildLane(int width, int height) {

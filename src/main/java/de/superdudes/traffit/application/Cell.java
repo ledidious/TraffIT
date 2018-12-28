@@ -1,27 +1,12 @@
 package de.superdudes.traffit.application;
 
-import java.util.LinkedList;
-
 import de.superdudes.traffit.SimulationManager;
-import de.superdudes.traffit.dto.ConstructionSite;
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.StartingGrid;
-import de.superdudes.traffit.dto.StreetSign;
-import de.superdudes.traffit.dto.Vehicle;
-import de.superdudes.traffit.dto.Vehicle.Type;
+import de.superdudes.traffit.dto.*;
 import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
 import de.superdudes.traffit.exception.ObjectTooCloseException;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener.Change;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -31,11 +16,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import de.superdudes.traffit.application.Cell;
 
 public class Cell extends Rectangle {
 
-	// private ImageView currentImage; // Wird nicht mehr benötigt, jetzt nurnoch
-	// Rectangle einfärben
+	// private ImageView currentImage; // Wird nicht mehr benï¿½tigt, jetzt nurnoch
+	// Rectangle einfï¿½rben
 	private Boolean stopPainting = false;
 	static int number = 0;
 

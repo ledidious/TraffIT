@@ -1,12 +1,5 @@
 package de.superdudes.traffit.application;
 
-import java.awt.Dimension;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
@@ -17,16 +10,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Main extends Application {
 
@@ -51,9 +44,7 @@ public class Main extends Application {
 			primaryStage.setFullScreen(true);
 			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-			controller.lane1.getChildren().addAll(controller.buildLane(1280, 800));
-			controller.lane2.getChildren().addAll(controller.buildLane(1280, 800));
-			controller.signlane.getChildren().addAll(controller.buildSignLane(1280, 800));
+			controller.buildStreet(1280, 800);
 
 			StartingGrid backendGrid = new StartingGrid("grid1");
 			new Street(1280, 2, backendGrid);
@@ -67,9 +58,7 @@ public class Main extends Application {
 			nemesis.addListener(new ChangeListener<Boolean>() {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-					// TODO Auto-generated method stub
 					if (newValue) {
-						System.out.println("Redrawing necessary!");
 						repaintVehicle(backendGrid.getVehicles(), controller);
 
 						// Reset the Manager
@@ -78,31 +67,18 @@ public class Main extends Application {
 					}
 				}
 			});
-			;
 
 			// Listener to resize the window
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
 
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth,
-						Number newSceneWidth) {
+									Number newSceneWidth) {
 					root.setPrefWidth((double) newSceneWidth);
 					controller.currentWidth.setValue((double) newSceneWidth - 40);
-					Cell.number = 0;
-					controller.lane1.getChildren().clear();
-					controller.lane1.getChildren().addAll(controller.buildLane(
-							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 
-					Cell.number = 0;
-					controller.lane2.getChildren().clear();
-					controller.lane2.getChildren().addAll(controller.buildLane(
-							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
-
-					// Warum fehlte hier der Reset? Unötig?
-					Cell.number = 0;
-					controller.signlane.getChildren().clear();
-					controller.signlane.getChildren().addAll(controller.buildSignLane(
-							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
+					// Build street new
+					controller.buildStreet((controller.currentWidth.intValue() - 100), controller.currentHeight.intValue());
 
 					// street1.setLength((int) controller.lane1.getWidth());
 					new Street((int) controller.lane1.getWidth(), 2, backendGrid);
@@ -116,7 +92,7 @@ public class Main extends Application {
 			scene.heightProperty().addListener(new ChangeListener<Number>() {
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight,
-						Number newSceneHeight) {
+									Number newSceneHeight) {
 					root.setPrefHeight((double) newSceneHeight);
 					controller.currentHeight.setValue((double) newSceneHeight - 40);
 					Cell.number = 0;
@@ -158,6 +134,9 @@ public class Main extends Application {
 					primaryStage.setWidth(primaryStage.getMinWidth());
 					controller.streetSize.setText(String.valueOf((int) primaryStage.getMinWidth()));
 				}
+
+				// Build street new (is also done in widthProperty changeListener but for safety reasons that same amount of gui and backend cells)
+				controller.buildStreet((controller.currentWidth.intValue() - 100), controller.currentHeight.intValue());
 			});
 
 			// Drag&Drop Function
@@ -267,7 +246,6 @@ public class Main extends Application {
 					}
 				}
 			});
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
