@@ -52,8 +52,8 @@ public class Main extends Application {
 			SimulationManager.setRunningSimulation(backendGrid);
 
 			// Listener for rendering Simulation
-			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.isGenWasRendered());
-			((BooleanProperty) nemesis).bindBidirectional(SimulationManager.listenToGenWasRendered);
+			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.getGenWasRendered().getValue());
+			((BooleanProperty) nemesis).bindBidirectional(SimulationManager.getGenWasRendered());
 
 			nemesis.addListener(new ChangeListener<Boolean>() {
 				@Override

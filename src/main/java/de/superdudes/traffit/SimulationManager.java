@@ -10,18 +10,31 @@ import java.util.concurrent.Semaphore;
 
 public class SimulationManager {
 
+	// =============================================================================================
+	// Constants
+	// =============================================================================================
+
 	private static final int MAX_RUNNING_SIMULATION = 1;
 	private static final int GEN_WAIT = 10;
 
+	// =============================================================================================
+	// Static fields
+	// =============================================================================================
+
+	// Fields for the simulation management
 	private static StartingGrid runningSimulation = new StartingGrid("default");
 	private static Thread executingThread = null;
 	private static Semaphore semaphore = new Semaphore(MAX_RUNNING_SIMULATION);
 
-	// Do not change directly, use method (genWasRendered)
-	private static boolean genWasRendered = false;
+	// Flag to listen to when to repaint vehicles in gui
+	private static SimpleBooleanProperty genWasRendered = new SimpleBooleanProperty(true); // JAVAFX
 
-	// API
-	public static SimpleBooleanProperty listenToGenWasRendered = new SimpleBooleanProperty(genWasRendered); // JAVAFX
+	// =============================================================================================
+	// Static methods
+	// =============================================================================================
+
+	// Load and save
+	// ======================================================
 
 	public static boolean load() {
 		runningSimulation = StartingGridController.instance().load();
@@ -32,6 +45,9 @@ public class SimulationManager {
 		StartingGridController.instance().save(runningSimulation);
 		return true;
 	}
+
+	// Start, stop, ...
+	// ======================================================
 
 	public static void start() {
 		if (executingThread == null) {
@@ -65,6 +81,9 @@ public class SimulationManager {
 		return isStarted() && !semaphore.hasQueuedThreads();
 	}
 
+	// Internal
+	// ======================================================
+
 	private static void run() {
 		try {
 			while (true) {
@@ -96,15 +115,20 @@ public class SimulationManager {
 				// Output current simulation
 				TestUtils.outputOnConsole(runningSimulation);
 
-				//genWasRendered = true;
-				genWasRendered(true);
-				genWasRendered(false);
+				// Trigger listener
+				genWasRendered.setValue(true);
+				genWasRendered.setValue(false);
+
+				// Release semaphore
 				semaphore.release();
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Simulation interrupted");
 		}
 	}
+
+	// Setter and getter
+	// ======================================================
 
 	public static StartingGrid getRunningSimulation() {
 		return runningSimulation;
@@ -118,19 +142,7 @@ public class SimulationManager {
 		runningSimulation = startingGrid;
 	}
 
-	public static boolean isGenWasRendered() {
+	public static SimpleBooleanProperty getGenWasRendered() {
 		return genWasRendered;
-	}
-
-	public static void genWasRendered(boolean genWasRendered) {
-		SimulationManager.genWasRendered = genWasRendered;
-
-		// API Calls
-		listenToGenWasRendered.setValue(genWasRendered); // JAVAFX
-	}
-
-	public static void listernerTest() {
-		genWasRendered(true);
-		genWasRendered(false);
 	}
 }
