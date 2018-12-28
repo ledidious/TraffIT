@@ -7,17 +7,27 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode( of = { "id" } )
-@ToString( of = { "id" } )
-public abstract class DatabaseObject {
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = {"id"})
 
-    protected Integer id;
+public abstract class DatabaseObject implements Cloneable {
 
-    public DatabaseObject() {
-        this( null );
-    }
+	protected Integer id;
 
-    public DatabaseObject( Integer id ) {
-        this.id = id;
-    }
+	public DatabaseObject() {
+		this(null);
+	}
+
+	public DatabaseObject(Integer id) {
+		this.id = id;
+	}
+
+	@Override
+	public DatabaseObject clone() {
+		try {
+			return (DatabaseObject) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new InternalError("Cannot happen");
+		}
+	}
 }

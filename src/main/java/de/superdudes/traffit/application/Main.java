@@ -266,10 +266,14 @@ public class Main extends Application {
 		cellsLane2.get(0).cleanUpLane();
 
 		for (Vehicle v : vehicle) {
-			if (v.getTailCell().getLane().getIndex() == 0)
-				cellsLane1.get(v.getTailCell().getIndex()).drawVehicle(v);
-			else if (v.getTailCell().getLane().getIndex() == 1) {
-				cellsLane2.get(v.getTailCell().getIndex()).drawVehicle(v);
+			final List<Cell> cellsOfLane = v.getLane().getIndex() == 0 ? cellsLane1 : cellsLane2;
+
+			// Workaround if gui cell count not equal to db cell count
+			// fixme count of gui cells unequals db cell count. On ubuntu (on windows?): Stage resizing listener not triggered or works wrong
+			if (v.getFrontCell().getIndex() >= cellsOfLane.size()) {
+				v.setToStartOfLane();
+			} else {
+				cellsOfLane.get(v.getTailCell().getIndex()).drawVehicle(v);
 			}
 		}
 	}

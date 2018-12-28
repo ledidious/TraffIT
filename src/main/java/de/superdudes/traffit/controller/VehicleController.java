@@ -108,15 +108,17 @@ public class VehicleController extends AbstractController<Vehicle> {
     @Override
     public void render(Vehicle object) {
 
-        final Vehicle vehicle = object; // To rename fitting
-
-        boolean vehicleForeseeableAhead = render_byOtherVehicles(vehicle);
-
-        if (!vehicleForeseeableAhead) {
-            render_bySpeedLimits(vehicle);
+        if (!object.mayDrive()) {
+            object.dontDrive();
         }
 
-        render_moveForward(vehicle);
+        boolean vehicleForeseeableAhead = render_byOtherVehicles(object);
+
+        if (!vehicleForeseeableAhead) {
+            render_bySpeedLimits(object);
+        }
+
+        object.drive();
     }
 
     /**
@@ -237,15 +239,6 @@ public class VehicleController extends AbstractController<Vehicle> {
             throw new RuntimeException("Cannot overtake on top left lane"); // todo replace due to SimulationException
         }
         vehicle.turnRight();
-    }
-
-    private void render_moveForward(Vehicle vehicle) {
-
-        if (vehicle.getCurrentSpeed() - vehicle.getGensSinceLastDrive() <= 0) {
-            vehicle.drive();
-        } else {
-            vehicle.dontDrive();
-        }
     }
 
     @Getter

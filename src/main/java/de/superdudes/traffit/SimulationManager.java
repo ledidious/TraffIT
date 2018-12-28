@@ -4,10 +4,8 @@ import de.superdudes.traffit.controller.*;
 import de.superdudes.traffit.dto.*;
 import de.superdudes.traffit.test.TestUtils;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableBooleanValue;
 import lombok.NonNull;
 
-import java.util.Observer;
 import java.util.concurrent.Semaphore;
 
 public class SimulationManager {
@@ -21,10 +19,9 @@ public class SimulationManager {
 
 	// Do not change directly, use method (genWasRendered)
 	private static boolean genWasRendered = false;
-	
+
 	// API
 	public static SimpleBooleanProperty listenToGenWasRendered = new SimpleBooleanProperty(genWasRendered); // JAVAFX
-	//private static ObservableBooleanValue genWasRendered = new SimpleBooleanProperty(false);
 
 	public static boolean load() {
 		runningSimulation = StartingGridController.instance().load();
@@ -39,6 +36,7 @@ public class SimulationManager {
 	public static void start() {
 		if (executingThread == null) {
 			executingThread = new Thread(SimulationManager::run);
+			executingThread.setDaemon(true);
 			executingThread.start();
 		} else {
 			semaphore.release();
@@ -55,6 +53,7 @@ public class SimulationManager {
 
 	public static void stop() {
 		executingThread.interrupt();
+		executingThread = null;
 	}
 
 	public static boolean isStarted() {
@@ -69,9 +68,9 @@ public class SimulationManager {
 	private static void run() {
 		try {
 			while (true) {
-				semaphore.acquire();
-
 				Thread.sleep(GEN_WAIT);
+
+				semaphore.acquire();
 
 				StartingGridController.instance().render(runningSimulation);
 				for (Vehicle vehicle : runningSimulation.getVehicles()) {
@@ -125,11 +124,11 @@ public class SimulationManager {
 
 	public static void genWasRendered(boolean genWasRendered) {
 		SimulationManager.genWasRendered = genWasRendered;
-		
+
 		// API Calls
 		listenToGenWasRendered.setValue(genWasRendered); // JAVAFX
 	}
-	
+
 	public static void listernerTest() {
 		genWasRendered(true);
 		genWasRendered(false);
