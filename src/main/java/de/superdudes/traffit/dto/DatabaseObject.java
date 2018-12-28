@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"id"})
 @ToString(of = {"id"})
-
-public abstract class DatabaseObject implements Cloneable {
+public abstract class DatabaseObject implements Serializable {
 
 	protected Integer id;
 
@@ -20,14 +21,5 @@ public abstract class DatabaseObject implements Cloneable {
 
 	public DatabaseObject(Integer id) {
 		this.id = id;
-	}
-
-	@Override
-	public DatabaseObject clone() {
-		try {
-			return (DatabaseObject) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new InternalError("Cannot happen");
-		}
 	}
 }

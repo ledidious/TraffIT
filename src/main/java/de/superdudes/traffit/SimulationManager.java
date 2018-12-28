@@ -2,9 +2,9 @@ package de.superdudes.traffit;
 
 import de.superdudes.traffit.controller.*;
 import de.superdudes.traffit.dto.*;
-import de.superdudes.traffit.test.TestUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import lombok.NonNull;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.concurrent.Semaphore;
 
@@ -21,13 +21,16 @@ public class SimulationManager {
 	// Static fields
 	// =============================================================================================
 
-	// Fields for the simulation management
-	private static StartingGrid runningSimulation = new StartingGrid("default");
+	// The startingGrid to run
+	private static StartingGrid startingGrid = new StartingGrid("default");
+	private static StartingGrid originalStartingGrid = null;
+
+	// Thread and semaphore for pausing, running the simulation
 	private static Thread executingThread = null;
 	private static Semaphore semaphore = new Semaphore(MAX_RUNNING_SIMULATION);
 
 	// Flag to listen to when to repaint vehicles in gui
-	private static SimpleBooleanProperty genWasRendered = new SimpleBooleanProperty(true); // JAVAFX
+	private static SimpleBooleanProperty genWasRendered = new SimpleBooleanProperty(false); // JAVAFX
 
 	// =============================================================================================
 	// Static methods
@@ -37,12 +40,12 @@ public class SimulationManager {
 	// ======================================================
 
 	public static boolean load() {
-		runningSimulation = StartingGridController.instance().load();
-		return runningSimulation != null;
+		startingGrid = StartingGridController.instance().load();
+		return startingGrid != null;
 	}
 
 	public static boolean save() {
-		StartingGridController.instance().save(runningSimulation);
+		StartingGridController.instance().save(startingGrid);
 		return true;
 	}
 
@@ -54,6 +57,8 @@ public class SimulationManager {
 			executingThread = new Thread(SimulationManager::run);
 			executingThread.setDaemon(true);
 			executingThread.start();
+
+			originalStartingGrid = SerializationUtils.clone(startingGrid);
 		} else {
 			semaphore.release();
 		}
@@ -70,6 +75,11 @@ public class SimulationManager {
 	public static void stop() {
 		executingThread.interrupt();
 		executingThread = null;
+
+		startingGrid.restoreFrom(originalStartingGrid);
+		originalStartingGrid = null;
+
+		triggerGuiRepaint();
 	}
 
 	public static boolean isStarted() {
@@ -91,12 +101,12 @@ public class SimulationManager {
 
 				semaphore.acquire();
 
-				StartingGridController.instance().render(runningSimulation);
-				for (Vehicle vehicle : runningSimulation.getVehicles()) {
+				StartingGridController.instance().render(startingGrid);
+				for (Vehicle vehicle : startingGrid.getVehicles()) {
 					VehicleController.instance().render(vehicle);
 				}
 
-				final Street street = runningSimulation.getStreet();
+				final Street street = startingGrid.getStreet();
 				StreetController.instance().render(street);
 
 				for (Lane lane : street.getLanes()) {
@@ -112,12 +122,7 @@ public class SimulationManager {
 					}
 				}
 
-				// Output current simulation
-				TestUtils.outputOnConsole(runningSimulation);
-
-				// Trigger listener
-				genWasRendered.setValue(true);
-				genWasRendered.setValue(false);
+				triggerGuiRepaint();
 
 				// Release semaphore
 				semaphore.release();
@@ -127,19 +132,24 @@ public class SimulationManager {
 		}
 	}
 
+	private static void triggerGuiRepaint() {
+		genWasRendered.setValue(true);
+		genWasRendered.setValue(false);
+	}
+
 	// Setter and getter
 	// ======================================================
 
-	public static StartingGrid getRunningSimulation() {
-		return runningSimulation;
+	public static StartingGrid getStartingGrid() {
+		return startingGrid;
 	}
 
-	public static void setRunningSimulation(@NonNull StartingGrid startingGrid) {
-		if (isRunning()) {
+	public static void setStartingGrid(@NonNull StartingGrid startingGrid) {
+		if (isStarted()) {
 			throw new IllegalStateException("Not possible during run");
 		}
 
-		runningSimulation = startingGrid;
+		SimulationManager.startingGrid = startingGrid;
 	}
 
 	public static SimpleBooleanProperty getGenWasRendered() {

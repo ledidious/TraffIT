@@ -15,22 +15,39 @@ public class StartingGrid extends SimulationObject {
 
 	private Street street;
 
-    @NonNull
-    private String name;
+	@NonNull
+	private String name;
 
-    @NonNull
-    private Set<Vehicle> vehicles = new HashSet<>();
+	@NonNull
+	private Set<Vehicle> vehicles = new HashSet<>();
 
-    public StartingGrid(String name) {
-        this.name = name;
-    }
+	// =============================================================================================
+	// Constructor
+	// =============================================================================================
 
-    // Please use cells to
-    void addVehicle(@NonNull Vehicle vehicle) {
-        vehicles.add(vehicle);
-    }
+	public StartingGrid(String name) {
+		this.name = name;
+	}
 
-    void removeVehicle(@NonNull Vehicle vehicle) {
-        vehicles.remove(vehicle);
-    }
+	// =============================================================================================
+	// Methods
+	// =============================================================================================
+
+	// Accessors
+	// ======================================================
+
+	// Please use cells to
+	void addVehicle(@NonNull Vehicle vehicle) {
+		vehicles.add(vehicle);
+	}
+
+	void removeVehicle(@NonNull Vehicle vehicle) {
+		vehicles.remove(vehicle);
+	}
+
+	public void restoreFrom(@NonNull StartingGrid startingGrid) {
+		name = startingGrid.name;
+		vehicles = startingGrid.vehicles;
+		street = startingGrid.street;
+	}
 }

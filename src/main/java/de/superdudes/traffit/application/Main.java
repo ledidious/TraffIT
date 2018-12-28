@@ -49,7 +49,7 @@ public class Main extends Application {
 			StartingGrid backendGrid = new StartingGrid("grid1");
 			new Street(1280, 2, backendGrid);
 			// grid1.setStreet(street1);
-			SimulationManager.setRunningSimulation(backendGrid);
+			SimulationManager.setStartingGrid(backendGrid);
 
 			// Listener for rendering Simulation
 			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.getGenWasRendered().getValue());

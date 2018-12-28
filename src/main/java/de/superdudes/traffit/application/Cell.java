@@ -16,7 +16,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import de.superdudes.traffit.application.Cell;
 
 public class Cell extends Rectangle {
 
@@ -67,7 +66,7 @@ public class Cell extends Rectangle {
 						backendLaneId = 1;
 					}
 
-					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+					StartingGrid myGrid = SimulationManager.getStartingGrid();
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
@@ -93,7 +92,7 @@ public class Cell extends Rectangle {
 						backendLaneId = 1;
 					}
 
-					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+					StartingGrid myGrid = SimulationManager.getStartingGrid();
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
@@ -120,7 +119,7 @@ public class Cell extends Rectangle {
 						backendLaneId = 1;
 					}
 
-					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+					StartingGrid myGrid = SimulationManager.getStartingGrid();
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
 					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
@@ -141,7 +140,7 @@ public class Cell extends Rectangle {
 					int ivSpeedLimit50Width = showModalDialog();
 
 					if (ivSpeedLimit50Width > 0) {
-						StartingGrid myGrid = SimulationManager.getRunningSimulation();
+						StartingGrid myGrid = SimulationManager.getStartingGrid();
 
 						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
 						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
@@ -171,7 +170,7 @@ public class Cell extends Rectangle {
 					int ivSpeedLimit70Width = showModalDialog();
 
 					if (ivSpeedLimit70Width > 0) {
-						StartingGrid myGrid = SimulationManager.getRunningSimulation();
+						StartingGrid myGrid = SimulationManager.getStartingGrid();
 
 						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
 						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
@@ -202,7 +201,7 @@ public class Cell extends Rectangle {
 					int ivSpeedLimit100Width = showModalDialog();
 
 					if (ivSpeedLimit100Width > 0) {
-						StartingGrid myGrid = SimulationManager.getRunningSimulation();
+						StartingGrid myGrid = SimulationManager.getStartingGrid();
 
 						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
 						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
@@ -268,7 +267,7 @@ public class Cell extends Rectangle {
 						backendLaneId = 1;
 					}
 
-					StartingGrid myGrid = SimulationManager.getRunningSimulation();
+					StartingGrid myGrid = SimulationManager.getStartingGrid();
 
 					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
 
