@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import de.superdudes.traffit.application.Cell;
 
 public class Cell extends Rectangle {
 
@@ -554,7 +555,7 @@ public class Cell extends Rectangle {
 	public void cleanUpLane() {
 		Cell[] allCellsFromLane = new Cell[number];
 
-		for (int i = 0; i < allCellsFromLane.length; i++) {
+		for (int i = 0; i < allCellsFromLane.length - 1; i++) {
 			allCellsFromLane[i] = (Cell) ((Pane) this.getParent()).getChildren()
 					.get(i);
 		}

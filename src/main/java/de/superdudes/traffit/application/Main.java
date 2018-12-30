@@ -36,11 +36,11 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 
 			// fixed window minimum size
-			root.setPrefSize(1280, 800);
+			root.setPrefSize(1296, 800);
 			controller.currentHeight.setValue(800);
 			controller.currentWidth.setValue(1280);
 			primaryStage.setMinHeight(839);
-			primaryStage.setMinWidth(1296);
+			primaryStage.setMinWidth(1280);
 			primaryStage.setFullScreen(true);
 			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
@@ -270,7 +270,7 @@ public class Main extends Application {
 
 			// Workaround if gui cell count not equal to db cell count
 			// fixme count of gui cells unequals db cell count. On ubuntu (on windows?): Stage resizing listener not triggered or works wrong
-			if (v.getFrontCell().getIndex() >= cellsOfLane.size()) {
+			if (v.getFrontCell().getIndex() >= cellsOfLane.size() - 1) {
 				v.setToStartOfLane();
 			} else {
 				cellsOfLane.get(v.getTailCell().getIndex()).drawVehicle(v);
