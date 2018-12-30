@@ -555,7 +555,7 @@ public class Cell extends Rectangle {
 	public void cleanUpLane() {
 		Cell[] allCellsFromLane = new Cell[number];
 
-		for (int i = 0; i < allCellsFromLane.length - 1; i++) {
+		for (int i = 0; i < allCellsFromLane.length; i++) {
 			allCellsFromLane[i] = (Cell) ((Pane) this.getParent()).getChildren()
 					.get(i);
 		}
