@@ -36,15 +36,19 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 
 			// fixed window minimum size
-			root.setPrefSize(1296, 800);
-			controller.currentHeight.setValue(800);
-			controller.currentWidth.setValue(1280);
-			primaryStage.setMinHeight(839);
+			//root.setPrefSize(1296, 800);
 			primaryStage.setMinWidth(1280);
+			primaryStage.setMinHeight(800);
+			
+			primaryStage.setWidth(1280);
+			primaryStage.setHeight(800);
+			controller.currentWidth.setValue(primaryStage.getWidth());
+			controller.currentHeight.setValue(primaryStage.getHeight());
+			
 			primaryStage.setFullScreen(true);
 			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-			controller.buildStreet(1280, 800);
+			controller.buildStreet((int) root.getWidth(), (int) root.getHeight());
 
 			StartingGrid backendGrid = new StartingGrid("grid1");
 			new Street(1280, 2, backendGrid);
@@ -70,7 +74,6 @@ public class Main extends Application {
 
 			// Listener to resize the window
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
-
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth,
 									Number newSceneWidth) {
