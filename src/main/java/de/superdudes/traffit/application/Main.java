@@ -1,6 +1,7 @@
 package de.superdudes.traffit.application;
 
 import de.superdudes.traffit.SimulationManager;
+import de.superdudes.traffit.dto.Lane;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Street;
 import de.superdudes.traffit.dto.Vehicle;
@@ -140,6 +141,9 @@ public class Main extends Application {
 
 				// Build street new (is also done in widthProperty changeListener but for safety reasons that same amount of gui and backend cells)
 				controller.buildStreet((controller.currentWidth.intValue() - 100), controller.currentHeight.intValue());
+
+				// Remove all vehicles in backend
+				backendGrid.getStreet().getLanes().forEach(Lane::removeAllObjects);
 			});
 
 			// Drag&Drop Function

@@ -8,6 +8,9 @@ import lombok.Setter;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/**
+ * Speed information are designed to be compared with real speed data in kilometers per hour.
+ */
 @Getter
 @Setter
 public class Vehicle extends SimulationObject implements AttachedToCell {

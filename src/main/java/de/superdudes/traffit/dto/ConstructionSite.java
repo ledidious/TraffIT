@@ -5,7 +5,6 @@ import de.superdudes.traffit.exception.ObjectTooCloseException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -13,7 +12,6 @@ import java.util.function.UnaryOperator;
 
 @Getter
 @Setter
-@ToString(of = {"length"})
 public class ConstructionSite extends SimulationObject implements AttachedToCell {
 
 	private static final int MIN_DISTANCE = 100;
