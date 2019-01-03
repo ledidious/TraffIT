@@ -5,9 +5,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @ToString(of = {"index"})
@@ -39,7 +36,7 @@ public class Lane extends SimulationObject {
     }
 
     public boolean isTopRightLane() {
-        return index == street.getLength() - 1;
+        return index == street.getLaneCount() - 1;
     }
 
     /**

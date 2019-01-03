@@ -12,35 +12,34 @@ import java.util.LinkedList;
 @Setter
 public class Vehicle extends SimulationObject implements AttachedToCell {
 
-//	// Constants used for driving
-//	public static final int DRIVE_LIMIT_TO_RESET_COUNTER = 1;
-//	public static final int DRIVE_COUNTER_INCREASE = 5;
-
 	public static final int DRIVE_WAIT_UNLIMITED = -1;
-	public static final int DRIVE_WAIT_MAX = 400;
+	public static final int DRIVE_WAIT_MAX = 200;
+	private static final int DRIVE_BRAKE_SPEED = 10;
 
 	// Constants used for overtaking logic
-	public static final int ANCESTOR_DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
-	public static final int ANCESTOR_DISTANCE_MIN = Type.CAR.getLength();
+	public static final int DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
+	public static final int DISTANCE_MIN = Type.CAR.getLength();
 
 	// Attribute limits
 	public static final int MAX_SPEED = 300;
 
+	@Getter
 	public enum Type {
 
-		CAR(20, 250),
-		TRUCK(40, 90),
-		MOTORCYCLE(5, 120);
+		CAR(20, 250, 10),
+		TRUCK(40, 90, 6),
+		MOTORCYCLE(5, 120, 8);
 
 		private static final double MAX_SPEED_DEVIATION = 0.2;
 
-		@Getter
 		private int length;
 		private int avgMaxSpeed;
+		private int accelerationSpeed;
 
-		private Type(int length, int avgMaxSpeed) {
+		Type(int length, int avgMaxSpeed, int accelerationSpeed) {
 			this.length = length;
 			this.avgMaxSpeed = avgMaxSpeed;
+			this.accelerationSpeed = accelerationSpeed;
 		}
 
 		public int randomMaxSpeed() {
@@ -76,6 +75,15 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 		this(type, tailCell, true);
 	}
 
+	/**
+	 * Overloaded constructor for use in VehicleController at which time not all cells
+	 * are loaded and therefore the boolean flag {@code cellSuccessorsLoaded} may be set to {@code false}.
+	 * But please provide the information about {@link #blockedCells} as soon as cells loaded!
+	 *
+	 * @param type                 the type
+	 * @param tailCell             the tail of the car thus the last cell in driving direction
+	 * @param cellSuccessorsLoaded if cell successors loaded
+	 */
 	public Vehicle(@NonNull Type type, @NonNull Cell tailCell, boolean cellSuccessorsLoaded) {
 		this.type = type;
 		this.startingGrid = tailCell.getLane().getStreet().getStartingGrid();
@@ -89,6 +97,8 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 		}
 
 		gensToWaitUntilDrive = renderGensToWaitUntilDrive();
+
+		checkMinDistanceToOtherBlockingObjects();
 	}
 
 	@Override
@@ -96,6 +106,7 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 		return type.getLength();
 	}
 
+	@Override
 	public Cell getFrontCell() {
 		return blockedCells.getFirst();
 	}
@@ -116,18 +127,20 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 
 	public void accelerate() {
 		if (currentSpeed < maxSpeed) {
-			currentSpeed++;
+			currentSpeed += type.getAccelerationSpeed();
 		}
 	}
 
 	public void brake() {
 		if (currentSpeed > 0) {
-			currentSpeed--;
+			currentSpeed -= DRIVE_BRAKE_SPEED;
 		}
 	}
 
 	// Moves one cell forward
 	public void drive() {
+		ensureMayDrive();
+
 		gensToWaitUntilDrive = renderGensToWaitUntilDrive();
 
 		final Cell removedCell = blockedCells.removeLast();
@@ -139,6 +152,12 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 		} else {
 			blockedCells.addFirst(addedCell);
 			addedCell.setBlockingVehicle(this);
+		}
+	}
+
+	private void ensureMayDrive() {
+		if (!mayDrive()) {
+			throw new IllegalStateException("Vehicle may not drive! Please check before with mayDrive()");
 		}
 	}
 
@@ -159,10 +178,12 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 	}
 
 	public void turnLeft() {
+		ensureMayDrive();
 		connectNewCells(getTailCell().getLeftNeighbour());
 	}
 
 	public void turnRight() {
+		ensureMayDrive();
 		connectNewCells(getTailCell().getRightNeighbour());
 	}
 

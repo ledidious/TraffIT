@@ -18,6 +18,9 @@ public class StartingGrid extends SimulationObject {
 	@NonNull
 	private String name;
 
+	/**
+	 * Cache, so not modifiable
+	 */
 	@NonNull
 	private Set<Vehicle> vehicles = new HashSet<>();
 
@@ -36,13 +39,21 @@ public class StartingGrid extends SimulationObject {
 	// Accessors
 	// ======================================================
 
-	// Please use cells to
+	/**
+	 * Please instead use cells to add vehicles.
+	 *
+	 * @param vehicle
+	 */
 	void addVehicle(@NonNull Vehicle vehicle) {
 		vehicles.add(vehicle);
 	}
 
 	void removeVehicle(@NonNull Vehicle vehicle) {
 		vehicles.remove(vehicle);
+	}
+
+	private void setVehicles(@NonNull Set<Vehicle> vehicles) {
+		throw new UnsupportedOperationException("Not settable");
 	}
 
 	public void restoreFrom(@NonNull StartingGrid startingGrid) {

@@ -128,15 +128,15 @@ public class GUIController {
 		lane1.getChildren().addAll(buildLane(width, height));
 
 		Cell.number = 0;
-		
+
 		lane2.getChildren().clear();
 		lane2.getChildren().addAll(buildLane(width, height));
 
 		Cell.number = 0;
-		
+
 		signlane.getChildren().clear();
 		signlane.getChildren().addAll(buildSignLane(width, height));
-		
+
 		System.out.println("Anzahl Zellen: " + Cell.number);
 	}
 

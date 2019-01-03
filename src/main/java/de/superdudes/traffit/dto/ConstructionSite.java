@@ -1,6 +1,5 @@
 package de.superdudes.traffit.dto;
 
-import de.superdudes.traffit.exception.ObjectDistanceException;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
 import de.superdudes.traffit.exception.ObjectTooCloseException;
 import lombok.Getter;
@@ -17,12 +16,11 @@ import java.util.function.UnaryOperator;
 @ToString(of = {"length"})
 public class ConstructionSite extends SimulationObject implements AttachedToCell {
 
-	private static final int MIN_DISTANCE_TO_OTHER = 100;
+	private static final int MIN_DISTANCE = 100;
 
 	@NonNull
 	private Deque<Cell> blockedCells = new LinkedList<>();
 
-	// Not persisted
 	@NonNull
 	private int length;
 
@@ -66,28 +64,29 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
 			currentCell = currentCell.getSuccessor();
 		}
 
-		checkMinDistanceBeforeAndAfter(blockedCells.getLast(), Cell::getAncestor);
-		checkMinDistanceBeforeAndAfter(blockedCells.getFirst(), Cell::getSuccessor);
+		checkMinDistanceToOtherBlockingObjects(); // Vehicles and construction sites
+		checkMinDistanceBeforeAndAfter(blockedCells.getLast(), Cell::getAncestor); // Only construction sites
+		checkMinDistanceBeforeAndAfter(blockedCells.getFirst(), Cell::getSuccessor); // Only construction sites
 	}
 
 	private void checkNeighbourCellsNotBothBlocked(Cell cell) {
 		if ((cell.getRightNeighbour() == null || cell.getRightNeighbour().isBlocked())
 				&& (cell.getLeftNeighbour() == null || cell.getLeftNeighbour().isBlocked())) {
-			throw new ObjectTooCloseException(this, "Left and right lane also blocked by constructionSites");
+			throw new ObjectTooCloseException(this, /* Information not provided */ null, "Left and right lane also blocked by constructionSites");
 		}
 	}
 
 	private void checkMinDistanceBeforeAndAfter(Cell firstCellToCheck, UnaryOperator<Cell> cellHiker) {
 
 		Cell currentCell = firstCellToCheck;
-		for (int j = 0; j <= MIN_DISTANCE_TO_OTHER; j++) {
+		for (int j = 0; j <= MIN_DISTANCE; j++) {
 			currentCell = cellHiker.apply(currentCell);
 
 			if (currentCell == null) {
 				break;
 			}
 			if (currentCell.isBlocked() && !equals(currentCell.getBlockingConstructionSite())) {
-				throw new ObjectDistanceException("Too short distance from another construction site");
+				throw new ObjectTooCloseException(this, currentCell.getBlockingConstructionSite(), "On same lane");
 			}
 			checkNeighbourCellsNotBothBlocked(currentCell);
 		}
@@ -102,8 +101,20 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
 		throw new UnsupportedOperationException();
 	}
 
+	public Lane getLane() {
+		return getTailCell().getLane();
+	}
+
 	@Override
 	public Integer getLength() {
 		return length;
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder(getClass().getSimpleName()).append('{')
+				.append("tailCell=").append(getTailCell().getIndex()).append(",")
+				.append("lane").append(getLane().getIndex())
+				.toString();
 	}
 }

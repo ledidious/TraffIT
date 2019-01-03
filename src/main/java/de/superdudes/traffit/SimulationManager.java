@@ -14,12 +14,13 @@ public class SimulationManager {
 	// Constants
 	// =============================================================================================
 
-	private static final int MAX_RUNNING_SIMULATION = 1;
-	private static final int GEN_WAIT = 10;
+	private static final int GEN_WAIT = 20;
 
 	// =============================================================================================
 	// Static fields
 	// =============================================================================================
+
+	private static int generationNr = 0;
 
 	// The startingGrid to run
 	private static StartingGrid startingGrid = new StartingGrid("default");
@@ -27,7 +28,7 @@ public class SimulationManager {
 
 	// Thread and semaphore for pausing, running the simulation
 	private static Thread executingThread = null;
-	private static Semaphore semaphore = new Semaphore(MAX_RUNNING_SIMULATION);
+	private static Semaphore semaphore = new Semaphore(1);
 
 	// Flag to listen to when to repaint vehicles in gui
 	private static SimpleBooleanProperty genWasRendered = new SimpleBooleanProperty(false); // JAVAFX
@@ -54,12 +55,13 @@ public class SimulationManager {
 
 	public static void start() {
 		if (executingThread == null) {
+			originalStartingGrid = SerializationUtils.clone(startingGrid);
+
 			executingThread = new Thread(SimulationManager::run);
 			executingThread.setDaemon(true);
 			executingThread.start();
-
-			originalStartingGrid = SerializationUtils.clone(startingGrid);
 		} else {
+			// if halted before in halt()
 			semaphore.release();
 		}
 	}
@@ -78,6 +80,9 @@ public class SimulationManager {
 
 		startingGrid.restoreFrom(originalStartingGrid);
 		originalStartingGrid = null;
+
+		// Reset generation number
+		generationNr = 0;
 
 		triggerGuiRepaint();
 	}
@@ -122,6 +127,7 @@ public class SimulationManager {
 					}
 				}
 
+				System.out.println("Generation: " + generationNr++);
 				triggerGuiRepaint();
 
 				// Release semaphore
@@ -129,6 +135,12 @@ public class SimulationManager {
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Simulation interrupted");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("An exception occurred during simulation");
+		} finally {
+			// So that a new start is able to aquire the semaphore in each case
+			semaphore.release();
 		}
 	}
 
