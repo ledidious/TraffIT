@@ -135,11 +135,14 @@ public class SimulationManager {
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Simulation interrupted");
+
+			// Do not release, already released ordinary in try block and then interrupted during FOLLOWING Thread.sleep()
+			// semaphore.release();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("An exception occurred during simulation");
-		} finally {
-			// So that a new start is able to aquire the semaphore in each case
+
+			// So that a new start is able even if an exception occurred
 			semaphore.release();
 		}
 	}
