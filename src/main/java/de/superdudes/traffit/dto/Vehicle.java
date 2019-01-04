@@ -13,6 +13,7 @@ import java.util.LinkedList;
  */
 @Getter
 @Setter
+// todo common super class with ConstructionSite
 public class Vehicle extends SimulationObject implements AttachedToCell {
 
 	public static final int DRIVE_WAIT_UNLIMITED = -1;
@@ -94,14 +95,20 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 
 		if (cellSuccessorsLoaded) {
 			connectNewCells(tailCell);
+			try {
+				checkMinDistanceToOtherBlockingObjects();
+			} catch (RuntimeException e) {
+				// todo find a prettier solution (is ugly but quickly solved)
+				// In case of validation failure, remove vehicle and do not save in inconsistent state
+				removeMe();
+				throw e;
+			}
 		} else {
 			// Add to blockedCells so that getTailCell() is working
 			blockedCells.addFirst(tailCell);
 		}
 
 		gensToWaitUntilDrive = renderGensToWaitUntilDrive();
-
-		checkMinDistanceToOtherBlockingObjects();
 	}
 
 	@Override
@@ -219,6 +226,16 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 
 	public void setMaxSpeed(@NonNull Integer maxSpeed) {
 		this.maxSpeed = Math.min(MAX_SPEED, maxSpeed);
+	}
+
+	@Override
+	public void removeMe() {
+
+		for (Cell blockedCell : blockedCells) {
+			blockedCell.setBlockingVehicle(null);
+		}
+
+		getStartingGrid().removeVehicle(this);
 	}
 
 	@Override

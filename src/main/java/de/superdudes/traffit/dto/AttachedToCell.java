@@ -5,6 +5,7 @@ import lombok.NonNull;
 
 import java.util.function.BiConsumer;
 
+// todo make to abstract class, but differ streetSigns (are different from construction sites and vehicles)
 public interface AttachedToCell {
 
 	/**
@@ -31,6 +32,8 @@ public interface AttachedToCell {
 
 		return frontCell;
 	}
+
+	void removeMe();
 
 	default <T extends AttachedToCell> void connectCells(Cell tailCell, BiConsumer<Cell, T> connector) {
 

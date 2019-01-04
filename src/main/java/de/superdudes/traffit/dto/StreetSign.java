@@ -63,4 +63,9 @@ public class StreetSign extends SimulationObject implements AttachedToCell {
     public Integer getLength() {
         return length;
     }
+
+    @Override
+    public void removeMe() {
+        tailCell.setStreetSign(null);
+    }
 }

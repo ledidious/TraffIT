@@ -12,6 +12,7 @@ import java.util.function.UnaryOperator;
 
 @Getter
 @Setter
+// todo common super class with Vehicle
 public class ConstructionSite extends SimulationObject implements AttachedToCell {
 
 	private static final int MIN_DISTANCE = 100;
@@ -62,9 +63,18 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
 			currentCell = currentCell.getSuccessor();
 		}
 
-		checkMinDistanceToOtherBlockingObjects(); // Vehicles and construction sites
-		checkMinDistanceBeforeAndAfter(blockedCells.getLast(), Cell::getAncestor); // Only construction sites
-		checkMinDistanceBeforeAndAfter(blockedCells.getFirst(), Cell::getSuccessor); // Only construction sites
+		try {
+			// Do checks before connecting to cells (otherwise saved with inconsistent state)
+			checkMinDistanceToOtherBlockingObjects(); // Vehicles and construction sites
+			checkMinDistanceBeforeAndAfter(blockedCells.getLast(), Cell::getAncestor); // Only construction sites
+			checkMinDistanceBeforeAndAfter(blockedCells.getFirst(), Cell::getSuccessor); // Only construction sites
+		}
+		catch (ObjectMisplacedException e) {
+			// todo find a prettier solution (is ugly but quickly solved)
+			// In case of validation failure, remove construction site and do not save in inconsistent state
+			removeMe();
+			throw e;
+		}
 	}
 
 	private void checkNeighbourCellsNotBothBlocked(Cell cell) {
@@ -93,6 +103,13 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
 	@Override
 	public Cell getTailCell() {
 		return blockedCells.getLast();
+	}
+
+	@Override
+	public void removeMe() {
+		for (Cell blockedCell : blockedCells) {
+			blockedCell.setBlockingConstructionSite(null);
+		}
 	}
 
 	private void setBlockedCells() {

@@ -68,11 +68,14 @@ public class Lane extends SimulationObject {
 
 		for (Cell cell : getCells()) {
 			if (cell.getBlockingVehicle() != null) {
-                getStreet().getStartingGrid().removeVehicle(cell.getBlockingVehicle());
+				cell.getBlockingVehicle().removeMe();
 			}
-			cell.setBlockingConstructionSite(null);
-			cell.setBlockingVehicle(null);
-			cell.setStreetSign(null);
+			if (cell.getBlockingConstructionSite() != null) {
+				cell.getBlockingConstructionSite().removeMe();
+			}
+			if (cell.getStreetSign() != null) {
+				cell.getStreetSign().removeMe();
+			}
 		}
 	}
 }
