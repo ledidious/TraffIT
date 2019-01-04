@@ -4,6 +4,7 @@ import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.*;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
 import de.superdudes.traffit.exception.ObjectTooCloseException;
+import de.superdudes.traffit.exception.SimulationRunningException;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -54,6 +55,11 @@ public class Cell extends Rectangle {
 			Text text = new Text();
 			text.setStyle("-fx-font-weight: bold");
 			text.setStyle("-fx-font: 24 arial;");
+
+			if (SimulationManager.isRunning()) {
+				showErrorDialog(new SimulationRunningException());
+				return;
+			}
 
 			switch (id) {
 				case "ivCar":
@@ -416,6 +422,8 @@ public class Cell extends Rectangle {
 			button01.setLayoutY(70);
 		} else if (exception instanceof ObjectMisplacedException) {
 			label01.setText("A cell is blocked by another object!");
+		} else if (exception instanceof SimulationRunningException) {
+			label01.setText("Simulation is running");
 		} else {
 			label01.setText("[The Type of the Message is unknown]");
 		}
