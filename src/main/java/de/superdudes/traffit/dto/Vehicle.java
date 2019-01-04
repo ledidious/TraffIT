@@ -166,8 +166,8 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 	}
 
 	private void ensureMayDrive() {
-		if (!mayDrive()) {
-			throw new IllegalStateException("Vehicle may not drive! Please check before with mayDrive()");
+		if (!mayAccelerate() && !mayDrive()) {
+			throw new IllegalStateException("Vehicle may not drive or accelerate! Please check before with mayDrive() or mayAccelerate()");
 		}
 	}
 
@@ -180,7 +180,11 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 	}
 
 	public boolean mayDrive() {
-		return gensToWaitUntilDrive <= 0;
+		return gensToWaitUntilDrive == 0;
+	}
+
+	public boolean mayAccelerate() {
+		return gensToWaitUntilDrive < 0;
 	}
 
 	private int renderGensToWaitUntilDrive() {
@@ -243,4 +247,3 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 		return getClass().getSimpleName() + "{type=" + getType() + ", lane=" + getLane().getIndex() + ", headCell=" + getFrontCell().getIndex() + "}";
 	}
 }
-

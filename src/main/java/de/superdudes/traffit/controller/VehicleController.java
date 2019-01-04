@@ -122,27 +122,42 @@ public class VehicleController extends AbstractController<Vehicle> {
 	// ======================================================
 
 	@Override
-	public void render(@NonNull Vehicle object) {
+	public void render(@NonNull Vehicle vehicle) {
 
-		if (!object.mayDrive()) {
-			object.dontDrive();
-			return;
+		if (!vehicle.mayDrive()) {
+			vehicle.dontDrive();
+
+			if (vehicle.getCurrentSpeed() <= 0) {
+				render_onStandstill(vehicle);
+			}
+		} else {
+			boolean vehicleForeseeableAhead = render_considerTraffic(vehicle);
+
+			if (!vehicleForeseeableAhead) {
+				render_onNoVehicleForeseeableAhead(vehicle);
+			}
+
+			vehicle.drive();
 		}
+	}
 
-		boolean vehicleForeseeableAhead = render_byOtherVehicles(object);
+	private void render_onStandstill(@NonNull Vehicle vehicle) {
 
-		if (!vehicleForeseeableAhead) {
-			render_bySpeedLimits(object);
+		// Distance -> Vehicle
+		DistanceToAnotherVehicle ancestor = null;
+
+		if (vehicle.mayAccelerate()
+				&& ((ancestor = findAncestor(vehicle)) == null || ancestor.getDistance() > Vehicle.DISTANCE_MIN)) {
+			vehicle.accelerate();
+			vehicle.drive();
 		}
-
-		object.drive();
 	}
 
 	/**
 	 * @param vehicle
 	 * @return whether a car is ahead on the same line in a forseeable distance
 	 */
-	private boolean render_byOtherVehicles(@NonNull Vehicle vehicle) {
+	private boolean render_considerTraffic(@NonNull Vehicle vehicle) {
 
 		// Distance -> Vehicle
 		DistanceToAnotherVehicle ancestor = null;
@@ -180,8 +195,8 @@ public class VehicleController extends AbstractController<Vehicle> {
 		return ancestor != null && ancestor.getDistance() < Vehicle.DISTANCE_TO_RECOGNIZE_SPEED;
 	}
 
-	// Preamble: No car forseeable ahead, see in render()
-	private void render_bySpeedLimits(@NonNull Vehicle vehicle) {
+	// Preamble: No car foreseeable ahead, see in render()
+	private void render_onNoVehicleForeseeableAhead(@NonNull Vehicle vehicle) {
 
 		final Cell currentCell = vehicle.getFrontCell();
 
