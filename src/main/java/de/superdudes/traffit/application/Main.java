@@ -62,7 +62,7 @@ public class Main extends Application {
 			new Street(1280, 2, backendGrid);
 			SimulationManager.setStartingGrid(backendGrid);
 
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add("css/application.css");
 
 			// #### Change Listener ####
 			// Change Listener for detecting changes in the backend of the simulation
