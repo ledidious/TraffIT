@@ -23,13 +23,26 @@ public class Cell extends Rectangle {
 											// moves over it.
 	static int number = 0; // Counter for the number of generated cells (per lane)
 
+	/**
+	 * counting the cellid 
+	 */
 	public void count() {
 		if (this.getId() == null) {
 			this.setId(Integer.toString(number));
 			number++;
 		}
 	}
-
+	
+	/**
+	 * constructor for the cell
+	 * create objects of vehicles and signs
+	 * 
+	 * @param x 
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param fill
+	 */
 	public Cell(double x, double y, double width, double height, Paint fill) {
 		super(x, y, width, height);
 		setFill(fill);

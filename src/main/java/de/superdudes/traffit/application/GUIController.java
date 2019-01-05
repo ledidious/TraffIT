@@ -105,7 +105,14 @@ public class GUIController {
 	public void setLane2(Pane lane2) {
 		this.lane2 = lane2;
 	}
-
+	
+	/**
+	 * resets the cell counter to 0, clears all cell objects and build a new lane 
+	 * depending on the current width and height of the window size
+	 * 
+	 * @param width
+	 * @param height
+	 */
 	public void buildStreet(int width, int height) {
 		Cell.number = 0;
 
@@ -122,7 +129,14 @@ public class GUIController {
 		signlane.getChildren().clear();
 		signlane.getChildren().addAll(buildSignLane(width, height));
 	}
-
+	/**
+	 * builds a lane for the vehicles in the form of a cellarray 
+	 * depending on the current width and height of the window size 
+	 * 
+	 * @param width
+	 * @param height
+	 * @return ca 
+	 */
 	public Cell[] buildLane(int width, int height) {
 		Cell[] ca = new Cell[width];
 
@@ -132,7 +146,15 @@ public class GUIController {
 
 		return ca;
 	}
-
+	
+	/**
+	 * builds a lane for the signs in the form of a cellarray 
+	 * depending on the current width and height of the window size 
+	 * 
+	 * @param width
+	 * @param height
+	 * @return ca
+	 */
 	public Cell[] buildSignLane(int width, int height) {
 		Cell[] ca = new Cell[width];
 
