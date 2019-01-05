@@ -130,6 +130,7 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
 		return new StringBuilder(getClass().getSimpleName()).append('{')
 				.append("tailCell=").append(getTailCell().getIndex()).append(",")
 				.append("lane").append(getLane().getIndex())
+				.append("}")
 				.toString();
 	}
 }

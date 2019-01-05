@@ -94,8 +94,8 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 		this.maxSpeed = type.randomMaxSpeed();
 
 		if (cellSuccessorsLoaded) {
-			connectNewCells(tailCell);
 			try {
+				connectNewCells(tailCell);
 				checkMinDistanceToOtherBlockingObjects();
 			} catch (RuntimeException e) {
 				// todo find a prettier solution (is ugly but quickly solved)
