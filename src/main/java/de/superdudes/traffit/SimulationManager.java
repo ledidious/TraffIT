@@ -54,15 +54,14 @@ public class SimulationManager {
 	// ======================================================
 
 	public static void start() {
+		resetSemaphore();
+
 		if (executingThread == null) {
 			originalStartingGrid = SerializationUtils.clone(startingGrid);
 
 			executingThread = new Thread(SimulationManager::run);
 			executingThread.setDaemon(true);
 			executingThread.start();
-		} else {
-			// if halted before in halt()
-			semaphore.release();
 		}
 	}
 
@@ -131,19 +130,34 @@ public class SimulationManager {
 				triggerGuiRepaint();
 
 				// Release semaphore
-				semaphore.release();
+				resetSemaphore();
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Simulation interrupted");
 
 			// Do not release, already released ordinary in try block and then interrupted during FOLLOWING Thread.sleep()
-			// semaphore.release();
+			// semaphoreReleaseIfNecessary();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("An exception occurred during simulation");
 
 			// So that a new start is able even if an exception occurred
+			resetSemaphore();
+		}
+	}
+
+	private static void resetSemaphore() {
+
+		while (semaphore.availablePermits() < 1) {
 			semaphore.release();
+		}
+
+		while (semaphore.availablePermits() > 1) {
+			try {
+				semaphore.acquire();
+			} catch (InterruptedException e) {
+				throw new InternalError("Won't happen");
+			}
 		}
 	}
 
