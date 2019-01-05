@@ -1,6 +1,7 @@
 package de.superdudes.traffit.application;
 
 import de.superdudes.traffit.SimulationManager;
+import de.superdudes.traffit.util.Resources;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
@@ -12,23 +13,21 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-import java.io.File;
-
 public class GUIController {
 
 	public DoubleProperty currentWidth = new SimpleDoubleProperty();
 	public DoubleProperty currentHeight = new SimpleDoubleProperty();
 
 	// Defines the path to the icons of the vehicles.
-	private String pathToCar = new File("src/main/resources/car.png").getAbsolutePath();
-	private String pathToMotorcycle = new File("src/main/resources/motorcycle.png").getAbsolutePath();
-	private String pathToTruck = new File("src/main/resources/truck.png").getAbsolutePath();
+	private String pathToCar = Resources.getClasspathResource("png/car.png");
+	private String pathToMotorcycle = Resources.getClasspathResource("png/motorcycle.png");
+	private String pathToTruck = Resources.getClasspathResource("png/truck.png");
 
 	// Defines the path to the icons of the signs.
-	private String pathToSpeedLimit50 = new File("src/main/resources/limit50.png").getAbsolutePath();
-	private String pathToSpeedLimit70 = new File("src/main/resources/limit70.png").getAbsolutePath();
-	private String pathToSpeedLimit100 = new File("src/main/resources/limit100.png").getAbsolutePath();
-	private String pathToContstruction = new File("src/main/resources/construction.png").getAbsolutePath();
+	private String pathToSpeedLimit50 = Resources.getClasspathResource("png/limit50.png");
+	private String pathToSpeedLimit70 = Resources.getClasspathResource("png/limit70.png");
+	private String pathToSpeedLimit100 = Resources.getClasspathResource("png/limit100.png");
+	private String pathToContstruction = Resources.getClasspathResource("png/construction.png");
 
 	// Vehicles
 	private Image iconCar = new Image("file:" + pathToCar);
