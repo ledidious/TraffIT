@@ -24,6 +24,15 @@ import java.util.stream.Collectors;
 
 public class Main extends Application {
 
+	/**
+	 * Start the JavaFX Application
+	 * 
+	 * Contains Change Listener for the following cases: -necessity to update the
+	 * position of the vehicle -The Width of the window changes -The height of the
+	 * window changes -The user tries to enter letters into the textbox.
+	 * 
+	 * It also includes event handlers for various JavaFX elements.
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -32,20 +41,18 @@ public class Main extends Application {
 			loader.setLocation(getClass().getResource("GUI.fxml"));
 			AnchorPane root = (AnchorPane) loader.load();
 			GUIController controller = loader.getController();
-			// controller.sayHi();
 
 			Scene scene = new Scene(root);
 
 			// fixed window minimum size
-			//root.setPrefSize(1296, 800);
 			primaryStage.setMinWidth(1280);
 			primaryStage.setMinHeight(800);
-			
+
 			primaryStage.setWidth(1280);
 			primaryStage.setHeight(800);
 			controller.currentWidth.setValue(primaryStage.getWidth());
 			controller.currentHeight.setValue(primaryStage.getHeight());
-			
+
 			primaryStage.setFullScreen(true);
 			primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
@@ -53,11 +60,14 @@ public class Main extends Application {
 
 			StartingGrid backendGrid = new StartingGrid("grid1");
 			new Street(1280, 2, backendGrid);
-			// grid1.setStreet(street1);
 			SimulationManager.setStartingGrid(backendGrid);
 
-			// Listener for rendering Simulation
-			ObservableBooleanValue nemesis = new SimpleBooleanProperty(SimulationManager.getGenWasRendered().getValue());
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+			// #### Change Listener ####
+			// Change Listener for detecting changes in the backend of the simulation
+			ObservableBooleanValue nemesis = new SimpleBooleanProperty(
+					SimulationManager.getGenWasRendered().getValue());
 			((BooleanProperty) nemesis).bindBidirectional(SimulationManager.getGenWasRendered());
 
 			nemesis.addListener(new ChangeListener<Boolean>() {
@@ -65,38 +75,30 @@ public class Main extends Application {
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
 						repaintVehicle(backendGrid.getVehicles(), controller);
-
-						// Reset the Manager
-						// SimulationManager.genWasRendered(false); // Doesn't work: Listener stops
-						// listening
 					}
 				}
 			});
 
-			// Listener to resize the window
+			// Change Listener to detect changes made to the width of the window
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth,
-									Number newSceneWidth) {
+						Number newSceneWidth) {
 					root.setPrefWidth((double) newSceneWidth);
 					controller.currentWidth.setValue((double) newSceneWidth - 40);
 
-					// Build street new
-					controller.buildStreet((controller.currentWidth.intValue() - 100), controller.currentHeight.intValue());
-
-					// street1.setLength((int) controller.lane1.getWidth());
+					// Rebuilt the street
+					controller.buildStreet((controller.currentWidth.intValue() - 100),
+							controller.currentHeight.intValue());
 					new Street((int) controller.lane1.getWidth(), 2, backendGrid);
-					// grid1.setStreet(street1);
-
-					// System.out.println("lane1 breite: " + controller.lane1.getWidth());
-					// System.out.println(street1.getLength());
 				}
 			});
 
+			// Change Listener to detect changes made to the height of the window
 			scene.heightProperty().addListener(new ChangeListener<Number>() {
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight,
-									Number newSceneHeight) {
+						Number newSceneHeight) {
 					root.setPrefHeight((double) newSceneHeight);
 					controller.currentHeight.setValue((double) newSceneHeight - 40);
 					Cell.number = 0;
@@ -115,13 +117,18 @@ public class Main extends Application {
 							(controller.currentWidth.intValue() - 100), controller.currentHeight.intValue()));
 				}
 			});
+			// Change Listener for preventing the user to enter letters into the textbox
+			controller.streetSize.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if (!newValue.matches("\\d*")) {
+						controller.streetSize.setText(newValue.replaceAll("[^\\d]", ""));
+					}
+				}
+			});
 
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
-			primaryStage.setResizable(false);
-			primaryStage.show();
-
-			// Event Handler to change the size of the Street
+			// #### Event Handler ####
+			// Event Handler to change the length of the Street
 			controller.streetSize.setOnAction(e -> {
 
 				Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -139,102 +146,74 @@ public class Main extends Application {
 					controller.streetSize.setText(String.valueOf((int) primaryStage.getMinWidth()));
 				}
 
-				// Build street new (is also done in widthProperty changeListener but for safety reasons that same amount of gui and backend cells)
+				// Build street new (is also done in widthProperty changeListener but for safety
+				// reasons that same amount of gui and backend cells)
 				controller.buildStreet((controller.currentWidth.intValue() - 100), controller.currentHeight.intValue());
 
 				// Remove all vehicles in backend
 				backendGrid.getStreet().getLanes().forEach(Lane::removeAllObjects);
 			});
 
-			// Drag&Drop Function
-			// **** Vehicle ****
+			// Event Handler for the Drag&Drop Function
+			// **** Vehicles ****
 			controller.ivMotorcycle.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
+			});
+
+			controller.ivMotorcycle.setOnDragDetected(e -> {
+				controller.ivMotorcycle.startFullDrag();
 			});
 
 			controller.ivCar.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
-				e.setDragDetect(true);
-			});
-
-			controller.ivTruck.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
 			});
 
 			controller.ivCar.setOnDragDetected(e -> {
 				controller.ivCar.startFullDrag();
-				System.out.println("Event on Source: drag detected");
 			});
 
-			controller.ivMotorcycle.setOnDragDetected(e -> {
-				controller.ivMotorcycle.startFullDrag();
-				System.out.println("Event on Source: drag detected");
+			controller.ivTruck.setOnMousePressed(e -> {
+				e.setDragDetect(true);
 			});
 
 			controller.ivTruck.setOnDragDetected(e -> {
 				controller.ivTruck.startFullDrag();
-				System.out.println("Event on Source: drag detected");
 			});
 
 			// **** Signs ****
 			controller.ivConstruction.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
-				e.setDragDetect(true);
-			});
-
-			controller.ivSpeedLimit50.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
-				e.setDragDetect(true);
-			});
-
-			controller.ivSpeedLimit70.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
-				e.setDragDetect(true);
-			});
-
-			controller.ivSpeedLimit100.setOnMousePressed(e -> {
-				System.out.println("Event on Source: mouse pressed.");
 				e.setDragDetect(true);
 			});
 
 			controller.ivConstruction.setOnDragDetected(e -> {
 				controller.ivConstruction.startFullDrag();
-				System.out.println("Event on Source: drag detected");
+			});
+
+			controller.ivSpeedLimit50.setOnMousePressed(e -> {
+				e.setDragDetect(true);
 			});
 
 			controller.ivSpeedLimit50.setOnDragDetected(e -> {
 				controller.ivSpeedLimit50.startFullDrag();
-				System.out.println("Event on Source: drag detected");
+			});
+
+			controller.ivSpeedLimit70.setOnMousePressed(e -> {
+				e.setDragDetect(true);
 			});
 
 			controller.ivSpeedLimit70.setOnDragDetected(e -> {
 				controller.ivSpeedLimit70.startFullDrag();
-				System.out.println("Event on Source: drag detected");
+			});
+
+			controller.ivSpeedLimit100.setOnMousePressed(e -> {
+				e.setDragDetect(true);
 			});
 
 			controller.ivSpeedLimit100.setOnDragDetected(e -> {
 				controller.ivSpeedLimit100.startFullDrag();
-				System.out.println("Event on Source: drag detected");
 			});
 
-			/*
-			 * Event Handler for locking the window size and starting the Simulation.
-			 * Necessary because you can't manipulate the Stage from within the Controller
-			 */
-			controller.button01.setOnAction(e -> {
-				// primaryStage.setResizable(false);
-				controller.startSimulation();
-			});
-
-			// vice versa
-			controller.button02.setOnAction(e -> {
-				// primaryStage.setResizable(true);
-				controller.stopSimulation();
-			});
-
-			// Event Handle for Fullscreen
+			// Event Handle for toggling between fullscreen and window mode
 			controller.button05.setOnAction(e -> {
 				if (primaryStage.isFullScreen()) {
 					controller.streetSize.setDisable(false);
@@ -245,14 +224,9 @@ public class Main extends Application {
 				}
 			});
 
-			controller.streetSize.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					if (!newValue.matches("\\d*")) {
-						controller.streetSize.setText(newValue.replaceAll("[^\\d]", ""));
-					}
-				}
-			});
+			primaryStage.setScene(scene);
+			primaryStage.setResizable(false);
+			primaryStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -262,11 +236,19 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	public void repaintVehicle(Set<Vehicle> vehicle, GUIController myController) {
-		List<Cell> cellsLane1 = myController.getLane1().getChildren().stream().map(Cell.class::cast)
+	/**
+	 * This method deletes the contents of the street and draws the given vehicles.
+	 * It should be called as soon as the content of the road changes.
+	 * 
+	 * @param vehicle    The set of vehicles to be painted.
+	 * @param controller The GUI-Controller that contains the lanes from the
+	 *                   frontend.
+	 */
+	public void repaintVehicle(Set<Vehicle> vehicle, GUIController controller) {
+		List<Cell> cellsLane1 = controller.getLane1().getChildren().stream().map(Cell.class::cast)
 				.collect(Collectors.toList());
 
-		List<Cell> cellsLane2 = myController.getLane2().getChildren().stream().map(Cell.class::cast)
+		List<Cell> cellsLane2 = controller.getLane2().getChildren().stream().map(Cell.class::cast)
 				.collect(Collectors.toList());
 
 		cellsLane1.get(0).cleanUpLane();
@@ -276,7 +258,8 @@ public class Main extends Application {
 			final List<Cell> cellsOfLane = v.getLane().getIndex() == 0 ? cellsLane1 : cellsLane2;
 
 			// Workaround if gui cell count not equal to db cell count
-			// fixme count of gui cells unequals db cell count. On ubuntu (on windows?): Stage resizing listener not triggered or works wrong
+			// fixme count of gui cells unequals db cell count. On ubuntu (on windows?):
+			// Stage resizing listener not triggered or works wrong
 			if (v.getFrontCell().getIndex() >= cellsOfLane.size() - 1) {
 				v.setToStartOfLane();
 			} else {

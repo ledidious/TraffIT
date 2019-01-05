@@ -19,37 +19,34 @@ public class GUIController {
 	public DoubleProperty currentWidth = new SimpleDoubleProperty();
 	public DoubleProperty currentHeight = new SimpleDoubleProperty();
 
-	// Set the path to the icons of the vehicles
+	// Defines the path to the icons of the vehicles.
 	private String pathToCar = new File("src/main/resources/car.png").getAbsolutePath();
 	private String pathToMotorcycle = new File("src/main/resources/motorcycle.png").getAbsolutePath();
 	private String pathToTruck = new File("src/main/resources/truck.png").getAbsolutePath();
 
-	// Set the path to the icons of the signs
+	// Defines the path to the icons of the signs.
 	private String pathToSpeedLimit50 = new File("src/main/resources/limit50.png").getAbsolutePath();
 	private String pathToSpeedLimit70 = new File("src/main/resources/limit70.png").getAbsolutePath();
 	private String pathToSpeedLimit100 = new File("src/main/resources/limit100.png").getAbsolutePath();
 	private String pathToContstruction = new File("src/main/resources/construction.png").getAbsolutePath();
 
-	// Vehicle
+	// Vehicles
 	private Image iconCar = new Image("file:" + pathToCar);
 	private Image iconMotorcycle = new Image("file:" + pathToMotorcycle);
 	private Image iconTruck = new Image("file:" + pathToTruck);
 
-	// Speed Limit
+	// Speed Limits
 	private Image iconSpeedLimit50 = new Image("file:" + pathToSpeedLimit50);
 	private Image iconSpeedLimit70 = new Image("file:" + pathToSpeedLimit70);
 	private Image iconSpeedLimit100 = new Image("file:" + pathToSpeedLimit100);
 
-	// Signs
+	// Other Signs
 	private Image iconConstruction = new Image("file:" + pathToContstruction);
 
 	// Text fields and Spinners
-	/* @FXML
-	Spinner<Integer> spinner01 = new Spinner<Integer>(); */
-	
 	@FXML
 	TextField streetSize;
-
+	
 	// ImageViews
 	@FXML
 	public ImageView ivCar;
@@ -92,18 +89,7 @@ public class GUIController {
 	@FXML
 	private AnchorPane anchPane01;
 	
-	// Logic
-
-	/* private void initSpinner() {
-		spinner01.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 100));
-		spinner01.setEditable(true);
-		IntegerStringConverter.createFor(spinner01);
-	}*/
-	
-   /* public void updateSpinnerValue(Integer newValue) {
-        spinner01.getValueFactory().setValue(newValue);
-    }*/
-	
+	// The Logic
 	public Pane getLane1() {
 		return lane1;
 	}
@@ -119,9 +105,15 @@ public class GUIController {
 	public void setLane2(Pane lane2) {
 		this.lane2 = lane2;
 	}
-
+	
+	/**
+	 * resets the cell counter to 0, clears all cell objects and build a new lane 
+	 * depending on the current width and height of the window size
+	 * 
+	 * @param width
+	 * @param height
+	 */
 	public void buildStreet(int width, int height) {
-
 		Cell.number = 0;
 
 		lane1.getChildren().clear();
@@ -136,10 +128,15 @@ public class GUIController {
 
 		signlane.getChildren().clear();
 		signlane.getChildren().addAll(buildSignLane(width, height));
-
-		System.out.println("Anzahl Zellen: " + Cell.number);
 	}
-
+	/**
+	 * builds a lane for the vehicles in the form of a cellarray 
+	 * depending on the current width and height of the window size 
+	 * 
+	 * @param width
+	 * @param height
+	 * @return ca 
+	 */
 	public Cell[] buildLane(int width, int height) {
 		Cell[] ca = new Cell[width];
 
@@ -149,7 +146,15 @@ public class GUIController {
 
 		return ca;
 	}
-
+	
+	/**
+	 * builds a lane for the signs in the form of a cellarray 
+	 * depending on the current width and height of the window size 
+	 * 
+	 * @param width
+	 * @param height
+	 * @return ca
+	 */
 	public Cell[] buildSignLane(int width, int height) {
 		Cell[] ca = new Cell[width];
 
@@ -164,6 +169,9 @@ public class GUIController {
 		System.out.println("Copyright: Superdudes 2018");
 	}
 
+	/**
+	 * Called to initialize a controller after its root element has been completely processed.
+	 */
 	@FXML
 	public void initialize() {
 		System.out.println("Init GUI");
@@ -175,10 +183,6 @@ public class GUIController {
 		ivMotorcycle.setImage(iconMotorcycle);
 		ivTruck.setImage(iconTruck);
 
-		// lane1.getChildren().addAll(createLane());
-
-		// System.out.println(dc.getCurrentWidth());
-
 		ivSpeedLimit50.setImage(iconSpeedLimit50);
 		ivSpeedLimit70.setImage(iconSpeedLimit70);
 		ivSpeedLimit100.setImage(iconSpeedLimit100);
@@ -189,14 +193,11 @@ public class GUIController {
 		button04.setDisable(true);
 		button06.setDisable(true);
 		streetSize.setDisable(true);
-		
-		System.out.println(anchPane01.getWidth());
-		
-		//Street test = new Street();
-		
-		//initSpinner();
 	}
 
+	/**
+	 * Locks the program for further changes and starts the simulation.
+	 */
 	@FXML
 	public void startSimulation() {
 		button01.setDisable(true);
@@ -212,6 +213,9 @@ public class GUIController {
 		SimulationManager.start();
 	}
 	
+	/**
+	 * Pauses the simulation and allows to save the current state.
+	 */
 	@FXML
 	public void haltSimulation() {
 		button01.setDisable(false);
@@ -222,6 +226,9 @@ public class GUIController {
 		SimulationManager.halt();
 	}
 
+	/**
+	 * Ends the simulation and resets all vehicles to their corresponding starting positions.
+	 */
 	@FXML
 	public void stopSimulation() {
 		button01.setDisable(false);
@@ -237,17 +244,19 @@ public class GUIController {
 		SimulationManager.stop();
 	}
 
+	/**
+	 * Loads a stored simulation from the database.
+	 */
 	@FXML
 	private void loadSimulation() {
 		System.out.println("Please implement logic!");
 	}
 
+	/**
+	 * Saves the current state of the simulation in the database.
+	 */
 	@FXML
 	private void saveSimulation() {
 		System.out.println("Please implement logic!");
-	}
-
-	public void sayHi() {
-		System.out.println("Moinsen!");
 	}
 }

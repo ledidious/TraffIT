@@ -11,8 +11,8 @@ import javafx.util.StringConverter;
  * or a {@link TextField} or {@link Spinner} that is preemptively monitored for invalid
  * input during typing, and restricts valid input to a specified range when committed.
  * 
- * @author Christoph Nahr
- * @version 1.0.2
+ * @author Christoph Nahr modified by Jannis Brune
+ * @version 1.0.2b
  */
 public class IntegerStringConverter extends StringConverter<Integer> {
 
