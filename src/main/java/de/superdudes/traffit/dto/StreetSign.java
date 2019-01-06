@@ -24,9 +24,9 @@ public class StreetSign extends SimulationObject implements AttachedToCell {
 
 	public StreetSign(@NonNull Integer speedLimit, @NonNull Cell tailCell, @NonNull Integer length) {
 		super();
-		System.out.println("f");
 		this.speedLimit = speedLimit;
 		this.length = length;
+		this.tailCell = tailCell;
 
 		try {
 			// Link on other side
@@ -67,6 +67,10 @@ public class StreetSign extends SimulationObject implements AttachedToCell {
 	// Not invokable -> private
 	private void setLength(@NonNull Integer length) {
 		this.length = length;
+	}
+
+	public Lane getLane() {
+		return getTailCell().getLane();
 	}
 
 	@Override

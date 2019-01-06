@@ -16,15 +16,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import de.superdudes.traffit.application.Cell;
+
 
 public class Cell extends Rectangle {
 	private Boolean stopPainting = false; // Marks the cell as used so that the color doesn't change when the cursor
-											// moves over it.
+	// moves over it.
 	static int number = 0; // Counter for the number of generated cells (per lane)
 
 	/**
-	 * counting the cellid 
+	 * counting the cellid
 	 */
 	public void count() {
 		if (this.getId() == null) {
@@ -32,12 +32,12 @@ public class Cell extends Rectangle {
 			number++;
 		}
 	}
-	
+
 	/**
 	 * constructor for the cell
 	 * create objects of vehicles and signs
-	 * 
-	 * @param x 
+	 *
+	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height
@@ -73,229 +73,209 @@ public class Cell extends Rectangle {
 			}
 
 			switch (id) {
-			case "ivCar":
-				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-					int backendLaneId;
+				case "ivCar":
+					if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+						int backendLaneId;
 
-					if (myParent.getId().equals("lane1")) {
-						backendLaneId = 0;
-					} else {
-						backendLaneId = 1;
-					}
+						if (myParent.getId().equals("lane1")) {
+							backendLaneId = 0;
+						} else {
+							backendLaneId = 1;
+						}
 
-					StartingGrid myGrid = SimulationManager.getStartingGrid();
-					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
-
-					try {
-						Vehicle vehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
-						drawVehicle(vehicle);
-					} catch (ObjectMisplacedException e2) {
-						showErrorDialog(e2);
-					}
-				} else {
-					System.out.println("no lane");
-					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
-				}
-				break;
-
-			case "ivMotorcycle":
-				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-					int backendLaneId;
-
-					if (myParent.getId().equals("lane1")) {
-						backendLaneId = 0;
-					} else {
-						backendLaneId = 1;
-					}
-
-					StartingGrid myGrid = SimulationManager.getStartingGrid();
-					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
-
-					try {
-						Vehicle vehicle = new Vehicle(Vehicle.Type.MOTORCYCLE,
-								laneCells[Integer.parseInt(this.getId())]);
-						drawVehicle(vehicle);
-					} catch (ObjectMisplacedException e2) {
-						showErrorDialog(e2);
-					}
-				} else {
-					System.out.println("no lane");
-					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
-				}
-				break;
-
-			case "ivTruck":
-				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-					int backendLaneId;
-
-					if (myParent.getId().equals("lane1")) {
-						backendLaneId = 0;
-					} else {
-						backendLaneId = 1;
-					}
-
-					StartingGrid myGrid = SimulationManager.getStartingGrid();
-					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
-					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
-
-					try {
-						Vehicle vehicle = new Vehicle(Vehicle.Type.TRUCK, laneCells[Integer.parseInt(this.getId())]);
-						drawVehicle(vehicle);
-					} catch (ObjectMisplacedException e2) {
-						showErrorDialog(e2);
-					}
-				} else {
-					System.out.println("no lane");
-					this.setFill(javafx.scene.paint.Color.TRANSPARENT);
-				}
-				break;
-
-			case "ivSpeedLimit50":
-				if (myParent.getId().equals("signlane")) {
-					int ivSpeedLimit50Width = showModalDialog();
-
-					if (ivSpeedLimit50Width > 0) {
 						StartingGrid myGrid = SimulationManager.getStartingGrid();
-
-						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
-						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
-
-						de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
-						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
+						Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+						de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
 						try {
-							StreetSign signOnLane01 = new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
-									ivSpeedLimit50Width);
-							StreetSign signOnLane02 = new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
-									ivSpeedLimit50Width);
-
-							drawStreetSign(signOnLane01);
-							drawStreetSign(signOnLane02);
+							Vehicle vehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
+							drawVehicle(vehicle);
 						} catch (ObjectMisplacedException e2) {
 							showErrorDialog(e2);
 						}
-					}
-				} else {
-					this.setFill(javafx.scene.paint.Color.GREY);
-				}
-				break;
-
-			case "ivSpeedLimit70":
-				if (myParent.getId().equals("signlane")) {
-					int ivSpeedLimit70Width = showModalDialog();
-
-					if (ivSpeedLimit70Width > 0) {
-						StartingGrid myGrid = SimulationManager.getStartingGrid();
-
-						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
-						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
-
-						de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
-						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
-
-						try {
-							StreetSign signOnLane01 = new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
-									ivSpeedLimit70Width);
-							StreetSign signOnLane02 = new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
-									ivSpeedLimit70Width);
-
-							drawStreetSign(signOnLane01);
-							drawStreetSign(signOnLane02);
-						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(e2);
-						}
-					}
-				} else {
-					this.setFill(javafx.scene.paint.Color.GREY);
-				}
-				break;
-
-			case "ivSpeedLimit100":
-				if (myParent.getId().equals("signlane")) {
-					int ivSpeedLimit100Width = showModalDialog();
-
-					if (ivSpeedLimit100Width > 0) {
-						StartingGrid myGrid = SimulationManager.getStartingGrid();
-
-						Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
-						Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
-
-						de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
-						de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
-
-						try {
-							StreetSign signOnLane01 = new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
-									ivSpeedLimit100Width);
-							StreetSign signOnLane02 = new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
-									ivSpeedLimit100Width);
-
-							drawStreetSign(signOnLane01);
-							drawStreetSign(signOnLane02);
-						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(e2);
-						}
-					}
-				} else {
-					this.setFill(javafx.scene.paint.Color.GREY);
-				}
-				break;
-
-			case "ivConstruction":
-
-				if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
-					int constructionWidth = showModalDialog();
-					int counter = 0;
-
-					int backendLaneId;
-
-					if (myParent.getId().equals("lane1")) {
-						backendLaneId = 0;
 					} else {
-						backendLaneId = 1;
+						System.out.println("no lane");
+						this.setFill(javafx.scene.paint.Color.TRANSPARENT);
 					}
+					break;
 
-					StartingGrid myGrid = SimulationManager.getStartingGrid();
+				case "ivMotorcycle":
+					if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+						int backendLaneId;
 
-					Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+						if (myParent.getId().equals("lane1")) {
+							backendLaneId = 0;
+						} else {
+							backendLaneId = 1;
+						}
 
-					de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
+						StartingGrid myGrid = SimulationManager.getStartingGrid();
+						Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+						de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
 
-					if (constructionWidth > 0) {
 						try {
-							new ConstructionSite(constructionWidth, laneCells[Integer.parseInt(this.getId())]);
-							Cell[] allConstructionCells = new Cell[constructionWidth];
+							Vehicle vehicle = new Vehicle(Vehicle.Type.MOTORCYCLE,
+									laneCells[Integer.parseInt(this.getId())]);
+							drawVehicle(vehicle);
+						} catch (ObjectMisplacedException e2) {
+							showErrorDialog(e2);
+						}
+					} else {
+						System.out.println("no lane");
+						this.setFill(javafx.scene.paint.Color.TRANSPARENT);
+					}
+					break;
 
-							for (int i = 0; i < allConstructionCells.length; i++) {
-								allConstructionCells[i] = (Cell) myParent.getChildren()
-										.get(Integer.parseInt(this.getId()) + (i));
+				case "ivTruck":
+					if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+						int backendLaneId;
+
+						if (myParent.getId().equals("lane1")) {
+							backendLaneId = 0;
+						} else {
+							backendLaneId = 1;
+						}
+
+						StartingGrid myGrid = SimulationManager.getStartingGrid();
+						Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+						de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
+
+						try {
+							Vehicle vehicle = new Vehicle(Vehicle.Type.TRUCK, laneCells[Integer.parseInt(this.getId())]);
+							drawVehicle(vehicle);
+						} catch (ObjectMisplacedException e2) {
+							showErrorDialog(e2);
+						}
+					} else {
+						System.out.println("no lane");
+						this.setFill(javafx.scene.paint.Color.TRANSPARENT);
+					}
+					break;
+
+				case "ivSpeedLimit50":
+					if (myParent.getId().equals("signlane")) {
+						int ivSpeedLimit50Width = showModalDialog();
+
+						if (ivSpeedLimit50Width > 0) {
+							StartingGrid myGrid = SimulationManager.getStartingGrid();
+
+							Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
+							Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
+
+							de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
+							de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
+
+							try {
+								StreetSign signOnLane01 = new StreetSign(50, laneCells0[Integer.parseInt(this.getId())],
+										ivSpeedLimit50Width);
+								StreetSign signOnLane02 = new StreetSign(50, laneCells1[Integer.parseInt(this.getId())],
+										ivSpeedLimit50Width);
+
+								drawStreetSign(signOnLane01);
+								drawStreetSign(signOnLane02);
+							} catch (ObjectMisplacedException e2) {
+								showErrorDialog(e2);
 							}
-
-							for (int i = 0; i < allConstructionCells.length; i++) {
-								if (counter <= 5) {
-									allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
-									allConstructionCells[i].stopPainting = true;
-								} else {
-									allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
-									allConstructionCells[i].stopPainting = true;
-								}
-								counter++;
-								if (counter == 10) {
-									counter = 0;
-								}
-							}
-						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(e2);
 						}
+					} else {
+						this.setFill(javafx.scene.paint.Color.GREY);
 					}
-				} else {
-					this.setFill(javafx.scene.paint.Color.DARKSEAGREEN);
-				}
+					break;
 
-				break;
-			default:
-				System.err.println("Object not recognized.");
+				case "ivSpeedLimit70":
+					if (myParent.getId().equals("signlane")) {
+						int ivSpeedLimit70Width = showModalDialog();
+
+						if (ivSpeedLimit70Width > 0) {
+							StartingGrid myGrid = SimulationManager.getStartingGrid();
+
+							Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
+							Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
+
+							de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
+							de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
+
+							try {
+								StreetSign signOnLane01 = new StreetSign(70, laneCells0[Integer.parseInt(this.getId())],
+										ivSpeedLimit70Width);
+								StreetSign signOnLane02 = new StreetSign(70, laneCells1[Integer.parseInt(this.getId())],
+										ivSpeedLimit70Width);
+
+								drawStreetSign(signOnLane01);
+								drawStreetSign(signOnLane02);
+							} catch (ObjectMisplacedException e2) {
+								showErrorDialog(e2);
+							}
+						}
+					} else {
+						this.setFill(javafx.scene.paint.Color.GREY);
+					}
+					break;
+
+				case "ivSpeedLimit100":
+					if (myParent.getId().equals("signlane")) {
+						int ivSpeedLimit100Width = showModalDialog();
+
+						if (ivSpeedLimit100Width > 0) {
+							StartingGrid myGrid = SimulationManager.getStartingGrid();
+
+							Lane backendLane0 = myGrid.getStreet().getLanes().get(0);
+							Lane backendLane1 = myGrid.getStreet().getLanes().get(1);
+
+							de.superdudes.traffit.dto.Cell[] laneCells0 = backendLane0.getCells();
+							de.superdudes.traffit.dto.Cell[] laneCells1 = backendLane1.getCells();
+
+							try {
+								StreetSign signOnLane01 = new StreetSign(100, laneCells0[Integer.parseInt(this.getId())],
+										ivSpeedLimit100Width);
+								StreetSign signOnLane02 = new StreetSign(100, laneCells1[Integer.parseInt(this.getId())],
+										ivSpeedLimit100Width);
+
+								drawStreetSign(signOnLane01);
+								drawStreetSign(signOnLane02);
+							} catch (ObjectMisplacedException e2) {
+								showErrorDialog(e2);
+							}
+						}
+					} else {
+						this.setFill(javafx.scene.paint.Color.GREY);
+					}
+					break;
+
+				case "ivConstruction":
+
+					if (myParent.getId().equals("lane1") | myParent.getId().equals("lane2")) {
+						int constructionWidth = showModalDialog();
+
+						int backendLaneId;
+
+						if (myParent.getId().equals("lane1")) {
+							backendLaneId = 0;
+						} else {
+							backendLaneId = 1;
+						}
+
+						StartingGrid myGrid = SimulationManager.getStartingGrid();
+
+						Lane backendLane = myGrid.getStreet().getLanes().get(backendLaneId);
+
+						de.superdudes.traffit.dto.Cell[] laneCells = backendLane.getCells();
+
+						if (constructionWidth > 0) {
+							try {
+								final ConstructionSite constructionSite = new ConstructionSite(constructionWidth, laneCells[Integer.parseInt(this.getId())]);
+								drawConstructionSite(constructionSite);
+							} catch (ObjectMisplacedException e2) {
+								showErrorDialog(e2);
+							}
+						}
+					} else {
+						this.setFill(javafx.scene.paint.Color.DARKSEAGREEN);
+					}
+
+					break;
+				default:
+					System.err.println("Object not recognized.");
 			}
 
 			System.out.println(this.getId());
@@ -369,7 +349,7 @@ public class Cell extends Rectangle {
 
 	/**
 	 * Shows a modal box with a message corresponding to the exception passed.
-	 * 
+	 *
 	 * @param exception
 	 */
 	private void showErrorDialog(Exception exception) {
@@ -425,7 +405,7 @@ public class Cell extends Rectangle {
 
 	/**
 	 * Prepare the spinner for further use.
-	 * 
+	 *
 	 * @return the initiated spinner
 	 */
 	private Spinner<Integer> initSpinner() {
@@ -448,7 +428,7 @@ public class Cell extends Rectangle {
 	/**
 	 * Draws the given vehicle. The current cell is to be regarded as the starting
 	 * point.
-	 * 
+	 *
 	 * @param aVehicle
 	 */
 	public void drawVehicle(Vehicle aVehicle) {
@@ -460,43 +440,43 @@ public class Cell extends Rectangle {
 		}
 
 		switch (aVehicle.getType()) {
-		case CAR:
-			for (Cell c : myNeighbours) {
-				c.setFill(javafx.scene.paint.Color.BLUE);
-				c.stopPainting = true;
-			}
+			case CAR:
+				for (Cell c : myNeighbours) {
+					c.setFill(javafx.scene.paint.Color.BLUE);
+					c.stopPainting = true;
+				}
 
-			this.setFill(javafx.scene.paint.Color.BLUE);
-			this.stopPainting = true;
+				this.setFill(javafx.scene.paint.Color.BLUE);
+				this.stopPainting = true;
 
-			break;
-		case TRUCK:
-			for (Cell c : myNeighbours) {
-				c.setFill(javafx.scene.paint.Color.RED);
-				c.stopPainting = true;
-			}
+				break;
+			case TRUCK:
+				for (Cell c : myNeighbours) {
+					c.setFill(javafx.scene.paint.Color.RED);
+					c.stopPainting = true;
+				}
 
-			this.setFill(javafx.scene.paint.Color.RED);
-			this.stopPainting = true;
-			break;
-		case MOTORCYCLE:
-			for (Cell c : myNeighbours) {
-				c.setFill(javafx.scene.paint.Color.GREEN);
-				c.stopPainting = true;
-			}
+				this.setFill(javafx.scene.paint.Color.RED);
+				this.stopPainting = true;
+				break;
+			case MOTORCYCLE:
+				for (Cell c : myNeighbours) {
+					c.setFill(javafx.scene.paint.Color.GREEN);
+					c.stopPainting = true;
+				}
 
-			this.setFill(javafx.scene.paint.Color.GREEN);
-			this.stopPainting = true;
-			break;
-		default:
-			break;
+				this.setFill(javafx.scene.paint.Color.GREEN);
+				this.stopPainting = true;
+				break;
+			default:
+				break;
 		}
 	}
 
 	/**
 	 * Draws the given sign. The current cell is to be regarded as the starting
 	 * point.
-	 * 
+	 *
 	 * @param sign
 	 */
 	public void drawStreetSign(StreetSign sign) {
@@ -522,28 +502,55 @@ public class Cell extends Rectangle {
 		text.setLayoutY(yValue + (this.getHeight() / 2));
 
 		switch (sign.getSpeedLimit()) {
-		case 50:
-			text.setText("50");
-			break;
+			case 50:
+				text.setText("50");
+				break;
 
-		case 70:
-			text.setText("70");
-			break;
+			case 70:
+				text.setText("70");
+				break;
 
-		case 100:
-			text.setText("100");
-			text.setStyle("-fx-font: 20 arial;");
-			text.setLayoutX(xValue - 17);
-			break;
+			case 100:
+				text.setText("100");
+				text.setStyle("-fx-font: 20 arial;");
+				text.setLayoutX(xValue - 17);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		((Pane) this.getParent()).getChildren().add(text);
 
 		this.setFill(javafx.scene.paint.Color.SALMON);
 		this.stopPainting = true;
+	}
+
+	public void drawConstructionSite(ConstructionSite constructionSite) {
+
+		final Pane myParent = (Pane) this.getParent();
+		int counter = 0;
+
+		Cell[] allConstructionCells = new Cell[constructionSite.getLength()];
+
+		for (int i = 0; i < allConstructionCells.length; i++) {
+			allConstructionCells[i] = (Cell) myParent.getChildren()
+					.get(Integer.parseInt(this.getId()) + (i));
+		}
+
+		for (int i = 0; i < allConstructionCells.length; i++) {
+			if (counter <= 5) {
+				allConstructionCells[i].setFill(javafx.scene.paint.Color.BLACK);
+				allConstructionCells[i].stopPainting = true;
+			} else {
+				allConstructionCells[i].setFill(javafx.scene.paint.Color.YELLOW);
+				allConstructionCells[i].stopPainting = true;
+			}
+			counter++;
+			if (counter == 10) {
+				counter = 0;
+			}
+		}
 	}
 
 	/**

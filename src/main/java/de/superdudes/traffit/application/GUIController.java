@@ -104,7 +104,15 @@ public class GUIController {
 	public void setLane2(Pane lane2) {
 		this.lane2 = lane2;
 	}
-	
+
+	public Pane getSignlane() {
+		return signlane;
+	}
+
+	public void setSignlane(Pane signlane) {
+		this.signlane = signlane;
+	}
+
 	/**
 	 * resets the cell counter to 0, clears all cell objects and build a new lane 
 	 * depending on the current width and height of the window size
@@ -189,7 +197,8 @@ public class GUIController {
 		ivConstruction.setImage(iconConstruction);
 
 		button02.setDisable(true);
-		button04.setDisable(true);
+		button03.setDisable(false);
+		button04.setDisable(false);
 		button06.setDisable(true);
 		streetSize.setDisable(true);
 	}
@@ -233,7 +242,7 @@ public class GUIController {
 		button01.setDisable(false);
 		button02.setDisable(true);
 		button03.setDisable(false);
-		button04.setDisable(true);
+		button04.setDisable(false);
 		button05.setDisable(false);
 		button06.setDisable(true);
 		

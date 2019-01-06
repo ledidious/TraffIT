@@ -58,7 +58,13 @@ public class StartingGrid extends SimulationObject {
 
 	public void restoreFrom(@NonNull StartingGrid startingGrid) {
 		name = startingGrid.name;
+
 		vehicles = startingGrid.vehicles;
+		for (Vehicle vehicle : vehicles) {
+			vehicle.setStartingGrid(this);
+		}
+
 		street = startingGrid.street;
+		street.setStartingGrid(this);
 	}
 }

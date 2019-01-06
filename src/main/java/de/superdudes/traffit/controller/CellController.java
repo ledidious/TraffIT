@@ -46,6 +46,11 @@ public class CellController extends AbstractController<Cell> {
             if (constructionSite != null && constructionSite.getId() == null) {
                 ConstructionSiteController.instance().save(constructionSite);
             }
+			// I know, multiple cells have the same streetSign, so this means multiple updates with same data
+			final StreetSign streetSign = object.getStreetSign();
+            if (streetSign != null && streetSign.getId() == null) {
+                StreetSignController.instance().save(streetSign);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             System.out.println("Eintragen der Daten fehlgeschlagen!!!");

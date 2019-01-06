@@ -33,7 +33,7 @@ public class StreetController extends AbstractController<Street> {
 
             if (object.getId() != null) {
                 sql = "UPDATE STREET SET " + "s_id = '" + object.getId() + "', " + "nr = '" + object.getNr()
-                        + "', " + "s_length ='" + object.getLength() + "'," + "where sg_id = '" + object.getId() + "'";
+                        + "', " + "s_length ='" + object.getLength() + "' " + " where s_id = '" + object.getId() + "'";
             } else {
                 sql = "INSERT INTO STREET(nr, s_length, startinggrid_id) VALUES (" + "'" + object.getNr() + "', "
                         + "'" + object.getLength() + "'," + "'" + object.getStartingGrid().getId() + "')";

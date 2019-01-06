@@ -14,6 +14,8 @@ public class SimulationObject extends DatabaseObject {
 
     private static int nrCounter = 0;
 
+    // todo not in use, was a previous idea never used. Can be removed
+    @Deprecated
     @NonNull
     private Integer nr;
 

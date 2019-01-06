@@ -19,6 +19,7 @@ public class ObjectNotPersistedException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Volatile: " + getWhichObject() + "." + super.getMessage();
+        final String message = super.getMessage() + "";
+        return "Volatile: " + getWhichObject() + ": " + message;
     }
 }

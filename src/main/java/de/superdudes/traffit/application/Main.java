@@ -1,10 +1,7 @@
 package de.superdudes.traffit.application;
 
 import de.superdudes.traffit.SimulationManager;
-import de.superdudes.traffit.dto.Lane;
-import de.superdudes.traffit.dto.StartingGrid;
-import de.superdudes.traffit.dto.Street;
-import de.superdudes.traffit.dto.Vehicle;
+import de.superdudes.traffit.dto.*;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -19,18 +16,20 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main extends Application {
 
 	/**
 	 * Start the JavaFX Application
-	 * 
+	 * <p>
 	 * Contains Change Listener for the following cases: -necessity to update the
 	 * position of the vehicle -The Width of the window changes -The height of the
 	 * window changes -The user tries to enter letters into the textbox.
-	 * 
+	 * <p>
 	 * It also includes event handlers for various JavaFX elements.
 	 */
 	@Override
@@ -74,7 +73,7 @@ public class Main extends Application {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					if (newValue) {
-						repaintVehicle(backendGrid.getVehicles(), controller);
+						repaintContents(backendGrid, controller);
 					}
 				}
 			});
@@ -83,7 +82,7 @@ public class Main extends Application {
 			scene.widthProperty().addListener(new ChangeListener<Number>() {
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth,
-						Number newSceneWidth) {
+									Number newSceneWidth) {
 					root.setPrefWidth((double) newSceneWidth);
 					controller.currentWidth.setValue((double) newSceneWidth - 40);
 
@@ -98,7 +97,7 @@ public class Main extends Application {
 			scene.heightProperty().addListener(new ChangeListener<Number>() {
 				@Override
 				public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight,
-						Number newSceneHeight) {
+									Number newSceneHeight) {
 					root.setPrefHeight((double) newSceneHeight);
 					controller.currentHeight.setValue((double) newSceneHeight - 40);
 					Cell.number = 0;
@@ -223,11 +222,11 @@ public class Main extends Application {
 					primaryStage.setFullScreen(true);
 				}
 			});
-			
+
 			// Event handler for loading a saved simulation. 
 			controller.button03.setOnAction(e -> {
 				controller.loadSimulation();
-				repaintVehicle(backendGrid.getVehicles(), controller);
+				repaintContents(backendGrid, controller);
 			});
 
 			primaryStage.setScene(scene);
@@ -238,29 +237,36 @@ public class Main extends Application {
 		}
 	}
 
+	/**
+	 * Entry point for gui.
+	 *
+	 * @param args program arguments
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	/**
-	 * This method deletes the contents of the street and draws the given vehicles.
+	 * This method deletes the contents of the street and redraws them.
 	 * It should be called as soon as the content of the road changes.
-	 * 
-	 * @param vehicle    The set of vehicles to be painted.
-	 * @param controller The GUI-Controller that contains the lanes from the
-	 *                   frontend.
+	 *
+	 * @param startingGrid The startingGrid holding the data
+	 * @param controller   The GUI-Controller that contains the lanes from the
+	 *                     frontend.
 	 */
-	public void repaintVehicle(Set<Vehicle> vehicle, GUIController controller) {
-		List<Cell> cellsLane1 = controller.getLane1().getChildren().stream().map(Cell.class::cast)
-				.collect(Collectors.toList());
+	public void repaintContents(StartingGrid startingGrid, GUIController controller) {
 
-		List<Cell> cellsLane2 = controller.getLane2().getChildren().stream().map(Cell.class::cast)
-				.collect(Collectors.toList());
+		final Set<StreetSign> streetSigns = startingGrid.getStreet().getLanes().stream().flatMap(lane -> Stream.of(lane.getCells())).map(de.superdudes.traffit.dto.Cell::getStreetSign).filter(Objects::nonNull).distinct().collect(Collectors.toSet());
+		final Set<ConstructionSite> constructionSites = startingGrid.getStreet().getLanes().stream().flatMap(lane -> Stream.of(lane.getCells())).map(de.superdudes.traffit.dto.Cell::getBlockingConstructionSite).filter(Objects::nonNull).distinct().collect(Collectors.toSet());
+
+		final List<Cell> cellsLane1 = controller.getLane1().getChildren().stream().filter(Cell.class::isInstance).map(Cell.class::cast).collect(Collectors.toList());
+		final List<Cell> cellsLane2 = controller.getLane2().getChildren().stream().filter(Cell.class::isInstance).map(Cell.class::cast).collect(Collectors.toList());
+		final List<Cell> signLane = controller.getSignlane().getChildren().stream().filter(Cell.class::isInstance).map(Cell.class::cast).collect(Collectors.toList());
 
 		cellsLane1.get(0).cleanUpLane();
 		cellsLane2.get(0).cleanUpLane();
 
-		for (Vehicle v : vehicle) {
+		for (Vehicle v : startingGrid.getVehicles()) {
 			final List<Cell> cellsOfLane = v.getLane().getIndex() == 0 ? cellsLane1 : cellsLane2;
 
 			// Workaround if gui cell count not equal to db cell count
@@ -271,6 +277,15 @@ public class Main extends Application {
 			} else {
 				cellsOfLane.get(v.getTailCell().getIndex()).drawVehicle(v);
 			}
+		}
+
+		for (StreetSign streetSign : streetSigns) {
+			signLane.get(streetSign.getTailCell().getIndex()).drawStreetSign(streetSign);
+		}
+		for (ConstructionSite constructionSite : constructionSites) {
+			final List<Cell> cellsOfLane = constructionSite.getLane().getIndex() == 0 ? cellsLane1 : cellsLane2;
+
+			cellsOfLane.get(constructionSite.getTailCell().getIndex()).drawConstructionSite(constructionSite);
 		}
 	}
 }

@@ -36,7 +36,7 @@ public class StreetSignController extends AbstractController<StreetSign> {
                         + object.getSpeedLimit() + ", tailCell_id = " + object.getTailCell().getId()
                         + ", length = " + object.getLength();
             } else {
-                sql = "INSERT INTO STREET_SIGN (nr, speedLimit, tailCell_id, length) VALUES (" + object.getTailCell()
+                sql = "INSERT INTO STREET_SIGN (nr, speedLimit, tailCell_id, length) VALUES (" + object.getTailCell().getId()
                         + ", " + object.getSpeedLimit() + ", " + object.getTailCell().getId()
                         + ", " + object.getLength() + ")";
             }
@@ -63,7 +63,7 @@ public class StreetSignController extends AbstractController<StreetSign> {
             while (resultSet.next()) {
                 final Integer id = resultSet.getInt("ss_id");
                 final Integer nr = resultSet.getInt("nr");
-                final Integer speedLimit = resultSet.getInt("streetLimit");
+                final Integer speedLimit = resultSet.getInt("speedLimit");
                 final Integer length = resultSet.getInt("length");
 
 
