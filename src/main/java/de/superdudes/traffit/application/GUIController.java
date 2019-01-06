@@ -64,11 +64,11 @@ public class GUIController {
 
 	// Buttons
 	@FXML
-	public Button button01;
+	private Button button01;
 	@FXML
-	public Button button02;
+	private Button button02;
 	@FXML
-	private Button button03;
+	public Button button03;
 	@FXML
 	private Button button04;
 	@FXML
@@ -84,7 +84,7 @@ public class GUIController {
 	@FXML
 	public Pane signlane;
 	@FXML
-	public Pane pane01;
+	private Pane pane01;
 	@FXML
 	private AnchorPane anchPane01;
 	
@@ -198,7 +198,7 @@ public class GUIController {
 	 * Locks the program for further changes and starts the simulation.
 	 */
 	@FXML
-	public void startSimulation() {
+	private void startSimulation() {
 		button01.setDisable(true);
 		button02.setDisable(false);
 		button03.setDisable(true);
@@ -216,7 +216,7 @@ public class GUIController {
 	 * Pauses the simulation and allows to save the current state.
 	 */
 	@FXML
-	public void haltSimulation() {
+	private void haltSimulation() {
 		button01.setDisable(false);
 		button04.setDisable(false);
 		button06.setDisable(true);
@@ -229,7 +229,7 @@ public class GUIController {
 	 * Ends the simulation and resets all vehicles to their corresponding starting positions.
 	 */
 	@FXML
-	public void stopSimulation() {
+	private void stopSimulation() {
 		button01.setDisable(false);
 		button02.setDisable(true);
 		button03.setDisable(false);
@@ -247,8 +247,8 @@ public class GUIController {
 	 * Loads a stored simulation from the database.
 	 */
 	@FXML
-	private void loadSimulation() {
-		System.out.println("Please implement logic!");
+	public void loadSimulation() {
+		SimulationManager.load();
 	}
 
 	/**
@@ -256,6 +256,6 @@ public class GUIController {
 	 */
 	@FXML
 	private void saveSimulation() {
-		System.out.println("Please implement logic!");
+		SimulationManager.save();
 	}
 }

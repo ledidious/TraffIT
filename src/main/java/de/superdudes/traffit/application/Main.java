@@ -223,6 +223,12 @@ public class Main extends Application {
 					primaryStage.setFullScreen(true);
 				}
 			});
+			
+			// Event handler for loading a saved simulation. 
+			controller.button03.setOnAction(e -> {
+				controller.loadSimulation();
+				repaintVehicle(backendGrid.getVehicles(), controller);
+			});
 
 			primaryStage.setScene(scene);
 			primaryStage.setResizable(false);
