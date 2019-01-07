@@ -46,7 +46,7 @@
 					<children>
 						<Pane layoutX="986.0" layoutY="356.0" prefHeight="31.0" prefWidth="125.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="165.0">
 							<children>
-								<Button fx:id="button03" mnemonicParsing="false" onAction="#loadSimulation" text="Load Simulation" />
+								<Button fx:id="button03" mnemonicParsing="false" text="Load Simulation" />
 							</children>
 						</Pane>
 						<Pane layoutX="1138.0" layoutY="356.0" prefHeight="31.0" prefWidth="127.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="15.0">
