@@ -53,6 +53,15 @@
                     </locations>
                     <sqlMigrationPrefix>v</sqlMigrationPrefix>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                            <goal>migrate</goal>
+                            <goal>info</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>com.h2database</groupId>
