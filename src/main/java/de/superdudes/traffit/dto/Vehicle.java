@@ -13,7 +13,7 @@ import java.util.LinkedList;
  */
 @Getter
 @Setter
-// todo common super class with ConstructionSite
+// todo common super class with ConstructionSite such as BlockingObject, then logic in VehicleController also becomes easier!
 public class Vehicle extends SimulationObject implements AttachedToCell {
 
 	public static final int DRIVE_WAIT_UNLIMITED = -1;
@@ -21,7 +21,7 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 	private static final int DRIVE_BRAKE_SPEED = 10;
 
 	// Constants used for overtaking logic
-	public static final int DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2;
+	public static final int DISTANCE_TO_RECOGNIZE_SPEED = Type.CAR.getLength() * 2; // Two times the length of a normal car (following the law ;-P )
 	public static final int DISTANCE_MIN = Type.CAR.getLength();
 
 	// Attribute limits
@@ -192,12 +192,10 @@ public class Vehicle extends SimulationObject implements AttachedToCell {
 	}
 
 	public void turnLeft() {
-		ensureMayDrive();
 		connectNewCells(getTailCell().getLeftNeighbour());
 	}
 
 	public void turnRight() {
-		ensureMayDrive();
 		connectNewCells(getTailCell().getRightNeighbour());
 	}
 

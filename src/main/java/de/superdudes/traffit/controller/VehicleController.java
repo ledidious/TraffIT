@@ -2,10 +2,10 @@ package de.superdudes.traffit.controller;
 
 import de.superdudes.traffit.DbManager;
 import de.superdudes.traffit.dto.Cell;
+import de.superdudes.traffit.dto.ConstructionSite;
 import de.superdudes.traffit.dto.StartingGrid;
 import de.superdudes.traffit.dto.Vehicle;
 import de.superdudes.traffit.exception.ObjectNotPersistedException;
-import lombok.Getter;
 import lombok.NonNull;
 
 import java.sql.Connection;
@@ -20,7 +20,7 @@ public class VehicleController extends AbstractController<Vehicle> {
 	// Constants
 	// =============================================================================================
 
-	private static final int MAX_CELLS_TO_SEARCH__INFINITE = -1;
+	private final ConstructionSiteController constructionSiteController = ConstructionSiteController.instance();
 
 	// =============================================================================================
 	// Static classes
@@ -124,27 +124,27 @@ public class VehicleController extends AbstractController<Vehicle> {
 	@Override
 	public void render(@NonNull Vehicle vehicle) {
 
-		if (!vehicle.mayDrive()) {
-			vehicle.dontDrive();
+		final boolean hasGreenLight = !render_considerTraffic(vehicle);
+
+		if (hasGreenLight) {
 
 			if (vehicle.getCurrentSpeed() <= 0) {
 				render_onStandstill(vehicle);
 			}
-		} else {
-			boolean vehicleForeseeableAhead = render_considerTraffic(vehicle);
+			render_onGreenLight(vehicle);
+		}
 
-			if (!vehicleForeseeableAhead) {
-				render_onNoVehicleForeseeableAhead(vehicle);
-			}
-
+		if (vehicle.mayDrive()) {
 			vehicle.drive();
+		} else {
+			vehicle.dontDrive();
 		}
 	}
 
 	private void render_onStandstill(@NonNull Vehicle vehicle) {
 
 		// Distance -> Vehicle
-		DistanceToAnotherVehicle ancestor = null;
+		DistanceTo<Vehicle> ancestor = null;
 
 		if (vehicle.mayAccelerate()
 				&& ((ancestor = findAncestor(vehicle)) == null || ancestor.getDistance() > Vehicle.DISTANCE_MIN)) {
@@ -160,17 +160,18 @@ public class VehicleController extends AbstractController<Vehicle> {
 	private boolean render_considerTraffic(@NonNull Vehicle vehicle) {
 
 		// Distance -> Vehicle
-		DistanceToAnotherVehicle ancestor = null;
-		DistanceToAnotherVehicle successor = null;
-		DistanceToAnotherVehicle successorOnRightLane = null;
-		DistanceToAnotherVehicle successorOnLeftLane = null;
-		DistanceToAnotherVehicle ancestorOnRightLane = null;
-		DistanceToAnotherVehicle ancestorOnLeftLane = null;
+		DistanceTo<Vehicle> ancestor = null;
+		DistanceTo<Vehicle> successor = null;
+		DistanceTo<Vehicle> successorOnRightLane = null;
+		DistanceTo<Vehicle> successorOnLeftLane = null;
+		DistanceTo<Vehicle> ancestorOnRightLane = null;
+		DistanceTo<Vehicle> ancestorOnLeftLane = null;
+		DistanceTo<ConstructionSite> csInFront = null;
 
 		// When ancestor in short distance
-		if ((ancestor = findAncestor(vehicle)) != null
-				&& ancestor.getDistance() < Vehicle.DISTANCE_TO_RECOGNIZE_SPEED
-				&& vehicle.getCurrentSpeed() > ancestor.getVehicle().getCurrentSpeed()) {
+		// fixme cannot assign to csInFront. Message is: Cannot convert from DistanceTo<ConstructionSite> to DistanceTo<ConstructionSite>. Bug of java compiler (Java sometimes has problems with generics) !
+		if (constructionSiteController.findInFront(vehicle) != null && constructionSiteController.findInFront(vehicle).getDistance() < Vehicle.DISTANCE_TO_RECOGNIZE_SPEED
+				|| (((ancestor = findAncestor(vehicle)) != null && ancestor.getDistance() < Vehicle.DISTANCE_TO_RECOGNIZE_SPEED && vehicle.getCurrentSpeed() > ancestor.getOther().getCurrentSpeed()))) {
 
 			if (!vehicle.getLane().isTopLeftLane()
 					&& findOnSameHeightOnLeftLane(vehicle) == null
@@ -185,9 +186,13 @@ public class VehicleController extends AbstractController<Vehicle> {
 		}
 		// Turn back to right lane
 		else if (!vehicle.getLane().isTopRightLane()
+				&& constructionSiteController.findOnSameHeightOnRightLane(vehicle) == null
+				// fixme same bug as above with csInFront
+				&& (constructionSiteController.findInFrontOnRightLane(vehicle) == null || constructionSiteController.findInFrontOnRightLane(vehicle).getDistance() > Vehicle.DISTANCE_TO_RECOGNIZE_SPEED)
+				&& (constructionSiteController.findInBackOnRightLane(vehicle) == null || constructionSiteController.findInBackOnRightLane(vehicle).getDistance() > Vehicle.DISTANCE_MIN)
 				&& findOnSameHeightOnRightLane(vehicle) == null
 				&& ((successorOnRightLane = findSuccessorOnRightLane(vehicle)) == null || successorOnRightLane.getDistance() > Vehicle.DISTANCE_MIN)
-				&& ((ancestorOnRightLane = findAncestorOnRightLane(vehicle)) == null || ancestorOnRightLane.getDistance() > Vehicle.DISTANCE_TO_RECOGNIZE_SPEED || (ancestorOnRightLane.getDistance() > Vehicle.DISTANCE_MIN && ancestorOnRightLane.getVehicle().getCurrentSpeed() > vehicle.getCurrentSpeed()))) {
+				&& ((ancestorOnRightLane = findAncestorOnRightLane(vehicle)) == null || ancestorOnRightLane.getDistance() > Vehicle.DISTANCE_TO_RECOGNIZE_SPEED || (ancestorOnRightLane.getDistance() > Vehicle.DISTANCE_MIN && ancestorOnRightLane.getOther().getCurrentSpeed() > vehicle.getCurrentSpeed()))) {
 
 			turnRight(vehicle);
 		}
@@ -196,7 +201,7 @@ public class VehicleController extends AbstractController<Vehicle> {
 	}
 
 	// Preamble: No car foreseeable ahead, see in render()
-	private void render_onNoVehicleForeseeableAhead(@NonNull Vehicle vehicle) {
+	private void render_onGreenLight(@NonNull Vehicle vehicle) {
 
 		final Cell currentCell = vehicle.getFrontCell();
 
@@ -214,94 +219,74 @@ public class VehicleController extends AbstractController<Vehicle> {
 		}
 	}
 
-	private DistanceToAnotherVehicle findAncestor(@NonNull Vehicle vehicle) {
-		return findVehicle(vehicle.getFrontCell(), false, MAX_CELLS_TO_SEARCH__INFINITE);
+	private DistanceTo<Vehicle> findAncestor(@NonNull Vehicle vehicle) {
+		return find(vehicle.getFrontCell(), false, MAX_CELLS_TO_SEARCH__INFINITE);
 	}
 
-	private DistanceToAnotherVehicle findAncestorOnRightLane(@NonNull Vehicle vehicle) {
+	private DistanceTo<Vehicle> findAncestorOnRightLane(@NonNull Vehicle vehicle) {
 
 		if (vehicle.getLane().isTopRightLane()) {
 			return null;
 		}
 
 		final Cell rightNeighbourCell = vehicle.getFrontCell().getRightNeighbour();
-		return findVehicle(rightNeighbourCell, false, MAX_CELLS_TO_SEARCH__INFINITE);
+		return find(rightNeighbourCell, false, MAX_CELLS_TO_SEARCH__INFINITE);
 	}
 
-	private DistanceToAnotherVehicle findAncestorOnLeftLane(@NonNull Vehicle vehicle) {
+	private DistanceTo<Vehicle> findAncestorOnLeftLane(@NonNull Vehicle vehicle) {
 
 		if (vehicle.getLane().isTopLeftLane()) {
 			return null;
 		}
 
 		final Cell leftNeighbourCell = vehicle.getFrontCell().getLeftNeighbour();
-		return findVehicle(leftNeighbourCell, false, MAX_CELLS_TO_SEARCH__INFINITE);
+		return find(leftNeighbourCell, false, MAX_CELLS_TO_SEARCH__INFINITE);
 	}
 
-	private DistanceToAnotherVehicle findSuccessor(@NonNull Vehicle vehicle) {
-		return findVehicle(vehicle.getFrontCell(), true, MAX_CELLS_TO_SEARCH__INFINITE);
+	private DistanceTo<Vehicle> findSuccessor(@NonNull Vehicle vehicle) {
+		return find(vehicle.getFrontCell(), true, MAX_CELLS_TO_SEARCH__INFINITE);
 	}
 
-	private DistanceToAnotherVehicle findSuccessorOnLeftLane(@NonNull Vehicle overtaken) {
+	private DistanceTo<Vehicle> findSuccessorOnLeftLane(@NonNull Vehicle overtaken) {
 
 		if (overtaken.getBackCell().getLane().isTopLeftLane()) {
 			return null;
 		}
 
 		final Cell rightNeighbourCell = overtaken.getBackCell().getLeftNeighbour();
-		return findVehicle(rightNeighbourCell, true, MAX_CELLS_TO_SEARCH__INFINITE);
+		return find(rightNeighbourCell, true, MAX_CELLS_TO_SEARCH__INFINITE);
 	}
 
-	private DistanceToAnotherVehicle findSuccessorOnRightLane(Vehicle overtaker) {
+	private DistanceTo<Vehicle> findSuccessorOnRightLane(Vehicle overtaker) {
 
 		if (overtaker.getBackCell().getLane().isTopRightLane()) {
 			return null;
 		}
 
 		final Cell rightNeighbourCell = overtaker.getBackCell().getRightNeighbour();
-		return findVehicle(rightNeighbourCell, true, MAX_CELLS_TO_SEARCH__INFINITE);
+		return find(rightNeighbourCell, true, MAX_CELLS_TO_SEARCH__INFINITE);
 	}
 
-	private DistanceToAnotherVehicle findOnSameHeightOnLeftLane(@NonNull Vehicle vehicle) {
+	private DistanceTo<Vehicle> findOnSameHeightOnLeftLane(@NonNull Vehicle vehicle) {
 
 		if (vehicle.getLane().isTopLeftLane()) {
 			return null;
 		}
 
-		return findVehicle(vehicle.getTailCell().getLeftNeighbour(), false, vehicle.getLength());
+		return find(vehicle.getTailCell().getLeftNeighbour(), false, vehicle.getLength());
 	}
 
-	private DistanceToAnotherVehicle findOnSameHeightOnRightLane(@NonNull Vehicle vehicle) {
+	private DistanceTo<Vehicle> findOnSameHeightOnRightLane(@NonNull Vehicle vehicle) {
 
 		if (vehicle.getLane().isTopRightLane()) {
 			return null;
 		}
 
-		return findVehicle(vehicle.getTailCell().getRightNeighbour(), false, vehicle.getLength());
+		return find(vehicle.getTailCell().getRightNeighbour(), false, vehicle.getLength());
 	}
 
-	/**
-	 * The central algorithm to find vehicles by searching cell for cell.
-	 *
-	 * @param fromCell
-	 * @param backwards
-	 * @param maxCellsToSearch
-	 * @return entry consisting of distance and vehicle or {@code null} if no
-	 * vehicle can be found until end of street
-	 */
-	private DistanceToAnotherVehicle findVehicle(@NonNull Cell fromCell, boolean backwards, int maxCellsToSearch) {
-
-		Cell currentCell = fromCell;
-		Vehicle ancestorOrSuccessor = null;
-
-		int distance = 0;
-		do {
-			distance++;
-		} while ((maxCellsToSearch < 0 || distance < maxCellsToSearch)
-				&& (currentCell = (backwards ? currentCell.getAncestor() : currentCell.getSuccessor())) != null
-				&& (ancestorOrSuccessor = currentCell.getBlockingVehicle()) == null);
-
-		return ancestorOrSuccessor != null ? new DistanceToAnotherVehicle(distance, ancestorOrSuccessor) : null;
+	private DistanceTo<Vehicle> find(@NonNull Cell fromCell, boolean backwards, int maxCellsToSearch) {
+		return find(fromCell, Cell::getBlockingVehicle, backwards, maxCellsToSearch);
 	}
 
 	private void turnLeft(Vehicle vehicle) {
@@ -318,17 +303,5 @@ public class VehicleController extends AbstractController<Vehicle> {
 			throw new RuntimeException("Cannot turn right on top right lane"); // todo replace due to SimulationException
 		}
 		vehicle.turnRight();
-	}
-
-	@Getter
-	private class DistanceToAnotherVehicle {
-		private final int distance;
-		private final Vehicle vehicle;
-
-		public DistanceToAnotherVehicle(int distance, Vehicle vehicle) {
-			super();
-			this.distance = distance;
-			this.vehicle = vehicle;
-		}
 	}
 }

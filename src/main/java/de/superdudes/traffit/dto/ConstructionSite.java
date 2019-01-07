@@ -12,7 +12,7 @@ import java.util.function.UnaryOperator;
 
 @Getter
 @Setter
-// todo common super class with Vehicle
+// todo common super class with Vehicle such as BlockingObject, then logic in VehicleController also becomes easier!
 public class ConstructionSite extends SimulationObject implements AttachedToCell {
 
 	private static final int MIN_DISTANCE = 100;
@@ -129,7 +129,7 @@ public class ConstructionSite extends SimulationObject implements AttachedToCell
 	public String toString() {
 		return new StringBuilder(getClass().getSimpleName()).append('{')
 				.append("tailCell=").append(getTailCell().getIndex()).append(",")
-				.append("lane").append(getLane().getIndex())
+				.append("lane=").append(getLane().getIndex())
 				.append("}")
 				.toString();
 	}
