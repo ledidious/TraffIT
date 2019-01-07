@@ -45,7 +45,7 @@ public class GUIController {
 	// Text fields and Spinners
 	@FXML
 	TextField streetSize;
-	
+
 	// ImageViews
 	@FXML
 	public ImageView ivCar;
@@ -87,7 +87,7 @@ public class GUIController {
 	private Pane pane01;
 	@FXML
 	private AnchorPane anchPane01;
-	
+
 	// The Logic
 	public Pane getLane1() {
 		return lane1;
@@ -114,9 +114,9 @@ public class GUIController {
 	}
 
 	/**
-	 * resets the cell counter to 0, clears all cell objects and build a new lane 
+	 * resets the cell counter to 0, clears all cell objects and build a new lane
 	 * depending on the current width and height of the window size
-	 * 
+	 *
 	 * @param width
 	 * @param height
 	 */
@@ -136,13 +136,14 @@ public class GUIController {
 		signlane.getChildren().clear();
 		signlane.getChildren().addAll(buildSignLane(width, height));
 	}
+
 	/**
-	 * builds a lane for the vehicles in the form of a cellarray 
-	 * depending on the current width and height of the window size 
-	 * 
+	 * builds a lane for the vehicles in the form of a cellarray
+	 * depending on the current width and height of the window size
+	 *
 	 * @param width
 	 * @param height
-	 * @return ca 
+	 * @return ca
 	 */
 	public Cell[] buildLane(int width, int height) {
 		Cell[] ca = new Cell[width];
@@ -153,11 +154,11 @@ public class GUIController {
 
 		return ca;
 	}
-	
+
 	/**
-	 * builds a lane for the signs in the form of a cellarray 
-	 * depending on the current width and height of the window size 
-	 * 
+	 * builds a lane for the signs in the form of a cellarray
+	 * depending on the current width and height of the window size
+	 *
 	 * @param width
 	 * @param height
 	 * @return ca
@@ -214,13 +215,13 @@ public class GUIController {
 		button04.setDisable(true);
 		button05.setDisable(true);
 		button06.setDisable(false);
-		
+
 		streetSize.setDisable(true);
 		System.out.println("Simulation has been started...");
-		
+
 		SimulationManager.start();
 	}
-	
+
 	/**
 	 * Pauses the simulation and allows to save the current state.
 	 */
@@ -230,7 +231,7 @@ public class GUIController {
 		button04.setDisable(false);
 		button06.setDisable(true);
 		System.out.println("Simulation has been paused...");
-		
+
 		SimulationManager.halt();
 	}
 
@@ -245,10 +246,10 @@ public class GUIController {
 		button04.setDisable(false);
 		button05.setDisable(false);
 		button06.setDisable(true);
-		
+
 		streetSize.setDisable(false);
 		System.out.println("Simulation has been stopped!");
-		
+
 		SimulationManager.stop();
 	}
 
@@ -256,8 +257,8 @@ public class GUIController {
 	 * Loads a stored simulation from the database.
 	 */
 	@FXML
-	public void loadSimulation() {
-		SimulationManager.load();
+	public boolean loadSimulation() {
+		return SimulationManager.load();
 	}
 
 	/**

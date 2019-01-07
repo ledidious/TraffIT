@@ -2,6 +2,8 @@ package de.superdudes.traffit.application;
 
 import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.*;
+import de.superdudes.traffit.exception.SimulationInDbNotPresentException;
+import de.superdudes.traffit.util.GUIUtils;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -225,8 +227,12 @@ public class Main extends Application {
 
 			// Event handler for loading a saved simulation. 
 			controller.button03.setOnAction(e -> {
-				controller.loadSimulation();
-				repaintContents(backendGrid, controller);
+				if (controller.loadSimulation() ) {
+					repaintContents(backendGrid, controller);
+				}
+				else {
+					GUIUtils.showErrorDialog(primaryStage, new SimulationInDbNotPresentException());
+				}
 			});
 
 			primaryStage.setScene(scene);

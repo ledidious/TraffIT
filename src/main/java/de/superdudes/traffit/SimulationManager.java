@@ -43,8 +43,14 @@ public class SimulationManager {
 	public static boolean load() {
 
 		// Do not assign new, but use restoreFrom() so that references are effected
+		final StartingGrid loadedStartingGrid = StartingGridController.instance().load();
+
+		if (loadedStartingGrid == null) {
+			return false;
+		}
+
 		startingGrid.restoreFrom(StartingGridController.instance().load());
-		return startingGrid != null;
+		return true;
 	}
 
 	public static boolean save() {

@@ -3,8 +3,8 @@ package de.superdudes.traffit.application;
 import de.superdudes.traffit.SimulationManager;
 import de.superdudes.traffit.dto.*;
 import de.superdudes.traffit.exception.ObjectMisplacedException;
-import de.superdudes.traffit.exception.ObjectTooCloseException;
 import de.superdudes.traffit.exception.SimulationRunningException;
+import de.superdudes.traffit.util.GUIUtils;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+import de.superdudes.traffit.application.Cell;
 
 public class Cell extends Rectangle {
 	private Boolean stopPainting = false; // Marks the cell as used so that the color doesn't change when the cursor
@@ -68,7 +68,7 @@ public class Cell extends Rectangle {
 			text.setStyle("-fx-font: 24 arial;");
 
 			if (SimulationManager.isRunning()) {
-				showErrorDialog(new SimulationRunningException());
+				GUIUtils.showErrorDialog((Stage) getScene().getWindow(), new SimulationRunningException());
 				return;
 			}
 
@@ -91,7 +91,7 @@ public class Cell extends Rectangle {
 							Vehicle vehicle = new Vehicle(Vehicle.Type.CAR, laneCells[Integer.parseInt(this.getId())]);
 							drawVehicle(vehicle);
 						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(e2);
+							GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 						}
 					} else {
 						System.out.println("no lane");
@@ -118,7 +118,7 @@ public class Cell extends Rectangle {
 									laneCells[Integer.parseInt(this.getId())]);
 							drawVehicle(vehicle);
 						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(e2);
+							GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 						}
 					} else {
 						System.out.println("no lane");
@@ -144,7 +144,7 @@ public class Cell extends Rectangle {
 							Vehicle vehicle = new Vehicle(Vehicle.Type.TRUCK, laneCells[Integer.parseInt(this.getId())]);
 							drawVehicle(vehicle);
 						} catch (ObjectMisplacedException e2) {
-							showErrorDialog(e2);
+							GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 						}
 					} else {
 						System.out.println("no lane");
@@ -174,7 +174,7 @@ public class Cell extends Rectangle {
 								drawStreetSign(signOnLane01);
 								drawStreetSign(signOnLane02);
 							} catch (ObjectMisplacedException e2) {
-								showErrorDialog(e2);
+								GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 							}
 						}
 					} else {
@@ -204,7 +204,7 @@ public class Cell extends Rectangle {
 								drawStreetSign(signOnLane01);
 								drawStreetSign(signOnLane02);
 							} catch (ObjectMisplacedException e2) {
-								showErrorDialog(e2);
+								GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 							}
 						}
 					} else {
@@ -234,7 +234,7 @@ public class Cell extends Rectangle {
 								drawStreetSign(signOnLane01);
 								drawStreetSign(signOnLane02);
 							} catch (ObjectMisplacedException e2) {
-								showErrorDialog(e2);
+								GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 							}
 						}
 					} else {
@@ -266,7 +266,7 @@ public class Cell extends Rectangle {
 								final ConstructionSite constructionSite = new ConstructionSite(constructionWidth, laneCells[Integer.parseInt(this.getId())]);
 								drawConstructionSite(constructionSite);
 							} catch (ObjectMisplacedException e2) {
-								showErrorDialog(e2);
+								GUIUtils.showErrorDialog((Stage) getScene().getWindow(), e2);
 							}
 						}
 					} else {
@@ -345,62 +345,6 @@ public class Cell extends Rectangle {
 		dialog.showAndWait();
 
 		return spinner01.getValue();
-	}
-
-	/**
-	 * Shows a modal box with a message corresponding to the exception passed.
-	 *
-	 * @param exception
-	 */
-	private void showErrorDialog(Exception exception) {
-		Stage errorDialog = new Stage();
-		Stage myStage = (Stage) this.getScene().getWindow();
-
-		errorDialog.initOwner(myStage);
-		errorDialog.initModality(Modality.APPLICATION_MODAL);
-		errorDialog.initStyle(StageStyle.UTILITY);
-
-		errorDialog.setAlwaysOnTop(true);
-
-		errorDialog.setHeight(110);
-		errorDialog.setWidth(290);
-
-		AnchorPane dialogPane = new AnchorPane();
-
-		Label label01 = new Label();
-		label01.setTextFill(javafx.scene.paint.Color.RED);
-		label01.setLayoutX(10);
-		label01.setLayoutY(1);
-
-		Button button01 = new Button();
-		button01.setText("OK");
-		button01.setLayoutX(120);
-		button01.setLayoutY(25);
-
-		if (exception instanceof ObjectTooCloseException) {
-			final ObjectTooCloseException objectTooCloseException = (ObjectTooCloseException) exception;
-			label01.setText(String.format(
-					"%s is too close to %n%s.%n Min distance is 30 cells and 100 cells between construction sites",
-					objectTooCloseException.getWhichObject(), objectTooCloseException.getOtherObject()));
-			errorDialog.setHeight(160);
-			errorDialog.setWidth(500);
-			button01.setLayoutY(70);
-		} else if (exception instanceof ObjectMisplacedException) {
-			label01.setText("A cell is blocked by another object!");
-		} else if (exception instanceof SimulationRunningException) {
-			label01.setText("Simulation is running");
-		} else {
-			label01.setText("[The Type of the Message is unknown]");
-		}
-
-		button01.setOnAction(e -> errorDialog.close());
-
-		dialogPane.getChildren().add(label01);
-		dialogPane.getChildren().add(button01);
-
-		Scene dialogScene = new Scene(dialogPane);
-		errorDialog.setScene(dialogScene);
-		errorDialog.showAndWait();
 	}
 
 	/**
